@@ -15,9 +15,13 @@ Route::get('/', function () {
     ]);
 });
 
-// Route baru untuk halaman Tentang Kami (Bisa diakses tanpa login)
+// Route halaman Tentang Kami (Mengirimkan data auth agar navbar sinkron)
 Route::get('/tentang-kami', function () {
-    return Inertia::render('About');
+    return Inertia::render('About', [
+        'auth' => [
+            'user' => auth()->user(),
+        ],
+    ]);
 })->name('tentang-kami');
 
 Route::get('/dashboard', function () {
@@ -41,7 +45,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::get('/tentang-kami', function () {
-    return inertia('About');
-});
