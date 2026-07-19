@@ -183,9 +183,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             {/* Center Navigation Links */}
                             <nav className="hidden md:flex items-center space-x-8">
                                 <a href="#" className="text-[#1F7A54] dark:text-[#2d9e6e] font-semibold border-b-2 border-[#1F7A54] pb-1">Home</a>
-                                <a href="#tentang-kami" className="text-gray-600 dark:text-gray-300 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-medium transition-colors duration-200">Tentang Kami</a>
+                                <Link href="/tentang-kami" className="text-gray-600 dark:text-gray-300 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-medium transition-colors duration-200">Tentang Kami</Link>
                             </nav>
-
                             {/* Right Actions: Auth buttons + Dark mode toggle */}
                             <div className="hidden md:flex items-center space-x-4">
                                 {auth?.user ? (
@@ -264,7 +263,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         <div className="md:hidden px-4 pt-2 pb-6 border-t border-gray-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 transition-colors duration-300">
                             <div className="flex flex-col space-y-4">
                                 <a href="#" className="text-[#1F7A54] dark:text-[#2d9e6e] font-semibold py-2">Home</a>
-                                <a href="#tentang-kami" className="text-gray-600 dark:text-gray-300 font-medium py-2 hover:text-[#1F7A54]">Tentang Kami</a>
+                                <Link href="/tentang-kami" className="text-gray-600 dark:text-gray-300 font-medium py-2 hover:text-[#1F7A54]">Tentang Kami</Link>
                                 <hr className="border-gray-100 dark:border-zinc-900" />
                                 {auth?.user ? (
                                     <Link href={route('dashboard')} className="w-full text-center py-2.5 rounded-full border border-[#1F7A54] text-[#1F7A54] font-semibold text-sm">

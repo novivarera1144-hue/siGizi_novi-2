@@ -15,6 +15,11 @@ Route::get('/', function () {
     ]);
 });
 
+// Route baru untuk halaman Tentang Kami (Bisa diakses tanpa login)
+Route::get('/tentang-kami', function () {
+    return Inertia::render('About');
+})->name('tentang-kami');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -36,3 +41,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/tentang-kami', function () {
+    return inertia('About');
+});
