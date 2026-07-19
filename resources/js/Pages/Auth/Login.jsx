@@ -22,14 +22,12 @@ export default function Login({ status, canResetPassword }) {
     };
 
     return (
-        <GuestLayout>
+        /* Mengirim properti title dan subtitle ke GuestLayout */
+        <GuestLayout
+            title="Masuk ke siGizi"
+            subtitle="Admin & pengguna masuk melalui halaman yang sama"
+        >
             <Head title="Masuk ke siGizi" />
-
-            {/* Header Titles */}
-            <div className="text-center mb-8">
-                <h2 className="text-2xl font-extrabold text-gray-950 dark:text-white tracking-tight">Masuk ke siGizi</h2>
-                <p className="text-xs text-gray-400 mt-2 font-medium">Admin & pengguna masuk melalui halaman yang sama</p>
-            </div>
 
             {status && (
                 <div className="mb-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-center">
@@ -43,7 +41,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="email"
                         value="EMAIL"
-                        className="text-[10px] font-extrabold tracking-widest text-gray-400 dark:text-zinc-500"
+                        className="text-[10px] font-extrabold tracking-widest text-gray-400 dark:text-emerald-600/80"
                     />
 
                     <TextInput
@@ -51,7 +49,7 @@ export default function Login({ status, canResetPassword }) {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-200 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
                         placeholder="contoh@email.com"
                         autoComplete="username"
                         isFocused={true}
@@ -66,7 +64,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="password"
                         value="PASSWORD"
-                        className="text-[10px] font-extrabold tracking-widest text-gray-400 dark:text-zinc-500"
+                        className="text-[10px] font-extrabold tracking-widest text-gray-400 dark:text-emerald-600/80"
                     />
 
                     <TextInput
@@ -74,7 +72,7 @@ export default function Login({ status, canResetPassword }) {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-200 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
                         placeholder="••••••••"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
@@ -90,9 +88,9 @@ export default function Login({ status, canResetPassword }) {
                             name="remember"
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
-                            className="rounded border-gray-300 dark:border-zinc-800 text-[#1F7A54] focus:ring-[#1F7A54]"
+                            className="rounded border-gray-300 dark:border-[#164D2B] bg-white dark:bg-[#071A0E] text-[#1F7A54] dark:text-emerald-500 focus:ring-[#1F7A54] dark:focus:ring-emerald-500"
                         />
-                        <span className="ms-2 text-gray-500 dark:text-zinc-400 font-medium">
+                        <span className="ms-2 text-gray-500 dark:text-[#52B788]/90 font-medium">
                             Ingat saya
                         </span>
                     </label>
@@ -100,7 +98,7 @@ export default function Login({ status, canResetPassword }) {
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="text-gray-500 font-semibold hover:text-[#1F7A54] dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors duration-200"
+                            className="text-gray-500 font-semibold hover:text-[#1F7A54] dark:text-[#52B788]/90 dark:hover:text-emerald-400 transition-colors duration-200"
                         >
                             Lupa password?
                         </Link>
@@ -110,7 +108,7 @@ export default function Login({ status, canResetPassword }) {
                 {/* Submit Action Button */}
                 <div className="pt-2">
                     <PrimaryButton
-                        className="w-full bg-[#1F7A54] hover:bg-[#186041] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-200 cursor-pointer"
+                        className="w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-200 cursor-pointer"
                         disabled={processing}
                     >
                         Masuk
@@ -119,15 +117,15 @@ export default function Login({ status, canResetPassword }) {
 
                 {/* Divider Line */}
                 <div className="relative flex items-center justify-center my-6 py-2">
-                    <div className="absolute w-full border-t border-gray-100 dark:border-zinc-800/80"></div>
-                    <span className="relative bg-white dark:bg-zinc-900 px-3 text-xs text-gray-400 dark:text-zinc-500 font-semibold tracking-wider uppercase">atau</span>
+                    <div className="absolute w-full border-t border-gray-100 dark:border-[#164D2B]"></div>
+                    <span className="relative bg-white dark:bg-[#0B2B18] px-3 text-xs text-gray-400 dark:text-[#52B788]/60 font-semibold tracking-wider uppercase">atau</span>
                 </div>
 
                 {/* Google Sign-in Alternative */}
                 <div>
                     <button
                         type="button"
-                        className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl border border-gray-200 dark:border-zinc-800 bg-white hover:bg-gray-50 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-gray-700 dark:text-gray-200 font-semibold text-sm transition-all duration-200 shadow-sm cursor-pointer"
+                        className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl border border-gray-200 dark:border-[#164D2B] bg-white hover:bg-gray-50 dark:bg-[#071A0E] dark:hover:bg-[#092213] text-gray-700 dark:text-white font-semibold text-sm transition-all duration-200 shadow-sm cursor-pointer"
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -140,7 +138,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
 
                 {/* Footer Link to Register */}
-                <div className="text-center text-xs text-gray-500 dark:text-zinc-400 pt-4">
+                <div className="text-center text-xs text-gray-500 dark:text-[#52B788]/80 pt-4">
                     Belum punya akun?{' '}
                     <Link
                         href={route('register')}
@@ -153,4 +151,3 @@ export default function Login({ status, canResetPassword }) {
         </GuestLayout>
     );
 }
-
