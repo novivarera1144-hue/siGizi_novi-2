@@ -7,76 +7,75 @@ export default function AuthenticatedLayout({ children }) {
 
     // Sidebar items mapping (based on the design image)
     const menuItems = [
-        { 
-            name: 'Dashboard', 
+        {
+            name: 'Dashboard',
             icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
                 </svg>
-            ), 
-            route: 'dashboard', 
-            active: true 
+            ),
+            route: 'dashboard',
+            active: true
         },
-        { 
-            name: 'Scan Makanan', 
+        {
+            name: 'Scan Makanan',
             icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-            ), 
-            route: 'scan', 
-            active: false 
+            ),
+            route: 'scan',
+            active: false
         },
-        { 
-            name: 'Lap. Mingguan', 
+        {
+            name: 'Lap. Mingguan',
             icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-            ), 
-            route: '#', 
-            active: false 
+            ),
+            route: 'laporan.mingguan',
+            active: false
         },
-        { 
-            name: 'Riwayat Scan', 
+        {
+            name: 'Riwayat Scan',
             icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-            ), 
-            route: '#', 
-            active: false 
+            ),
+            route: 'riwayat',
+            active: false
         },
-        { 
-            name: 'AI Assistant', 
+        {
+            name: 'AI Assistant',
             icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
-            ), 
-            route: '#', 
-            active: false 
+            ),
+            route: '#',
+            active: false
         },
-        { 
-            name: 'Profil', 
+        {
+            name: 'Profil',
             icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-            ), 
-            route: 'profile.edit', 
-            active: false 
+            ),
+            route: 'profile.edit',
+            active: false
         },
     ];
 
     return (
         <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-zinc-950 dark:text-zinc-100 flex transition-colors duration-300">
-            
+
             {/* Sidebar Navigation - Left Panel */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-zinc-900 dark:border-zinc-800/80 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${
-                sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
-            }`}>
-                
+            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-zinc-900 dark:border-zinc-800/80 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
+                }`}>
+
                 {/* Top Section Logo & Links */}
                 <div>
                     {/* Header Logo */}
@@ -103,11 +102,10 @@ export default function AuthenticatedLayout({ children }) {
                                 <Link
                                     key={idx}
                                     href={item.route !== '#' ? route(item.route) : '#'}
-                                    className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                                        isCurrent
-                                            ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/15'
-                                            : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-zinc-400 dark:hover:text-emerald-400 dark:hover:bg-zinc-800/40'
-                                    }`}
+                                    className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
+                                        ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/15'
+                                        : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-zinc-400 dark:hover:text-emerald-400 dark:hover:bg-zinc-800/40'
+                                        }`}
                                 >
                                     {item.icon}
                                     <span>{item.name}</span>
@@ -136,7 +134,7 @@ export default function AuthenticatedLayout({ children }) {
 
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
-                <div 
+                <div
                     onClick={() => setSidebarOpen(false)}
                     className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
                 ></div>
@@ -144,10 +142,10 @@ export default function AuthenticatedLayout({ children }) {
 
             {/* Main Content Area */}
             <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
-                
+
                 {/* Header Navbar - Top Area */}
                 <header className="h-20 bg-white border-b border-gray-100 dark:bg-zinc-900 dark:border-zinc-800/80 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
-                    
+
                     {/* Left: Breadcrumbs / Sidebar toggle */}
                     <div className="flex items-center space-x-4">
                         <button
@@ -169,9 +167,9 @@ export default function AuthenticatedLayout({ children }) {
                     <div className="flex items-center space-x-4">
                         {/* Search Bar */}
                         <div className="relative hidden md:block">
-                            <input 
-                                type="text" 
-                                placeholder="Cari..." 
+                            <input
+                                type="text"
+                                placeholder="Cari..."
                                 className="w-48 bg-gray-50 dark:bg-zinc-950 border border-gray-100 dark:border-zinc-800/80 rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-zinc-300 placeholder-gray-400 focus:outline-none focus:border-[#1F7A54] focus:ring-1 focus:ring-[#1F7A54] transition-all"
                             />
                             <svg className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
