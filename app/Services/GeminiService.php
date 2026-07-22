@@ -17,7 +17,7 @@ class GeminiService
     /**
      * Gemini API key.
      */
-    protected string $apiKey;
+    protected ?string $apiKey;
 
     /**
      * Gemini model identifier.
@@ -26,9 +26,9 @@ class GeminiService
 
     public function __construct()
     {
-        $this->baseUrl = config('services.gemini.base_url');
-        $this->apiKey = config('services.gemini.api_key');
-        $this->model = config('services.gemini.model');
+        $this->baseUrl = config('services.gemini.base_url') ?? 'https://generativelanguage.googleapis.com/v1beta';
+        $this->apiKey = config('services.gemini.api_key') ?? env('GEMINI_API_KEY') ?? '';
+        $this->model = config('services.gemini.model') ?? 'gemini-1.5-flash';
     }
 
     /**
@@ -140,6 +140,9 @@ class GeminiService
         if (preg_match('/^```(?:json)?\s*\n?(.*?)\n?\s*```$/s', $cleanedText, $matches)) {
             $cleanedText = trim($matches[1]);
         }
+
+        // Clean control characters (e.g. unescaped newlines/tabs) that break json_decode
+        $cleanedText = preg_replace('/[\x00-\x1F\x7F]/u', ' ', $cleanedText);
 
         // 8. Decode the JSON text from Gemini's response
         $data = json_decode($cleanedText, true);
