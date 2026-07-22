@@ -217,7 +217,8 @@ export default function Dashboard({ auth }) {
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
-                        <Link href="#" className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
+                        {/* Diperbaiki: Mengarah ke rute laporan mingguan */}
+                        <Link href={route('laporan.mingguan')} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
                             <span>Lihat laporan</span>
                             <span className="ml-1">→</span>
                         </Link>
@@ -286,4 +287,4 @@ export default function Dashboard({ auth }) {
             </div>
         </AuthenticatedLayout>
     );
-}  
+}

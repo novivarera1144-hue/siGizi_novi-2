@@ -10,7 +10,7 @@ function BotAvatar({ size = 'md' }) {
     const iconSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
 
     return (
-        <div className={`${sizeClasses} rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-200/50 flex-shrink-0`}>
+        <div className={`${sizeClasses} rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/10 flex-shrink-0`}>
             <Bot className={`${iconSize} text-white`} />
         </div>
     );
@@ -21,14 +21,14 @@ function TypingIndicator() {
     return (
         <div className="flex items-end gap-3 max-w-[85%]">
             <BotAvatar size="sm" />
-            <div className="bg-emerald-50 border border-emerald-100/60 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
+            <div className="bg-emerald-50 dark:bg-[#0C1E14] border border-emerald-100/80 dark:border-emerald-900/40 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
                 <div className="flex items-center gap-1.5">
                     <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <span className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
-                    <span className="text-xs text-emerald-600/70 font-medium ml-2">AI sedang mengetik...</span>
+                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium ml-2">AI sedang mengetik...</span>
                 </div>
             </div>
         </div>
@@ -36,12 +36,12 @@ function TypingIndicator() {
 }
 
 // ─── Chat Bubble Components ────────────────────────────────────────────────────
-function AiBubble({ text, isFirst = false }) {
+function AiBubble({ text }) {
     return (
         <div className="flex items-end gap-3 max-w-[85%] animate-fade-in">
             <BotAvatar size="sm" />
-            <div className="bg-emerald-50 border border-emerald-100/60 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
-                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{text}</p>
+            <div className="bg-emerald-50/80 dark:bg-[#0C1E14] border border-emerald-100/80 dark:border-emerald-900/40 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
+                <p className="text-sm text-gray-800 dark:text-emerald-100 leading-relaxed whitespace-pre-wrap">{text}</p>
             </div>
         </div>
     );
@@ -50,7 +50,7 @@ function AiBubble({ text, isFirst = false }) {
 function UserBubble({ text }) {
     return (
         <div className="flex justify-end animate-fade-in">
-            <div className="max-w-[80%] bg-gradient-to-br from-[#1F7A54] to-[#166040] text-white rounded-2xl rounded-br-md px-5 py-4 shadow-md shadow-emerald-200/30">
+            <div className="max-w-[80%] bg-emerald-600 dark:bg-[#15803D] text-white rounded-2xl rounded-br-md px-5 py-4 shadow-md shadow-emerald-900/10">
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
             </div>
         </div>
@@ -72,7 +72,7 @@ function QuickPrompts({ onSelect, disabled }) {
                     key={prompt.label}
                     onClick={() => onSelect(prompt.label)}
                     disabled={disabled}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/70 rounded-full hover:bg-emerald-100 hover:border-emerald-300 hover:shadow-sm active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-[#0C1E14] border border-emerald-200/80 dark:border-emerald-900/40 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-950/80 hover:border-emerald-300 dark:hover:border-emerald-800 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                     <span>{prompt.icon}</span>
                     <span>{prompt.label}</span>
@@ -197,14 +197,14 @@ export default function AiAssistant() {
             <Head title="AI Assistant" />
 
             {/* ── Chat Container Card ─────────────────────────────────── */}
-            <div className="h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-zinc-800/80 shadow-xl shadow-gray-100/50 dark:shadow-zinc-950/50 overflow-hidden">
+            <div className="h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-[#09170F] rounded-3xl border border-gray-100 dark:border-emerald-950/80 shadow-sm overflow-hidden transition-colors">
 
                 {/* ── Chat Header ─────────────────────────────────────── */}
-                <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm">
+                <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100 dark:border-emerald-950/80 bg-gray-50/50 dark:bg-[#0C1E14]">
                     <div className="flex items-center gap-3.5">
                         <BotAvatar />
                         <div>
-                            <h2 className="text-base font-bold text-gray-800 dark:text-zinc-100 tracking-tight">
+                            <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight">
                                 AI Assistant
                             </h2>
                             <div className="flex items-center gap-1.5 mt-0.5">
@@ -223,17 +223,17 @@ export default function AiAssistant() {
                     <div className="relative">
                         <button
                             onClick={() => setIsHeaderDropdownOpen(!isHeaderDropdownOpen)}
-                            className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all duration-200"
+                            className="p-2 rounded-xl text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-emerald-950/60 transition-all duration-200"
                         >
                             <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isHeaderDropdownOpen ? 'rotate-180' : ''}`} />
                         </button>
                         {isHeaderDropdownOpen && (
                             <>
                                 <div className="fixed inset-0 z-10" onClick={() => setIsHeaderDropdownOpen(false)} />
-                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl border border-gray-100 dark:border-zinc-700 shadow-xl z-20 py-1.5 overflow-hidden">
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0C1E14] rounded-xl border border-gray-100 dark:border-emerald-900/50 shadow-xl z-20 py-1.5 overflow-hidden">
                                     <button
                                         onClick={clearChat}
-                                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-700/50 transition-colors flex items-center gap-2.5"
+                                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-emerald-200 hover:bg-gray-50 dark:hover:bg-emerald-950/80 transition-colors flex items-center gap-2.5"
                                     >
                                         <Sparkles className="w-4 h-4 text-amber-500" />
                                         Chat Baru
@@ -245,10 +245,10 @@ export default function AiAssistant() {
                 </div>
 
                 {/* ── Chat Messages Area ──────────────────────────────── */}
-                <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-6 space-y-5 scroll-smooth" style={{ scrollbarWidth: 'thin', scrollbarColor: '#d1d5db transparent' }}>
+                <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-6 space-y-5 scroll-smooth bg-gray-50/20 dark:bg-[#09170F]" style={{ scrollbarWidth: 'thin', scrollbarColor: '#052e16 transparent' }}>
                     {messages.map((msg) =>
                         msg.role === 'ai' ? (
-                            <AiBubble key={msg.id} text={msg.text} isFirst={msg.id === 'welcome'} />
+                            <AiBubble key={msg.id} text={msg.text} />
                         ) : (
                             <UserBubble key={msg.id} text={msg.text} />
                         )
@@ -258,7 +258,7 @@ export default function AiAssistant() {
                 </div>
 
                 {/* ── Bottom Input Area ───────────────────────────────── */}
-                <div className="border-t border-gray-100 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm px-4 sm:px-6 py-4 space-y-3">
+                <div className="border-t border-gray-100 dark:border-emerald-950/80 bg-white dark:bg-[#09170F] px-4 sm:px-6 py-4 space-y-3">
                     {/* Quick Prompts */}
                     <QuickPrompts onSelect={handleQuickPrompt} disabled={isLoading} />
 
@@ -273,7 +273,7 @@ export default function AiAssistant() {
                                 placeholder="Tanya tentang nutrisi..."
                                 rows={1}
                                 disabled={isLoading}
-                                className="w-full resize-none rounded-2xl border border-gray-200 dark:border-zinc-700 bg-gray-50/50 dark:bg-zinc-800/50 px-5 py-3.5 pr-4 text-sm text-gray-700 dark:text-zinc-200 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-200 disabled:opacity-50"
+                                className="w-full resize-none rounded-2xl border border-gray-200 dark:border-emerald-900/50 bg-gray-50 dark:bg-[#0C1E14] px-5 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-emerald-700/80 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 focus:ring-0 transition-all duration-200 disabled:opacity-50"
                                 style={{ maxHeight: '120px', minHeight: '48px' }}
                                 onInput={(e) => {
                                     e.target.style.height = '48px';
@@ -284,9 +284,9 @@ export default function AiAssistant() {
                         <button
                             onClick={() => sendMessage()}
                             disabled={!inputValue.trim() || isLoading}
-                            className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-orange-200/50 hover:shadow-orange-300/60 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none flex-shrink-0"
+                            className="w-12 h-12 rounded-2xl bg-amber-600 hover:bg-amber-700 dark:bg-[#B45309] dark:hover:bg-amber-600 text-white flex items-center justify-center shadow-md transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                         >
-                            <Send className="w-5 h-5 -ml-0.5" />
+                            <Send className="w-5 h-5" />
                         </button>
                     </div>
                 </div>

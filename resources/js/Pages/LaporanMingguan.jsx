@@ -44,7 +44,7 @@ export default function LaporanMingguan({ auth }) {
             <Head title="Laporan Mingguan" />
 
             <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
-                {/* Header (FONT & Warna Sesuai Gambar 3) */}
+                {/* Header */}
                 <div>
                     <p className="text-xs font-bold tracking-wider text-gray-400 dark:text-emerald-500 uppercase mb-1">
                         Laporan Mingguan
@@ -155,11 +155,15 @@ export default function LaporanMingguan({ auth }) {
                     {/* Keseimbangan Nutrisi */}
                     <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-950/60 flex flex-col hover:shadow-md transition">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Keseimbangan Nutrisi</h2>
-                        <div className="flex-1 w-full flex items-center justify-center min-h-[300px]">
-                            <ResponsiveContainer width="100%" height={300}>
+                        <div className="flex-1 w-full h-[300px] flex items-center justify-center">
+                            <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                                    <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#A3E635', fontSize: 12, fontWeight: 500 }} />
+                                    <PolarGrid stroke="currentColor" className="text-gray-200 dark:text-emerald-900/40" />
+                                    <PolarAngleAxis
+                                        dataKey="subject"
+                                        tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                                        className="text-gray-700 dark:text-[#A3E635]"
+                                    />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                     <Radar name="Skor Nutrisi" dataKey="A" stroke="#22c55e" strokeWidth={2} fill="#22c55e" fillOpacity={0.25} />
                                     <Tooltip
