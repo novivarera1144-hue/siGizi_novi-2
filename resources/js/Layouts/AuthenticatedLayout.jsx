@@ -5,7 +5,7 @@ export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // Sidebar items mapping (based on the design image)
+    // Sidebar items mapping (dinamis menggunakan route().current)
     const menuItems = [
         {
             name: 'Dashboard',
@@ -15,7 +15,6 @@ export default function AuthenticatedLayout({ children }) {
                 </svg>
             ),
             route: 'dashboard',
-            active: true
         },
         {
             name: 'Scan Makanan',
@@ -25,7 +24,6 @@ export default function AuthenticatedLayout({ children }) {
                 </svg>
             ),
             route: 'scan',
-            active: false
         },
         {
             name: 'Lap. Mingguan',
@@ -35,7 +33,6 @@ export default function AuthenticatedLayout({ children }) {
                 </svg>
             ),
             route: 'laporan.mingguan',
-            active: false
         },
         {
             name: 'Riwayat Scan',
@@ -45,7 +42,6 @@ export default function AuthenticatedLayout({ children }) {
                 </svg>
             ),
             route: 'riwayat',
-            active: false
         },
         {
             name: 'AI Assistant',
@@ -55,7 +51,6 @@ export default function AuthenticatedLayout({ children }) {
                 </svg>
             ),
             route: '#',
-            active: false
         },
         {
             name: 'Profil',
@@ -65,9 +60,12 @@ export default function AuthenticatedLayout({ children }) {
                 </svg>
             ),
             route: 'profile.edit',
-            active: false
         },
     ];
+
+    // Fungsi untuk mendeteksi judul breadcrumb secara otomatis
+    const activeMenuItem = menuItems.find(item => item.route !== '#' && route().current(item.route));
+    const currentPageTitle = activeMenuItem ? activeMenuItem.name : 'Dashboard';
 
     return (
         <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-zinc-950 dark:text-zinc-100 flex transition-colors duration-300">
@@ -159,7 +157,8 @@ export default function AuthenticatedLayout({ children }) {
                         <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-zinc-500">
                             <span className="hover:text-gray-600 dark:hover:text-zinc-300 cursor-pointer">siGizi</span>
                             <span>&gt;</span>
-                            <span className="text-[#1F7A54] dark:text-emerald-400 font-bold">Dashboard</span>
+                            {/* BREADCRUMB DINAMIS SESUAI HALAMAN HALAMAN SAAT INI */}
+                            <span className="text-[#1F7A54] dark:text-emerald-400 font-bold">{currentPageTitle}</span>
                         </div>
                     </div>
 
@@ -177,7 +176,7 @@ export default function AuthenticatedLayout({ children }) {
                             </svg>
                         </div>
 
-                        {/* Dark/Light Mode Indicator Icon (pure layout representation) */}
+                        {/* Dark/Light Mode Indicator Icon */}
                         <div className="p-2 rounded-full text-gray-400 hover:text-gray-600 cursor-pointer">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -210,4 +209,3 @@ export default function AuthenticatedLayout({ children }) {
         </div>
     );
 }
-
