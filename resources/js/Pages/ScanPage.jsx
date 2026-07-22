@@ -9,6 +9,7 @@ export default function ScanPage() {
     const [isScanning, setIsScanning] = useState(false);
     const [scanProgress, setScanProgress] = useState(0);
     const [scanStatus, setScanStatus] = useState('');
+    const [scanError, setScanError] = useState(null);
 
     const fileInputRef = useRef(null);
     const cameraInputRef = useRef(null);
@@ -34,6 +35,7 @@ export default function ScanPage() {
             setImageFile(file);
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
+            setScanError(null);
         }
     };
 
@@ -68,6 +70,7 @@ export default function ScanPage() {
 
         setIsScanning(true);
         setScanProgress(0);
+        setScanError(null);
 
         const interval = setInterval(() => {
             setScanProgress((prev) => {
@@ -81,7 +84,7 @@ export default function ScanPage() {
                             forceFormData: true,
                             onError: (errors) => {
                                 setIsScanning(false);
-                                alert('Gagal menganalisis gambar: ' + Object.values(errors).join(', '));
+                                setScanError(Object.values(errors).join(', '));
                             }
                         });
                     }, 500);
@@ -95,6 +98,7 @@ export default function ScanPage() {
     const resetImage = () => {
         setImagePreview(null);
         setImageFile(null);
+        setScanError(null);
     };
 
     return (
@@ -132,6 +136,21 @@ export default function ScanPage() {
                         </span>
                     </div>
                 </div>
+
+                {/* Error Banner */}
+                {scanError && (
+                    <div className="bg-red-50 border border-red-200/60 dark:bg-red-950/20 dark:border-red-900/40 text-red-800 dark:text-red-300 px-5 py-4 rounded-3xl flex items-start gap-3.5 shadow-sm animate-fade-in transition-all">
+                        <svg className="w-5 h-5 text-red-500 dark:text-red-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div className="flex-1 text-sm font-semibold leading-relaxed">
+                            {scanError}
+                        </div>
+                        <button onClick={() => setScanError(null)} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 font-bold text-lg leading-none p-1 transition-colors">
+                            &times;
+                        </button>
+                    </div>
+                )}
 
                 {/* Main Card Container */}
                 <div className="bg-white dark:bg-[#122017] rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm p-6 sm:p-8 space-y-6">

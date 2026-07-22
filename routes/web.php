@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScanController;
 use Illuminate\Foundation\Application;
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/laporan-mingguan', function () {
         return Inertia::render('LaporanMingguan');
     })->name('laporan.mingguan');
+
+    // Rute AI Assistant
+    Route::get('/ai-assistant', [AiChatController::class, 'index'])->name('ai.assistant');
+    Route::post('/ai-assistant/chat', [AiChatController::class, 'chat'])->name('ai.chat');
 });
 
 require __DIR__.'/auth.php';
