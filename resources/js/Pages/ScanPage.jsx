@@ -101,17 +101,40 @@ export default function ScanPage() {
         <AuthenticatedLayout>
             <Head title="Scan Makanan - siGizi" />
 
-            <div className="max-w-3xl mx-auto space-y-8">
+            <div className="max-w-4xl mx-auto space-y-6">
 
-                {/* Header Title */}
-                <div>
-                    <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">Fitur Scan</span>
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Kenali Gizi Makananmu</h1>
-                    <p className="text-xs text-gray-400 dark:text-zinc-500 font-semibold mt-1">Unggah foto makanan Anda atau potret langsung menggunakan kamera untuk analisis AI instan.</p>
+                {/* Header Title & Stepper */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
+                            SCAN MAKANAN
+                        </span>
+                        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+                            Kenali Gizi Makananmu
+                        </h1>
+                        <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-semibold mt-1">
+                            Unggah foto makanan Anda atau potret langsung menggunakan kamera untuk analisis AI instan.
+                        </p>
+                    </div>
+
+                    {/* Stepper Indicator */}
+                    <div className="flex items-center space-x-2 bg-gray-100 dark:bg-[#122017] p-1.5 rounded-2xl border border-gray-200 dark:border-[#1a2e22]">
+                        <span className="px-3 py-1.5 bg-[#1F7A54] dark:bg-emerald-500 text-white dark:text-black text-xs font-bold rounded-xl shadow-sm">
+                            1. Upload
+                        </span>
+                        <span className="text-gray-400 dark:text-emerald-100/30 text-xs">›</span>
+                        <span className="px-3 py-1.5 text-gray-400 dark:text-emerald-100/40 text-xs font-medium">
+                            2. AI Analisis
+                        </span>
+                        <span className="text-gray-400 dark:text-emerald-100/30 text-xs">›</span>
+                        <span className="px-3 py-1.5 text-gray-400 dark:text-emerald-100/40 text-xs font-medium">
+                            3. Hasil
+                        </span>
+                    </div>
                 </div>
 
-                {/* Upload Section / Main Card */}
-                <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-gray-100 dark:border-zinc-800/80 shadow-sm p-6 sm:p-8 space-y-6">
+                {/* Main Card Container */}
+                <div className="bg-white dark:bg-[#122017] rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm p-6 sm:p-8 space-y-6">
 
                     {/* Drag & Drop Area */}
                     <div
@@ -120,10 +143,10 @@ export default function ScanPage() {
                         onDragLeave={handleDrag}
                         onDrop={handleDrop}
                         className={`w-full aspect-video sm:h-80 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden transition-all duration-200 ${isDragActive
-                            ? 'border-[#1F7A54] bg-emerald-50/30 dark:bg-zinc-800/40 scale-[0.99]'
-                            : imagePreview
-                                ? 'border-gray-200 dark:border-zinc-800'
-                                : 'border-gray-300 dark:border-zinc-700/80 bg-gray-50/50 dark:bg-zinc-950/20 hover:bg-gray-50 dark:hover:bg-zinc-950/40'
+                                ? 'border-[#1F7A54] bg-emerald-50/30 dark:border-emerald-500 dark:bg-[#182b1f] scale-[0.99]'
+                                : imagePreview
+                                    ? 'border-gray-200 dark:border-emerald-500/30 dark:bg-[#0b140e]'
+                                    : 'border-gray-300 bg-gray-50/50 hover:bg-gray-50 dark:border-emerald-500/20 dark:bg-[#0b140e] dark:hover:border-emerald-500/50 dark:hover:bg-[#0e1a12]'
                             }`}
                     >
                         {imagePreview ? (
@@ -134,8 +157,9 @@ export default function ScanPage() {
                                     alt="Preview"
                                     className="w-full h-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                                     <button
+                                        type="button"
                                         onClick={resetImage}
                                         className="p-3 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-all duration-150 transform hover:scale-105 cursor-pointer"
                                         title="Hapus foto"
@@ -148,22 +172,22 @@ export default function ScanPage() {
                             </div>
                         ) : (
                             // Upload Placeholder Mode
-                            <div className="text-center p-6 space-y-4">
-                                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-zinc-800 flex items-center justify-center mx-auto text-[#1F7A54] dark:text-emerald-400">
-                                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <div className="text-center p-6 space-y-3">
+                                <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-[#182b1f] border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center mx-auto text-[#1F7A54] dark:text-emerald-400 shadow-inner">
+                                    <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-sm font-bold text-gray-700 dark:text-zinc-200">Seret dan letakkan foto di sini</p>
-                                    <p className="text-xs text-gray-400 dark:text-zinc-500 font-semibold">Format JPG, PNG, atau WEBP hingga 10MB</p>
+                                    <p className="text-sm font-bold text-gray-700 dark:text-white">Seret dan letakkan foto di sini</p>
+                                    <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold">Format JPG, PNG, atau WEBP hingga 10MB</p>
                                 </div>
                             </div>
                         )}
                     </div>
 
                     {/* Action Buttons Row */}
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Hidden inputs */}
                         <input
                             ref={fileInputRef}
@@ -183,10 +207,11 @@ export default function ScanPage() {
 
                         {/* Upload Button */}
                         <button
+                            type="button"
                             onClick={() => fileInputRef.current.click()}
-                            className="flex-1 py-3.5 bg-gray-50 hover:bg-gray-100/80 text-gray-700 dark:bg-zinc-950/40 dark:hover:bg-zinc-950/80 dark:text-zinc-200 border border-gray-200 dark:border-zinc-800 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm"
                         >
-                            <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                             </svg>
                             <span>Unggah Foto</span>
@@ -194,10 +219,11 @@ export default function ScanPage() {
 
                         {/* Camera Button */}
                         <button
+                            type="button"
                             onClick={() => cameraInputRef.current.click()}
-                            className="flex-1 py-3.5 bg-gray-50 hover:bg-gray-100/80 text-gray-700 dark:bg-zinc-950/40 dark:hover:bg-zinc-950/80 dark:text-zinc-200 border border-gray-200 dark:border-zinc-800 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm"
                         >
-                            <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
@@ -207,13 +233,14 @@ export default function ScanPage() {
 
                     {/* Bottom Trigger Action */}
                     {imagePreview && (
-                        <div className="pt-4 border-t border-gray-100 dark:border-zinc-800/80 flex justify-end">
+                        <div className="pt-4 border-t border-gray-100 dark:border-[#1a2e22] flex justify-end">
                             <button
+                                type="button"
                                 onClick={startAnalysis}
-                                className="w-full sm:w-auto px-8 py-3.5 bg-[#1F7A54] hover:bg-[#186041] text-white font-extrabold text-sm rounded-xl shadow-lg shadow-[#1F7A54]/15 hover:shadow-xl transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                                className="w-full sm:w-auto px-8 py-3.5 bg-[#1F7A54] hover:bg-[#186041] text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-black font-extrabold text-sm rounded-2xl shadow-lg shadow-[#1F7A54]/15 dark:shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer"
                             >
                                 <span>Analisis Sekarang</span>
-                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <svg className="w-4 h-4 text-white dark:text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
@@ -226,18 +253,18 @@ export default function ScanPage() {
 
             {/* Immersive Fullscreen AI Scanning Simulation Dialog Overlay */}
             {isScanning && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-                    <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-gray-100 dark:border-zinc-800/80 shadow-2xl space-y-6 text-center">
+                <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="w-full max-w-md bg-white dark:bg-[#122017] rounded-3xl p-8 border border-gray-100 dark:border-[#1a2e22] shadow-2xl space-y-6 text-center">
 
                         {/* Scanning Radar/Spinner Animation */}
                         <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
                             {/* Outer rotating/pulsing ring */}
-                            <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20 dark:border-emerald-400/10 animate-pulse"></div>
-                            <div className="absolute inset-2 rounded-full border-4 border-[#1F7A54] border-t-transparent animate-spin"></div>
+                            <div className="absolute inset-0 rounded-full border-4 border-[#1F7A54]/20 dark:border-emerald-500/20 animate-pulse"></div>
+                            <div className="absolute inset-2 rounded-full border-4 border-[#1F7A54] dark:border-emerald-500 border-t-transparent animate-spin"></div>
 
                             {/* Inner AI Scanner Logo Icon */}
-                            <div className="w-16 h-16 bg-[#1F7A54] rounded-full flex items-center justify-center shadow-lg shadow-[#1F7A54]/25">
-                                <svg className="w-8 h-8 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <div className="w-16 h-16 bg-[#1F7A54] dark:bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-[#1F7A54]/25 dark:shadow-emerald-500/20">
+                                <svg className="w-8 h-8 text-white dark:text-black animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                                 </svg>
                             </div>
@@ -246,14 +273,14 @@ export default function ScanPage() {
                         {/* Progress Details */}
                         <div className="space-y-2">
                             <h3 className="text-lg font-extrabold text-gray-900 dark:text-white">AI Sedang Menganalisis</h3>
-                            <p className="text-xs font-semibold text-gray-500 min-h-[1.5rem]">{scanStatus}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-emerald-100/60 min-h-[1.5rem]">{scanStatus}</p>
                         </div>
 
                         {/* Progress Bar Loader */}
                         <div className="space-y-1">
-                            <div className="w-full bg-gray-100 dark:bg-zinc-950 rounded-full h-2 overflow-hidden">
+                            <div className="w-full bg-gray-100 dark:bg-[#0b140e] rounded-full h-2 overflow-hidden border border-transparent dark:border-[#1a2e22]">
                                 <div
-                                    className="bg-[#1F7A54] h-full rounded-full transition-all duration-150"
+                                    className="bg-[#1F7A54] dark:bg-emerald-500 h-full rounded-full transition-all duration-150"
                                     style={{ width: `${scanProgress}%` }}
                                 ></div>
                             </div>

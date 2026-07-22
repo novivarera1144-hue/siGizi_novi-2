@@ -1,11 +1,32 @@
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // Sidebar items mapping (dinamis menggunakan route().current)
+    // 1. Inisialisasi State Dark Mode dari localStorage
+    const [darkMode, setDarkMode] = useState(() => {
+        return localStorage.getItem('theme') === 'dark';
+    });
+
+    // 2. Effect untuk menambah/menghapus class 'dark' pada elemen <html>
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [darkMode]);
+
+    // 3. Handler Toggle Dark Mode
+    const toggleDarkMode = () => {
+        setDarkMode((prev) => !prev);
+    };
+
+    // Sidebar navigation mapping
     const menuItems = [
         {
             name: 'Dashboard',
@@ -63,21 +84,20 @@ export default function AuthenticatedLayout({ children }) {
         },
     ];
 
-    // Fungsi untuk mendeteksi judul breadcrumb secara otomatis
     const activeMenuItem = menuItems.find(item => item.route !== '#' && route().current(item.route));
     const currentPageTitle = activeMenuItem ? activeMenuItem.name : 'Dashboard';
 
     return (
-        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-zinc-950 dark:text-zinc-100 flex transition-colors duration-300">
+        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300">
 
             {/* Sidebar Navigation - Left Panel */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-zinc-900 dark:border-zinc-800/80 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
+            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
                 }`}>
 
                 {/* Top Section Logo & Links */}
                 <div>
                     {/* Header Logo */}
-                    <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-zinc-800/80">
+                    <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-emerald-950/40">
                         <Link href="/" className="flex items-center space-x-2">
                             <div className="bg-[#1F7A54] p-1.5 rounded-lg flex items-center justify-center shadow-sm">
                                 <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -85,7 +105,7 @@ export default function AuthenticatedLayout({ children }) {
                                 </svg>
                             </div>
                             <span className="text-xl font-bold tracking-tight">
-                                <span className="text-[#1F7A54]">si</span>
+                                <span className="text-[#1F7A54] dark:text-emerald-400">si</span>
                                 <span className="text-orange-500">Gizi</span>
                             </span>
                         </Link>
@@ -93,7 +113,7 @@ export default function AuthenticatedLayout({ children }) {
 
                     {/* Navigation Items */}
                     <div className="px-4 py-6 space-y-1.5">
-                        <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-widest block mb-4">Pengguna</span>
+                        <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-widest block mb-4">Pengguna</span>
                         {menuItems.map((item, idx) => {
                             const isCurrent = item.route !== '#' && route().current(item.route);
                             return (
@@ -101,8 +121,8 @@ export default function AuthenticatedLayout({ children }) {
                                     key={idx}
                                     href={item.route !== '#' ? route(item.route) : '#'}
                                     className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                        ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/15'
-                                        : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-zinc-400 dark:hover:text-emerald-400 dark:hover:bg-zinc-800/40'
+                                        ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
+                                        : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
                                         }`}
                                 >
                                     {item.icon}
@@ -114,7 +134,7 @@ export default function AuthenticatedLayout({ children }) {
                 </div>
 
                 {/* Bottom Section Logout Button */}
-                <div className="p-4 border-t border-gray-100 dark:border-zinc-800/80">
+                <div className="p-4 border-t border-gray-100 dark:border-emerald-950/40">
                     <Link
                         href={route('logout')}
                         method="post"
@@ -134,7 +154,7 @@ export default function AuthenticatedLayout({ children }) {
             {sidebarOpen && (
                 <div
                     onClick={() => setSidebarOpen(false)}
-                    className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
                 ></div>
             )}
 
@@ -142,57 +162,68 @@ export default function AuthenticatedLayout({ children }) {
             <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
 
                 {/* Header Navbar - Top Area */}
-                <header className="h-20 bg-white border-b border-gray-100 dark:bg-zinc-900 dark:border-zinc-800/80 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
+                <header className="h-20 bg-white border-b border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
 
                     {/* Left: Breadcrumbs / Sidebar toggle */}
                     <div className="flex items-center space-x-4">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-2 rounded-lg bg-gray-50 dark:bg-zinc-800/60 lg:hidden text-gray-500 hover:bg-gray-100"
+                            className="p-2 rounded-lg bg-gray-50 dark:bg-emerald-950/40 lg:hidden text-gray-500 dark:text-emerald-300 hover:bg-gray-100"
                         >
                             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-                        <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-zinc-500">
-                            <span className="hover:text-gray-600 dark:hover:text-zinc-300 cursor-pointer">siGizi</span>
+                        <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-600">
+                            <span className="hover:text-gray-600 dark:hover:text-emerald-400 cursor-pointer">siGizi</span>
                             <span>&gt;</span>
-                            {/* BREADCRUMB DINAMIS SESUAI HALAMAN HALAMAN SAAT INI */}
                             <span className="text-[#1F7A54] dark:text-emerald-400 font-bold">{currentPageTitle}</span>
                         </div>
                     </div>
 
-                    {/* Right: Search + Quick Tools + User Profile */}
+                    {/* Right: Search + Toggle Dark Mode + Notification + Profile */}
                     <div className="flex items-center space-x-4">
-                        {/* Search Bar */}
+                        {/* Search Bar (SEDAH DIPERBAIKI) */}
                         <div className="relative hidden md:block">
                             <input
                                 type="text"
                                 placeholder="Cari..."
-                                className="w-48 bg-gray-50 dark:bg-zinc-950 border border-gray-100 dark:border-zinc-800/80 rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-zinc-300 placeholder-gray-400 focus:outline-none focus:border-[#1F7A54] focus:ring-1 focus:ring-[#1F7A54] transition-all"
+                                className="w-48 lg:w-64 bg-gray-50 dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-100/40 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#1F7A54] dark:focus:ring-emerald-500 transition-all"
                             />
-                            <svg className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <svg className="w-4 h-4 text-gray-400 dark:text-emerald-500/70 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
 
-                        {/* Dark/Light Mode Indicator Icon */}
-                        <div className="p-2 rounded-full text-gray-400 hover:text-gray-600 cursor-pointer">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                            </svg>
-                        </div>
+                        {/* TOGGLE DARK/LIGHT MODE BUTTON */}
+                        <button
+                            onClick={toggleDarkMode}
+                            title={darkMode ? "Ubah ke Light Mode" : "Ubah ke Dark Mode"}
+                            className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:text-amber-300 dark:hover:text-amber-200 transition-colors focus:outline-none cursor-pointer"
+                        >
+                            {darkMode ? (
+                                /* Icon Sun (terang) */
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                                </svg>
+                            ) : (
+                                /* Icon Moon (gelap) */
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                            )}
+                        </button>
 
                         {/* Notifications Icon */}
-                        <div className="relative p-2 rounded-full text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <div className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-zinc-900"></span>
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#09170F]"></span>
                         </div>
 
-                        {/* User Profile Initial Circular Icon */}
-                        <div className="w-8 h-8 rounded-full bg-[#1F7A54] text-white flex items-center justify-center font-extrabold text-sm shadow-sm">
+                        {/* User Profile Initial Icon */}
+                        <div className="w-8 h-8 rounded-full bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 flex items-center justify-center font-extrabold text-sm shadow-sm">
                             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                         </div>
                     </div>
