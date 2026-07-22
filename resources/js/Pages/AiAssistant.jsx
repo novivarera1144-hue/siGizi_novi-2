@@ -93,7 +93,6 @@ export default function AiAssistant() {
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [isHeaderDropdownOpen, setIsHeaderDropdownOpen] = useState(false);
 
     const chatEndRef = useRef(null);
     const inputRef = useRef(null);
@@ -189,7 +188,6 @@ export default function AiAssistant() {
                 text: 'Halo! 👋 Saya siGizi AI. Tanya saya seputar nutrisi, kalori, atau pola makan sehat!',
             },
         ]);
-        setIsHeaderDropdownOpen(false);
     };
 
     return (
@@ -219,28 +217,15 @@ export default function AiAssistant() {
                         </div>
                     </div>
 
-                    {/* Header Dropdown */}
-                    <div className="relative">
+                    {/* Header Action Buttons */}
+                    <div className="flex items-center gap-2">
                         <button
-                            onClick={() => setIsHeaderDropdownOpen(!isHeaderDropdownOpen)}
-                            className="p-2 rounded-xl text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-emerald-950/60 transition-all duration-200"
+                            onClick={clearChat}
+                            className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200/40 dark:border-emerald-800/20 active:scale-95 transition-all duration-200"
                         >
-                            <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isHeaderDropdownOpen ? 'rotate-180' : ''}`} />
+                            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Chat Baru</span>
                         </button>
-                        {isHeaderDropdownOpen && (
-                            <>
-                                <div className="fixed inset-0 z-10" onClick={() => setIsHeaderDropdownOpen(false)} />
-                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0C1E14] rounded-xl border border-gray-100 dark:border-emerald-900/50 shadow-xl z-20 py-1.5 overflow-hidden">
-                                    <button
-                                        onClick={clearChat}
-                                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-emerald-200 hover:bg-gray-50 dark:hover:bg-emerald-950/80 transition-colors flex items-center gap-2.5"
-                                    >
-                                        <Sparkles className="w-4 h-4 text-amber-500" />
-                                        Chat Baru
-                                    </button>
-                                </div>
-                            </>
-                        )}
                     </div>
                 </div>
 
