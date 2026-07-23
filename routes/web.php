@@ -35,8 +35,34 @@ Route::get('/api/user/scan-history', function () {
 // Semua Rute yang Membutuhkan Login (Auth)
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
+        if (auth()->user()->email === 'admin@sigizi.com') {
+            return redirect()->route('admin.dashboard');
+        }
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    // Admin Routes
+    Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return Inertia::render('Admin/Dashboard');
+        })->name('admin.dashboard');
+
+        Route::get('/kelola-pengguna', function () {
+            return Inertia::render('Admin/KelolaPengguna');
+        })->name('admin.kelola-pengguna');
+
+        Route::get('/kelola-tampilan', function () {
+            return Inertia::render('Admin/KelolaTampilan');
+        })->name('admin.kelola-tampilan');
+
+        Route::get('/laporan-global', function () {
+            return Inertia::render('Admin/LaporanGlobal');
+        })->name('admin.laporan-global');
+
+        Route::get('/pengaturan-sistem', function () {
+            return Inertia::render('Admin/PengaturanSistem');
+        })->name('admin.pengaturan-sistem');
+    });
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

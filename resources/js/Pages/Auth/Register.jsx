@@ -63,7 +63,7 @@ export default function Register() {
                         id="name"
                         name="name"
                         value={data.name}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#0D2617] dark:border-[#1E5631] dark:text-emerald-100 dark:placeholder-emerald-700/60 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="Budi Santoso"
                         autoComplete="name"
                         isFocused={true}
@@ -87,7 +87,7 @@ export default function Register() {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#0D2617] dark:border-[#1E5631] dark:text-emerald-100 dark:placeholder-emerald-700/60 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="budi@email.com"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
@@ -110,7 +110,7 @@ export default function Register() {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#0D2617] dark:border-[#1E5631] dark:text-emerald-100 dark:placeholder-emerald-700/60 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="Min. 8 karakter"
                         autoComplete="new-password"
                         onChange={(e) => setData('password', e.target.value)}
@@ -133,7 +133,7 @@ export default function Register() {
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#0D2617] dark:border-[#1E5631] dark:text-emerald-100 dark:placeholder-emerald-700/60 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="••••••••"
                         autoComplete="new-password"
                         onChange={(e) => setData('password_confirmation', e.target.value)}

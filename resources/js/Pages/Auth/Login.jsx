@@ -22,7 +22,6 @@ export default function Login({ status, canResetPassword }) {
     };
 
     return (
-        /* Mengirim properti title dan subtitle ke GuestLayout */
         <GuestLayout
             title="Masuk ke siGizi"
             subtitle="Admin & pengguna masuk melalui halaman yang sama"
@@ -49,7 +48,7 @@ export default function Login({ status, canResetPassword }) {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#0D2617] dark:border-[#1E5631] dark:text-emerald-100 dark:placeholder-emerald-700/60 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="contoh@email.com"
                         autoComplete="username"
                         isFocused={true}
@@ -72,7 +71,7 @@ export default function Login({ status, canResetPassword }) {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#071A0E] dark:border-[#164D2B] dark:text-[#52B788] dark:placeholder-[#52B788]/40 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-all duration-200 shadow-sm text-sm"
+                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#0D2617] dark:border-[#1E5631] dark:text-emerald-100 dark:placeholder-emerald-700/60 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="••••••••"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
