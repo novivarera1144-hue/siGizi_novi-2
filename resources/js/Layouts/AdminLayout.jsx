@@ -85,9 +85,8 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     return (
         <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300">
             {/* Sidebar Navigation - Left Panel */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${
-                sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
-            }`}>
+            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
+                }`}>
                 <div>
                     {/* Header Logo */}
                     <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-emerald-950/40">
@@ -115,11 +114,10 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 <Link
                                     key={item.key}
                                     href={route(item.route)}
-                                    className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                                        isCurrent
-                                            ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07] font-bold shadow-md shadow-[#1F7A54]/15'
-                                            : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
-                                    }`}
+                                    className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
+                                            ? 'bg-emerald-700 text-white font-bold'
+                                            : 'text-gray-500 hover:text-emerald-700 hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
+                                        }`}
                                 >
                                     {item.icon}
                                     <span>{item.name}</span>
@@ -243,7 +241,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
                         <div className="flex items-center space-x-3">
                             {/* Admin badge */}
-                            <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded-full">
+                            <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
@@ -255,7 +253,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 href={route('logout')}
                                 method="post"
                                 as="button"
-                                className="inline-flex items-center px-4 py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
+                                className="inline-flex items-center px-3 py-1 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-full transition duration-150 cursor-pointer"
                             >
                                 Keluar
                             </Link>
