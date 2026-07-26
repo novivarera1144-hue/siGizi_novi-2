@@ -30,8 +30,11 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             key: 'dashboard',
             name: 'Dashboard',
             icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
                 </svg>
             ),
             route: 'admin.dashboard',
@@ -40,8 +43,11 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             key: 'kelola-pengguna',
             name: 'Kelola Pengguna',
             icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
             ),
             route: 'admin.kelola-pengguna',
@@ -50,8 +56,12 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             key: 'kelola-tampilan',
             name: 'Kelola Tampilan',
             icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1v-2zm0 8a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1v-2z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    <path d="M10 9H8" />
+                    <path d="M16 13H8" />
+                    <path d="M16 17H8" />
                 </svg>
             ),
             route: 'admin.kelola-tampilan',
@@ -60,8 +70,10 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             key: 'laporan-global',
             name: 'Laporan Global',
             icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
                 </svg>
             ),
             route: 'admin.laporan-global',
@@ -70,9 +82,9 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             key: 'pengaturan-sistem',
             name: 'Pengaturan Sistem',
             icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                 </svg>
             ),
             route: 'admin.pengaturan-sistem',
@@ -89,23 +101,19 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                 }`}>
                 <div>
                     {/* Header Logo */}
-                    <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-emerald-950/40">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="bg-[#1F7A54] p-1.5 rounded-lg flex items-center justify-center shadow-sm">
-                                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-bold tracking-tight">
-                                <span className="text-[#1F7A54] dark:text-emerald-400">si</span>
-                                <span className="text-orange-500">Gizi</span>
-                            </span>
+                    <div className="py-6 px-4 border-b border-gray-100 dark:border-emerald-950/40 flex items-center justify-center">
+                        <Link href="/" className="flex items-center justify-center">
+                            <img
+                                src="/images/logo sigizi.png"
+                                alt="siGizi"
+                                className="h-15 w-auto object-contain"
+                            />
                         </Link>
                     </div>
 
                     {/* Navigation Items */}
-                    <div className="px-4 py-6 space-y-1.5">
-                        <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-widest block mb-4">
+                    <div className="px-4 py-6 space-y-2">
+                        <span className="px-4 text-[10px] font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-widest block mb-4">
                             ADMIN
                         </span>
                         {menuItems.map((item) => {
@@ -114,9 +122,9 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 <Link
                                     key={item.key}
                                     href={route(item.route)}
-                                    className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                            ? 'bg-emerald-700 text-white font-bold'
-                                            : 'text-gray-500 hover:text-emerald-700 hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
+                                    className={`w-full flex items-center gap-4 px-4 py-3 rounded-full text-sm transition-all duration-200 ${isCurrent
+                                            ? 'bg-[#1e7e34] text-white font-semibold shadow-md shadow-emerald-700/20'
+                                            : 'text-slate-600 hover:text-[#1e7e34] hover:bg-emerald-50/55 dark:text-slate-300 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
                                         }`}
                                 >
                                     {item.icon}
