@@ -32,9 +32,9 @@ export default function Dashboard() {
                             </svg>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-xs text-gray-500 font-normal">Total Pengguna</p>
+                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Pengguna</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">1,248</h3>
-                            <p className="text-xs text-gray-400">+12 minggu ini</p>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">+12 minggu ini</p>
                         </div>
                     </div>
 
@@ -46,9 +46,9 @@ export default function Dashboard() {
                             </svg>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-xs text-gray-500 font-normal">Total Scan</p>
+                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Scan</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">8,742</h3>
-                            <p className="text-xs text-gray-400">+156 hari ini</p>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">+156 hari ini</p>
                         </div>
                     </div>
 
@@ -60,9 +60,9 @@ export default function Dashboard() {
                             </svg>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-xs text-gray-500 font-normal">Pengguna Aktif</p>
+                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Pengguna Aktif</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">342</h3>
-                            <p className="text-xs text-gray-400">Hari ini</p>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">Hari ini</p>
                         </div>
                     </div>
 
@@ -74,16 +74,16 @@ export default function Dashboard() {
                             </svg>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-xs text-gray-500 font-normal">Akurasi AI</p>
+                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Akurasi AI</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">94.2%</h3>
-                            <p className="text-xs text-gray-400">Rata-rata 7 hari</p>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">Rata-rata 7 hari</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Bar Chart Section: Scan per Hari */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                    <h2 className="text-base font-extrabold text-gray-900 mb-6">Scan per Hari (7 Hari Terakhir)</h2>
+                <div className="bg-white dark:bg-[#122017] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-[#1a2e22]">
+                    <h2 className="text-base font-extrabold text-gray-900 dark:text-white mb-6">Scan per Hari (7 Hari Terakhir)</h2>
 
                     {/* Dotted lines + Bar columns custom component */}
                     <div className="relative pt-6 pb-2 px-2 sm:px-6">
@@ -91,10 +91,10 @@ export default function Dashboard() {
                         <div className="absolute inset-x-0 top-6 bottom-14 flex flex-col justify-between pointer-events-none px-6">
                             {[260, 195, 130, 65, 0].map((val) => (
                                 <div key={val} className="w-full flex items-center relative h-0">
-                                    <span className="absolute -left-8 text-[10px] font-bold text-gray-400 w-6 text-right">
+                                    <span className="absolute -left-8 text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 w-6 text-right">
                                         {val}
                                     </span>
-                                    <div className="w-full border-b border-dashed border-gray-100"></div>
+                                    <div className="w-full border-b border-dashed border-gray-100 dark:border-[#1a2e22]"></div>
                                 </div>
                             ))}
                         </div>
@@ -112,11 +112,11 @@ export default function Dashboard() {
                                     {/* Bar itself */}
                                     <div
                                         style={{ height: `${data.heightPct}%` }}
-                                        className="w-10 bg-[#15803d] rounded-t-lg group-hover:bg-[#1e7e34] transition-all duration-300 shadow-sm"
+                                        className="w-10 bg-[#15803d] dark:bg-[#34D399] rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-400 transition-all duration-300 shadow-sm"
                                     ></div>
 
                                     {/* Label under bar */}
-                                    <span className="text-xs font-bold text-gray-400 mt-3 pt-1 block h-5">
+                                    <span className="text-xs font-bold text-gray-400 dark:text-emerald-100/60 mt-3 pt-1 block h-5">
                                         {data.day}
                                     </span>
                                 </div>
@@ -128,10 +128,10 @@ export default function Dashboard() {
                 {/* Bottom row grid: Activities & Kelola Konten */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Log Aktivitas Terbaru (2/3 width) */}
-                    <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <div className="lg:col-span-2 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-base font-extrabold text-gray-900">Aktivitas Terkini</h2>
-                            <span className="text-sm font-medium text-emerald-600 cursor-pointer hover:underline">
+                            <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Aktivitas Terkini</h2>
+                            <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400 cursor-pointer hover:underline">
                                 Lihat semua
                             </span>
                         </div>
@@ -142,17 +142,17 @@ export default function Dashboard() {
                                 { name: "Siti Aminah", action: "mendaftar sebagai pengguna baru", time: "1 jam yang lalu", avatar: "S" },
                                 { name: "Ahsan Kamil", action: "berkonsultasi dengan AI Assistant", time: "3 jam yang lalu", avatar: "A" },
                             ].map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between p-2.5 hover:bg-gray-50 rounded-2xl transition-all duration-200">
+                                <div key={idx} className="flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#16291e]/50 rounded-2xl transition-all duration-200">
                                     <div className="flex items-center space-x-3">
-                                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm shrink-0">
+                                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-[#34D399] flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-100/50 dark:border-emerald-800/50">
                                             {item.avatar}
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-gray-900">{item.name}</h4>
-                                            <p className="text-xs text-gray-500 font-medium mt-0.5">{item.action}</p>
+                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white">{item.name}</h4>
+                                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-0.5">{item.action}</p>
                                         </div>
                                     </div>
-                                    <span className="text-xs text-gray-400 font-medium">
+                                    <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">
                                         {item.time}
                                     </span>
                                 </div>
@@ -161,16 +161,16 @@ export default function Dashboard() {
                     </div>
 
                     {/* Kelola Konten (1/3 width) */}
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
                         <div>
-                            <div className="flex items-center space-x-2 text-gray-900 mb-6">
-                                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <div className="flex items-center space-x-2 text-gray-900 dark:text-white mb-6">
+                                <svg className="w-5 h-5 text-emerald-600 dark:text-[#34D399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 <h2 className="text-base font-extrabold">Kelola Konten</h2>
                             </div>
 
-                            <p className="text-xs text-gray-400 font-medium mb-6">
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/50 font-medium mb-6">
                                 Konfigurasi dan perbarui konten halaman depan aplikasi siGizi dengan mudah.
                             </p>
                         </div>
@@ -178,13 +178,13 @@ export default function Dashboard() {
                         <div className="space-y-3">
                             <Link
                                 href={route('admin.kelola-tampilan')}
-                                className="w-full block text-center rounded-full py-3 px-4 font-semibold text-xs tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100 transition duration-150 cursor-pointer"
+                                className="w-full block text-center rounded-2xl py-3 px-4 font-bold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition duration-150 cursor-pointer shadow-sm"
                             >
                                 EDIT BANNER HOMEPAGE
                             </Link>
                             <Link
                                 href={route('admin.kelola-tampilan')}
-                                className="w-full block text-center rounded-full py-3 px-4 font-semibold text-xs tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100 transition duration-150 cursor-pointer"
+                                className="w-full block text-center rounded-2xl py-3 px-4 font-bold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition duration-150 cursor-pointer shadow-sm"
                             >
                                 KELOLA TIPS GIZI HARIAN
                             </Link>
