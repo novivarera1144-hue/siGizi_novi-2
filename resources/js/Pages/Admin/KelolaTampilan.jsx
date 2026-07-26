@@ -3,8 +3,9 @@ import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function KelolaTampilan() {
-    // 1. Headline state
+    // 1. Headline & Hero Image state
     const [headline, setHeadline] = useState('Kenali Gizi Makananmu');
+    const [heroImage, setHeroImage] = useState('/images/smoothie.jpg'); // State untuk gambar utama
 
     // 2. Tentang Kami details state
     const [deskripsiSingkat, setDeskripsiSingkat] = useState(
@@ -72,6 +73,20 @@ export default function KelolaTampilan() {
         reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length
     ).toFixed(1);
 
+    // Handlers for Hero Image Upload & Delete
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setHeroImage(imageUrl);
+            // Catatan: Jika nanti pakai Inertia useForm, masukkan file ke data form di sini
+        }
+    };
+
+    const handleImageDelete = () => {
+        setHeroImage(null);
+    };
+
     // Handlers for Platform Benefits list
     const handleAddManfaat = () => {
         setManfaatList([...manfaatList, '']);
@@ -102,8 +117,8 @@ export default function KelolaTampilan() {
                     <svg
                         key={i}
                         className={`w-4 h-4 ${i < rating
-                                ? 'text-amber-500 fill-current'
-                                : 'text-gray-200'
+                            ? 'text-amber-500 fill-current'
+                            : 'text-gray-200'
                             }`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -212,25 +227,44 @@ export default function KelolaTampilan() {
                                 Gambar Utama Beranda
                             </label>
                             <div className="flex flex-col sm:flex-row items-start gap-4">
-                                <div className="w-48 h-32 rounded-xl overflow-hidden shadow-sm border border-gray-150 shrink-0">
-                                    <img
-                                        src="/images/smoothie.jpg"
-                                        alt="Preview Utama"
-                                        className="w-full h-full object-cover"
-                                    />
+                                <div className="w-48 h-32 rounded-xl overflow-hidden shadow-sm border border-gray-150 shrink-0 bg-gray-100 flex items-center justify-center">
+                                    {heroImage ? (
+                                        <img
+                                            src={heroImage}
+                                            alt="Preview Utama"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="text-xs text-gray-400 font-medium">Tidak ada gambar</span>
+                                    )}
                                 </div>
                                 <div className="space-y-3 pt-1">
                                     <p className="text-xs text-gray-500 font-medium leading-relaxed">
                                         Gambar yang ditampilkan di bagian hero halaman utama.
                                     </p>
                                     <div className="flex gap-2">
-                                        <button className="py-2 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition duration-150 flex items-center gap-1.5 cursor-pointer shadow-sm">
+                                        {/* Hidden File Input yang terhubung ke label tombol */}
+                                        <input
+                                            id="heroImageInput"
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleImageChange}
+                                        />
+                                        <label
+                                            htmlFor="heroImageInput"
+                                            className="py-2 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition duration-150 flex items-center gap-1.5 cursor-pointer shadow-sm"
+                                        >
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                                             </svg>
                                             <span>Unggah Gambar Baru</span>
-                                        </button>
-                                        <button className="py-2 px-4 bg-red-50 border border-red-200 text-red-500 hover:bg-red-100 text-xs font-bold rounded-xl transition duration-150 cursor-pointer">
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={handleImageDelete}
+                                            className="py-2 px-4 bg-red-50 border border-red-200 text-red-500 hover:bg-red-100 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
+                                        >
                                             Hapus
                                         </button>
                                     </div>
@@ -376,8 +410,8 @@ export default function KelolaTampilan() {
                                                 <button
                                                     onClick={() => handleSetReviewVisibility(review.id, true)}
                                                     className={`rounded-full px-4 py-1.5 text-xs font-semibold cursor-pointer transition duration-150 shadow-sm ${review.visible
-                                                            ? 'bg-emerald-700 text-white hover:bg-emerald-800'
-                                                            : 'bg-gray-100 text-gray-500 hover:bg-emerald-700 hover:text-white'
+                                                        ? 'bg-emerald-700 text-white hover:bg-emerald-800'
+                                                        : 'bg-gray-100 text-gray-500 hover:bg-emerald-700 hover:text-white'
                                                         }`}
                                                 >
                                                     Tampilkan
@@ -385,8 +419,8 @@ export default function KelolaTampilan() {
                                                 <button
                                                     onClick={() => handleSetReviewVisibility(review.id, false)}
                                                     className={`rounded-full px-4 py-1.5 text-xs font-semibold cursor-pointer transition duration-150 ${!review.visible
-                                                            ? 'bg-gray-700 text-white hover:bg-gray-800'
-                                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                        ? 'bg-gray-700 text-white hover:bg-gray-800'
+                                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                                         }`}
                                                 >
                                                     Sembunyikan

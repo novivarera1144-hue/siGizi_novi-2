@@ -62,6 +62,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/pengaturan-sistem', function () {
             return Inertia::render('Admin/PengaturanSistem');
         })->name('admin.pengaturan-sistem');
+
+        // Rute untuk menyimpan pengaturan sistem (UPDATE)
+        Route::put('/pengaturan-sistem', function (\Illuminate\Http\Request $request) {
+            $validated = $request->validate([
+                'app_name' => 'required|string|max:255',
+                'admin_email' => 'required|email',
+                'enable_2fa' => 'boolean',
+                'maintenance_mode' => 'boolean',
+                'notify_new_user' => 'boolean',
+                'notify_weekly_report' => 'boolean',
+                'session_timeout' => 'required',
+            ]);
+
+            // Lakukan proses penyimpanan ke database/config di sini jika ada
+
+            return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui.');
+        })->name('admin.pengaturan-update');
     });
 
     // Profile Routes
