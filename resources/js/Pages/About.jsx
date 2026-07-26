@@ -31,10 +31,10 @@ export default function About() {
 
     return (
         <>
-            {/* Background Utama Diubah dari dark:bg-zinc-950 menjadi hijau gelap pekat */}
+            {/* Background Utama */}
             <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#071A0E] transition-colors duration-300 flex flex-col justify-between">
 
-                {/* Navbar Diubah menjadi hijau gelap transparan dan border hijau tua */}
+                {/* Navbar */}
                 <nav className="bg-white/80 dark:bg-[#092213]/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-[#133A22] transition-colors duration-300">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between h-16 items-center">
@@ -64,32 +64,39 @@ export default function About() {
                                 <Link href="/tentang-kami" className="text-sm font-bold text-[#1F7A54] dark:text-emerald-400 border-b-2 border-[#1F7A54] pb-1">Tentang Kami</Link>
                             </div>
 
-                            {/* Auth Buttons */}
-                            <div className="flex items-center space-x-4">
-                                <Link href="/login" className="text-sm font-semibold text-[#1F7A54] bg-white border border-[#1F7A54] px-6 py-2 rounded-xl hover:bg-emerald-50 transition-all">
+                            {/* Auth Buttons & Dark Mode Toggle (Disesuaikan dengan Home) */}
+                            <div className="flex items-center space-x-3">
+                                <Link
+                                    href="/login"
+                                    className="px-5 py-2 text-sm font-bold text-gray-700 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 border border-gray-300 dark:border-emerald-800/60 hover:border-emerald-500 bg-transparent rounded-full transition-all"
+                                >
                                     Login
                                 </Link>
-                                <Link href="/register" className="text-sm font-semibold text-white bg-[#2E7D32] hover:bg-[#1E5A22] px-6 py-2 rounded-xl shadow-sm transition-all">
+
+                                <Link
+                                    href="/register"
+                                    className="px-5 py-2 text-sm font-bold text-white bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-600 dark:hover:bg-emerald-700 rounded-full transition-all shadow-sm"
+                                >
                                     Register
                                 </Link>
 
-                                {/* Tombol Toggle Mode */}
                                 <button
                                     onClick={toggleDarkMode}
-                                    className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0B2B18] rounded-xl transition-all"
+                                    className="p-2.5 rounded-full bg-gray-100 dark:bg-gray-800/50 text-amber-500 dark:text-amber-400 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-all cursor-pointer ml-1"
                                     aria-label="Toggle Dark Mode"
                                 >
                                     {darkMode ? (
-                                        <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.343l.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
+                                        <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.343l.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
                                         </svg>
                                     ) : (
-                                        <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                        <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                                         </svg>
                                     )}
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 </nav>
@@ -107,7 +114,7 @@ export default function About() {
                             </p>
                         </div>
 
-                        {/* Grid Latar Belakang & Tujuan - Card diubah menjadi hijau tua dengan border serasi */}
+                        {/* Grid Latar Belakang & Tujuan */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="bg-white dark:bg-[#0B2B18] p-8 rounded-3xl border border-gray-100 dark:border-[#164D2B] shadow-sm space-y-4">
                                 <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">

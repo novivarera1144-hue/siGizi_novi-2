@@ -21,6 +21,10 @@ export default function GuestLayout({ children, title, subtitle }) {
     // Deteksi halaman aktif secara aman menggunakan vanilla JavaScript
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
+    // Pengecekan status halaman aktif untuk Login dan Register
+    const isLogin = currentPath.startsWith('/login');
+    const isRegister = currentPath.startsWith('/register');
+
     return (
         <div className="min-h-screen flex flex-col bg-[#F8F9FA] dark:bg-[#071A0E] transition-colors duration-300">
 
@@ -62,24 +66,30 @@ export default function GuestLayout({ children, title, subtitle }) {
                         </Link>
                     </div>
 
-                    {/* Kanan: Tombol & Dark Mode Toggle - Menggunakan absolute path murni */}
-                    <div className="flex items-center space-x-4">
+                    {/* Kanan: Tombol & Dark Mode Toggle - Menggunakan logika dinamis */}
+                    <div className="flex items-center space-x-3">
                         <Link
                             href="/login"
-                            className="px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] rounded-full transition-all"
+                            className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-200 ${isLogin
+                                    ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
+                                    : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
+                                }`}
                         >
                             Login
                         </Link>
                         <Link
                             href="/register"
-                            className="px-4 py-2 text-sm font-bold text-white bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-600 dark:hover:bg-emerald-700 rounded-full transition-all shadow-sm"
+                            className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-200 ${isRegister
+                                    ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
+                                    : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
+                                }`}
                         >
                             Register
                         </Link>
 
                         <button
                             onClick={() => setDarkMode(!darkMode)}
-                            className="p-2 rounded-full bg-gray-100 dark:bg-[#0B2B18] text-gray-700 dark:text-emerald-400 hover:bg-gray-200 dark:hover:bg-[#164D2B] transition-all cursor-pointer"
+                            className="p-2 rounded-full bg-gray-100 dark:bg-[#0B2B18] text-gray-700 dark:text-emerald-400 hover:bg-gray-200 dark:hover:bg-[#164D2B] transition-all cursor-pointer ml-1"
                             aria-label="Toggle Dark Mode"
                         >
                             {darkMode ? (
