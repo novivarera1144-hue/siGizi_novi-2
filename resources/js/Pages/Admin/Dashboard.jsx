@@ -32,85 +32,57 @@ export default function Dashboard() {
                             </svg>
                         </div>
                         <div className="space-y-1">
-<<<<<<< HEAD
-                            <p className="text-xs text-gray-500 dark:text-emerald-300/70 font-normal">Total Pengguna</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">1,248</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-500/60">+12 minggu ini</p>
-=======
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Pengguna</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">1,248</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">+12 minggu ini</p>
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
-                        </div>
-                    </div>
+                        </div >
+                    </div >
 
                     {/* Total Scan Card */}
-                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4">
+                    < div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4" >
                         <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div className="space-y-1">
-<<<<<<< HEAD
-                            <p className="text-xs text-gray-500 dark:text-emerald-300/70 font-normal">Total Scan</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">8,742</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-500/60">+156 hari ini</p>
-=======
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Scan</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">8,742</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">+156 hari ini</p>
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
-                        </div>
-                    </div>
+                        </div >
+                    </div >
 
                     {/* Pengguna Aktif Card */}
-                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4">
+                    < div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4" >
                         <div className="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
                         <div className="space-y-1">
-<<<<<<< HEAD
-                            <p className="text-xs text-gray-500 dark:text-emerald-300/70 font-normal">Pengguna Aktif</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">342</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-500/60">Hari ini</p>
-=======
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Pengguna Aktif</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">342</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Hari ini</p>
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
-                        </div>
-                    </div>
+                        </div >
+                    </div >
 
                     {/* Akurasi AI Card */}
-                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4">
+                    < div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4" >
                         <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
                         </div>
                         <div className="space-y-1">
-<<<<<<< HEAD
-                            <p className="text-xs text-gray-500 dark:text-emerald-300/70 font-normal">Akurasi AI</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">94.2%</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-500/60">Rata-rata 7 hari</p>
-=======
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Akurasi AI</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">94.2%</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Rata-rata 7 hari</p>
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
-                        </div>
-                    </div>
-                </div>
+                        </div >
+                    </div >
+                </div >
 
                 {/* Bar Chart Section: Scan per Hari */}
-<<<<<<< HEAD
-                <div className="bg-white dark:bg-[#0b1f16] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-emerald-800/20">
-=======
                 <div className="bg-white dark:bg-[#122017] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-[#1a2e22]">
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                     <h2 className="text-base font-extrabold text-gray-900 dark:text-white mb-6">Scan per Hari (7 Hari Terakhir)</h2>
 
                     {/* Dotted lines + Bar columns custom component */}
@@ -119,63 +91,47 @@ export default function Dashboard() {
                         <div className="absolute inset-x-0 top-6 bottom-14 flex flex-col justify-between pointer-events-none px-6">
                             {[260, 195, 130, 65, 0].map((val) => (
                                 <div key={val} className="w-full flex items-center relative h-0">
-<<<<<<< HEAD
-                                    <span className="absolute -left-8 text-[10px] font-bold text-gray-400 dark:text-emerald-300/40 w-6 text-right">
-                                        {val}
-                                    </span>
-                                    <div className="w-full border-b border-dashed border-gray-100 dark:border-emerald-950/30"></div>
-=======
                                     <span className="absolute -left-8 text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 w-6 text-right">
                                         {val}
                                     </span>
                                     <div className="w-full border-b border-dashed border-gray-100 dark:border-[#1a2e22]"></div>
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
-                                </div>
-                            ))}
-                        </div>
+                                </div >
+                            ))
+                            }
+                        </div >
 
                         {/* Flex bars container */}
-                        <div className="relative z-10 grid grid-cols-7 gap-2 sm:gap-6 items-end h-56 pt-2">
-                            {weeklyScanData.map((data, idx) => (
-                                <div key={idx} className="flex flex-col items-center group relative w-full h-full justify-end cursor-pointer">
-                                    {/* Tooltip on hover */}
-                                    <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 z-30 bg-gray-900 dark:bg-[#07130C] p-2 rounded-xl border border-gray-700 dark:border-emerald-800/40 shadow-xl text-center min-w-[70px]">
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase">{data.day}</p>
-                                        <p className="text-xs text-white font-bold mt-0.5">{data.scans} scan</p>
-                                    </div>
+                        < div className="relative z-10 grid grid-cols-7 gap-2 sm:gap-6 items-end h-56 pt-2" >
+                            {
+                                weeklyScanData.map((data, idx) => (
+                                    <div key={idx} className="flex flex-col items-center group relative w-full h-full justify-end cursor-pointer">
+                                        {/* Tooltip on hover */}
+                                        <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 z-30 bg-gray-900 dark:bg-[#07130C] p-2 rounded-xl border border-gray-700 dark:border-emerald-800/40 shadow-xl text-center min-w-[70px]">
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase">{data.day}</p>
+                                            <p className="text-xs text-white font-bold mt-0.5">{data.scans} scan</p>
+                                        </div>
 
-                                    {/* Bar itself */}
-                                    <div
-                                        style={{ height: `${data.heightPct}%` }}
-<<<<<<< HEAD
-                                        className="w-10 bg-[#15803d] dark:bg-emerald-600 rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-500 transition-all duration-300 shadow-sm"
-                                    ></div>
+                                        {/* Bar itself */}
+                                        <div
+                                            style={{ height: `${data.heightPct}%` }}
+                                            className="w-10 bg-[#15803d] dark:bg-[#34D399] rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-400 transition-all duration-300 shadow-sm"
+                                        ></div>
 
-                                    {/* Label under bar */}
-                                    <span className="text-xs font-bold text-gray-400 dark:text-emerald-300/50 mt-3 pt-1 block h-5">
-=======
-                                        className="w-10 bg-[#15803d] dark:bg-[#34D399] rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-400 transition-all duration-300 shadow-sm"
-                                    ></div>
-
-                                    {/* Label under bar */}
-                                    <span className="text-xs font-bold text-gray-400 dark:text-emerald-100/60 mt-3 pt-1 block h-5">
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
-                                        {data.day}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                                        {/* Label under bar */}
+                                        < span className="text-xs font-bold text-gray-400 dark:text-emerald-100/60 mt-3 pt-1 block h-5" >
+                                            {data.day}
+                                        </span >
+                                    </div >
+                                ))
+                            }
+                        </div >
+                    </div >
+                </div >
 
                 {/* Bottom row grid: Activities & Kelola Konten */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                < div className="grid grid-cols-1 lg:grid-cols-3 gap-6" >
                     {/* Log Aktivitas Terbaru (2/3 width) */}
-<<<<<<< HEAD
-                    <div className="lg:col-span-2 bg-white dark:bg-[#0b1f16] p-6 rounded-2xl border border-gray-100 dark:border-emerald-800/20 shadow-sm">
-=======
                     <div className="lg:col-span-2 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Aktivitas Terkini</h2>
                             <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400 cursor-pointer hover:underline">
@@ -189,59 +145,35 @@ export default function Dashboard() {
                                 { name: "Siti Aminah", action: "mendaftar sebagai pengguna baru", time: "1 jam yang lalu", avatar: "S" },
                                 { name: "Ahsan Kamil", action: "berkonsultasi dengan AI Assistant", time: "3 jam yang lalu", avatar: "A" },
                             ].map((item, idx) => (
-<<<<<<< HEAD
-                                <div key={idx} className="flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#122017]/40 rounded-2xl transition-all duration-200">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-sm shrink-0">
-=======
                                 <div key={idx} className="flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#16291e]/50 rounded-2xl transition-all duration-200">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-[#34D399] flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-100/50 dark:border-emerald-800/50">
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                                             {item.avatar}
                                         </div>
                                         <div>
                                             <h4 className="text-sm font-bold text-gray-900 dark:text-white">{item.name}</h4>
-<<<<<<< HEAD
-                                            <p className="text-xs text-gray-500 dark:text-emerald-300/70 font-medium mt-0.5">{item.action}</p>
-                                        </div>
-                                    </div>
-                                    <span className="text-xs text-gray-400 dark:text-emerald-500/60 font-medium">
-=======
                                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-0.5">{item.action}</p>
                                         </div>
-                                    </div>
+                                    </div >
                                     <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                                         {item.time}
                                     </span>
-                                </div>
+                                </div >
                             ))}
-                        </div>
-                    </div>
+                        </div >
+                    </div >
 
                     {/* Kelola Konten (1/3 width) */}
-<<<<<<< HEAD
-                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-2xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div className="flex items-center space-x-2 text-gray-900 dark:text-white mb-6">
-                                <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-=======
                     <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
                         <div>
                             <div className="flex items-center space-x-2 text-gray-900 dark:text-white mb-6">
                                 <svg className="w-5 h-5 text-emerald-600 dark:text-[#34D399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 <h2 className="text-base font-extrabold">Kelola Konten</h2>
                             </div>
 
-<<<<<<< HEAD
-                            <p className="text-xs text-gray-400 dark:text-emerald-300/70 font-medium mb-6">
-=======
                             <p className="text-xs text-gray-400 dark:text-emerald-100/50 font-medium mb-6">
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                                 Konfigurasi dan perbarui konten halaman depan aplikasi siGizi dengan mudah.
                             </p>
                         </div>
@@ -249,28 +181,20 @@ export default function Dashboard() {
                         <div className="space-y-3">
                             <Link
                                 href={route('admin.kelola-tampilan')}
-<<<<<<< HEAD
-                                className="w-full block text-center rounded-full py-3 px-4 font-semibold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800/30 hover:bg-emerald-100 dark:hover:bg-emerald-950/70 transition duration-150 cursor-pointer"
-=======
                                 className="w-full block text-center rounded-2xl py-3 px-4 font-bold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition duration-150 cursor-pointer shadow-sm"
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                             >
                                 EDIT BANNER HOMEPAGE
                             </Link>
                             <Link
                                 href={route('admin.kelola-tampilan')}
-<<<<<<< HEAD
-                                className="w-full block text-center rounded-full py-3 px-4 font-semibold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800/30 hover:bg-emerald-100 dark:hover:bg-[#122017]/70 transition duration-150 cursor-pointer"
-=======
                                 className="w-full block text-center rounded-2xl py-3 px-4 font-bold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition duration-150 cursor-pointer shadow-sm"
->>>>>>> fb0f86371ed93086343696f6160b8d611a10e48c
                             >
                                 KELOLA TIPS GIZI HARIAN
                             </Link>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </AdminLayout>
+                    </div >
+                </div >
+            </div >
+        </AdminLayout >
     );
 }
