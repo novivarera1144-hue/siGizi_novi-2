@@ -385,7 +385,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     {/* Mock Food Image Container dengan Teks di Dalamnya */}
                                     <div className="relative w-full h-52 overflow-hidden rounded-t-3xl bg-gray-100">
                                         <img
-                                            src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=500"
+                                            src="/images/nasgor.png"
                                             alt="Nasi Goreng Ayam"
                                             className="w-full h-full object-cover object-center"
                                         />
