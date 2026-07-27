@@ -121,6 +121,7 @@ export default function Dashboard({ auth }) {
 
                     <Link
                         href="/scan"
+                        prefetch={["hover", "mount"]}
                         className="inline-flex items-center space-x-2 px-5 py-3 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-black font-bold text-sm rounded-2xl shadow-lg transition-all duration-200 cursor-pointer"
                     >
                         <svg className="w-4 h-4 text-white dark:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -183,7 +184,7 @@ export default function Dashboard({ auth }) {
                     <div className="lg:col-span-4 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Riwayat Terbaru</h2>
-                            <Link href="#" className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 hover:underline">
+                            <Link href={route('riwayat')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 hover:underline">
                                 Lihat semua
                             </Link>
                         </div>
@@ -218,7 +219,7 @@ export default function Dashboard({ auth }) {
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
                         {/* Diperbaiki: Mengarah ke rute laporan mingguan */}
-                        <Link href={route('laporan.mingguan')} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
+                        <Link href={route('laporan.mingguan')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
                             <span>Lihat laporan</span>
                             <span className="ml-1">→</span>
                         </Link>

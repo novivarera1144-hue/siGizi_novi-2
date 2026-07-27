@@ -33,12 +33,12 @@ export default function GuestLayout({ children, title, subtitle }) {
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
 
                     {/* Brand Logo Kiri - Ukuran h-10 agar pas dan tidak terlalu kecil */}
-                    <Link href="/" className="flex items-center">
+                    <Link href="/" prefetch={["hover", "mount"]} className="flex items-center">
                         <div className="h-7 w-[150px] overflow-hidden flex items-center">
                             <img
                                 src="/images/logo-sigizi.png"
                                 alt="Logo siGizi"
-                                className="w-[150px] h-auto object-contain -translate-y-1"
+                                className="h-[80px] w-auto object-contain"
                             />
                         </div>
                     </Link>
@@ -47,6 +47,7 @@ export default function GuestLayout({ children, title, subtitle }) {
                     <div className="hidden md:flex items-center space-x-8 text-sm font-semibold">
                         <Link
                             href="/"
+                            prefetch={["hover", "mount"]}
                             className={currentPath === '/' || currentPath === ''
                                 ? "text-[#1F7A54] dark:text-emerald-400 border-b-2 border-[#1F7A54] pb-1"
                                 : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white transition-colors pb-1"
@@ -56,8 +57,9 @@ export default function GuestLayout({ children, title, subtitle }) {
                         </Link>
 
                         <Link
-                            href="/about"
-                            className={currentPath === '/about'
+                            href="/tentang-kami"
+                            prefetch={["hover", "mount"]}
+                            className={currentPath === '/tentang-kami'
                                 ? "text-[#1F7A54] dark:text-emerald-400 border-b-2 border-[#1F7A54] pb-1"
                                 : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white transition-colors pb-1"
                             }
@@ -70,6 +72,7 @@ export default function GuestLayout({ children, title, subtitle }) {
                     <div className="flex items-center space-x-3">
                         <Link
                             href="/login"
+                            prefetch={["hover", "mount"]}
                             className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-200 ${isLogin
                                 ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
                                 : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
@@ -79,6 +82,7 @@ export default function GuestLayout({ children, title, subtitle }) {
                         </Link>
                         <Link
                             href="/register"
+                            prefetch={["hover", "mount"]}
                             className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-200 ${isRegister
                                 ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
                                 : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"

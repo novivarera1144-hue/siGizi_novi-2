@@ -3,10 +3,10 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, setError } = useForm({
         name: '',
         email: '',
         password: '',
@@ -16,8 +16,15 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
+        router.post(route('register'), data, {
+            preserveScroll: true,
+            preserveState: true,
             onFinish: () => reset('password', 'password_confirmation'),
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    setError(key, errors[key]);
+                });
+            },
         });
     };
 
@@ -147,7 +154,6 @@ export default function Register() {
                 <div className="pt-2">
                     <PrimaryButton
                         className="w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md transition-all duration-200 cursor-pointer"
-                        disabled={processing}
                     >
                         Daftar
                     </PrimaryButton>
@@ -158,6 +164,7 @@ export default function Register() {
                     Sudah memiliki akun?{' '}
                     <Link
                         href={route('login')}
+                        prefetch={["hover", "mount"]}
                         className="font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 transition-colors duration-200"
                     >
                         Masuk sekarang

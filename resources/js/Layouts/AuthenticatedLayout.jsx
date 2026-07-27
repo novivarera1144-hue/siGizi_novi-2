@@ -1,9 +1,17 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
 export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        router.post(route('logout'), {}, {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
 
     // 1. Inisialisasi State Dark Mode dari localStorage
     const [darkMode, setDarkMode] = useState(() => {
@@ -98,7 +106,7 @@ export default function AuthenticatedLayout({ children }) {
                 <div>
                     {/* Header Logo */}
                     <div className="h-24 flex items-center justify-center px-6 border-b border-gray-100 dark:border-emerald-950/40">
-                        <Link href="/" className="flex items-center">
+                        <Link href="/" prefetch={["hover", "mount"]} className="flex items-center">
                             <img
                                 src="/images/logo-sigizi.png"
                                 alt="Logo siGizi"
@@ -116,6 +124,7 @@ export default function AuthenticatedLayout({ children }) {
                                 <Link
                                     key={idx}
                                     href={item.route !== '#' ? route(item.route) : '#'}
+                                    prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
                                     className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
                                         ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
                                         : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
@@ -131,17 +140,15 @@ export default function AuthenticatedLayout({ children }) {
 
                 {/* Bottom Section Logout Button */}
                 <div className="p-4 border-t border-gray-100 dark:border-emerald-950/40">
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
+                    <button
+                        onClick={handleLogout}
                         className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer"
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                         <span>Keluar</span>
-                    </Link>
+                    </button>
                 </div>
 
             </aside>

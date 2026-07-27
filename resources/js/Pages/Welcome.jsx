@@ -167,32 +167,32 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                             {/* Logo siGizi */}
                             <div className="flex-shrink-0 flex items-center">
-                                <a href="#" className="flex items-center group py-1">
+                                <Link href="/" prefetch={["hover", "mount"]} className="flex items-center group py-1">
                                     <img
                                         src="/images/logo-sigizi.png"
                                         alt="siGizi Logo"
                                         className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200"
                                     />
-                                </a>
+                                </Link>
                             </div>
 
                             {/* Center Navigation Links */}
                             <nav className="hidden md:flex items-center space-x-8">
-                                <a href="#" className="text-[#1F7A54] dark:text-emerald-400 font-bold border-b-2 border-[#1F7A54] pb-1">Home</a>
-                                <Link href="/tentang-kami" className="text-gray-800 dark:text-zinc-100 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-semibold transition-colors duration-200">Tentang Kami</Link>
+                                <Link href="/" prefetch={["hover", "mount"]} className="text-[#1F7A54] dark:text-emerald-400 font-bold border-b-2 border-[#1F7A54] pb-1">Home</Link>
+                                <Link href="/tentang-kami" prefetch={["hover", "mount"]} className="text-gray-800 dark:text-zinc-100 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-semibold transition-colors duration-200">Tentang Kami</Link>
                             </nav>
                             {/* Right Actions: Auth buttons + Dark mode toggle */}
                             <div className="hidden md:flex items-center space-x-4">
                                 {auth?.user ? (
-                                    <Link href={route('dashboard')} className="px-5 py-2 rounded-full border border-[#1F7A54] text-[#1F7A54] hover:bg-[#1F7A54]/5 font-semibold text-sm transition-all duration-200">
+                                    <Link href={route('dashboard')} prefetch={["hover", "mount"]} className="px-5 py-2 rounded-full border border-[#1F7A54] text-[#1F7A54] hover:bg-[#1F7A54]/5 font-semibold text-sm transition-all duration-200">
                                         Dashboard
                                     </Link>
                                 ) : (
                                     <>
-                                        <Link href={route('login')} className="px-5 py-2 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:border-[#1F7A54] dark:hover:border-emerald-500 font-semibold text-sm transition-all duration-200">
+                                        <Link href={route('login')} prefetch={["hover", "mount"]} className="px-5 py-2 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:border-[#1F7A54] dark:hover:border-emerald-500 font-semibold text-sm transition-all duration-200">
                                             Login
                                         </Link>
-                                        <Link href={route('register')} className="px-5 py-2 rounded-full bg-[#1F7A54] text-white hover:bg-[#186041] font-semibold text-sm shadow-md shadow-[#1F7A54]/20 transition-all duration-200">
+                                        <Link href={route('register')} prefetch={["hover", "mount"]} className="px-5 py-2 rounded-full bg-[#1F7A54] text-white hover:bg-[#186041] font-semibold text-sm shadow-md shadow-[#1F7A54]/20 transition-all duration-200">
                                             Register
                                         </Link>
                                     </>
@@ -258,19 +258,19 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     {mobileMenuOpen && (
                         <div className="md:hidden px-4 pt-2 pb-6 border-t border-gray-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 transition-colors duration-300">
                             <div className="flex flex-col space-y-4">
-                                <a href="#" className="text-[#1F7A54] dark:text-emerald-400 font-bold py-2">Home</a>
-                                <Link href="/tentang-kami" className="text-gray-800 dark:text-zinc-100 font-semibold py-2 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Tentang Kami</Link>
+                                <Link href="/" prefetch={["hover", "mount"]} className="text-[#1F7A54] dark:text-emerald-400 font-bold py-2">Home</Link>
+                                <Link href="/tentang-kami" prefetch={["hover", "mount"]} className="text-gray-800 dark:text-zinc-100 font-semibold py-2 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Tentang Kami</Link>
                                 <hr className="border-gray-100 dark:border-zinc-900" />
                                 {auth?.user ? (
-                                    <Link href={route('dashboard')} className="w-full text-center py-2.5 rounded-full border border-[#1F7A54] text-[#1F7A54] font-semibold text-sm">
+                                    <Link href={route('dashboard')} prefetch={["hover", "mount"]} className="w-full text-center py-2.5 rounded-full border border-[#1F7A54] text-[#1F7A54] font-semibold text-sm">
                                         Dashboard
                                     </Link>
                                 ) : (
                                     <div className="flex flex-col space-y-3 pt-2">
-                                        <Link href={route('login')} className="w-full text-center py-2.5 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-gray-200 font-semibold text-sm">
+                                        <Link href={route('login')} prefetch={["hover", "mount"]} className="w-full text-center py-2.5 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-gray-200 font-semibold text-sm">
                                             Login
                                         </Link>
-                                        <Link href={route('register')} className="w-full text-center py-2.5 rounded-full bg-[#1F7A54] text-white font-semibold text-sm">
+                                        <Link href={route('register')} prefetch={["hover", "mount"]} className="w-full text-center py-2.5 rounded-full bg-[#1F7A54] text-white font-semibold text-sm">
                                             Register
                                         </Link>
                                     </div>
@@ -285,7 +285,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     {/* Background Food Image with Balanced Brightness & Soft Left Dark Gradient */}
                     <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
                         <img
-                            src="/images/sayuran1.png"
+                            src="/images/sayuran1.webp"
                             alt="Background Makanan Sehat"
                             className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05]"
                         />
@@ -322,8 +322,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                                 {/* Tombol Aksi (CTA) */}
                                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 pt-1">
-                                    <a
-                                        href="#scanner"
+                                    <Link
+                                        href="/scan"
+                                        prefetch={["hover", "mount"]}
                                         className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-900/40 transition-all duration-300 text-sm"
                                     >
                                         <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -331,7 +332,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                         Mulai Scan Sekarang
-                                    </a>
+                                    </Link>
                                     <a
                                         href="#cara-kerja"
                                         className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md border border-white/25 transition-all duration-300 text-sm"
@@ -385,7 +386,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     {/* Mock Food Image Container dengan Teks di Dalamnya */}
                                     <div className="relative w-full h-52 overflow-hidden rounded-t-3xl bg-gray-100">
                                         <img
-                                            src="/images/nasgor.png"
+                                            src="/images/nasgor.webp"
                                             alt="Nasi Goreng Ayam"
                                             className="w-full h-full object-cover object-center"
                                         />
@@ -664,7 +665,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     {/* Background Image Asli Tanpa Efek Pudar */}
                     <div className="absolute inset-0 z-0">
                         <img
-                            src="/images/background2.png"
+                            src="/images/background2.webp"
                             alt="Background Makanan Sehat"
                             className="w-full h-full object-cover"
                         />
@@ -692,6 +693,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         <div className="pt-4">
                             <Link
                                 href={route('register')}
+                                prefetch={["hover", "mount"]}
                                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-orange-900/20 transition-all duration-300 hover:scale-[1.02]"
                             >
                                 Daftar Gratis Sekarang →
@@ -707,13 +709,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                             {/* Logo siGizi Extra Besar */}
                             <div className="flex-shrink-0 flex items-center">
-                                <a href="#" className="flex items-center group py-1">
+                                <Link href="/" prefetch={["hover", "mount"]} className="flex items-center group py-1">
                                     <img
                                         src="/images/logo-sigizi.png"
                                         alt="siGizi Logo"
                                         className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200"
                                     />
-                                </a>
+                                </Link>
                             </div>
 
                             {/* Copyright Text */}
@@ -723,9 +725,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                             {/* Links */}
                             <div className="flex items-center space-x-6">
-                                <a href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Privasi</a>
-                                <a href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Syarat</a>
-                                <a href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Kontak</a>
+                                <Link href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Privasi</Link>
+                                <Link href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Syarat</Link>
+                                <Link href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Kontak</Link>
                             </div>
 
                         </div>

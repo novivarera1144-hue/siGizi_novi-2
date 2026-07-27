@@ -1,5 +1,5 @@
 // components/EmptyDashboard.js
-import Link from 'next/link';
+import { Link } from '@inertiajs/react';
 
 export default function EmptyDashboard({ userName = "Budi" }) {
     return (
@@ -30,6 +30,7 @@ export default function EmptyDashboard({ userName = "Budi" }) {
             {/* Tombol CTA dengan Hover State */}
             <Link
                 href="/scan"
+                prefetch={["hover", "mount"]}
                 className="group relative inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-white bg-green-600 rounded-full overflow-hidden transition-all hover:bg-green-700 hover:shadow-xl hover:shadow-green-600/30 hover:-translate-y-1"
             >
                 <svg className="w-5 h-5 transition-transform group-hover:scale-110 group-hover:rotate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

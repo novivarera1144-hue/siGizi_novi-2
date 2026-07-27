@@ -1,9 +1,17 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
 export default function AdminLayout({ children, activePage = 'dashboard', title, subtitle }) {
     const user = usePage().props.auth?.user || { name: 'Administrator', email: 'admin@sigizi.com' };
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        router.post(route('logout'), {}, {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
 
     // Dark Mode state & sync
     const [darkMode, setDarkMode] = useState(() => {
@@ -102,9 +110,9 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                 <div>
                     {/* Header Logo */}
                     <div className="py-6 px-4 border-b border-gray-100 dark:border-emerald-950/40 flex items-center justify-center">
-                        <Link href="/" className="flex items-center justify-center">
+                        <Link href="/" prefetch={["hover", "mount"]} className="flex items-center justify-center">
                             <img
-                                src="/images/logo sigizi.png"
+                                src="/images/logo-sigizi.png"
                                 alt="siGizi"
                                 className="h-15 w-auto object-contain"
                             />
@@ -122,6 +130,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 <Link
                                     key={item.key}
                                     href={route(item.route)}
+                                    prefetch={["hover", "mount"]}
                                     className={`w-full flex items-center gap-4 px-4 py-3 rounded-full text-sm transition-all duration-200 ${isCurrent
                                             ? 'bg-[#1e7e34] text-white font-semibold shadow-md shadow-emerald-700/20'
                                             : 'text-slate-600 hover:text-[#1e7e34] hover:bg-emerald-50/55 dark:text-slate-300 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
@@ -137,17 +146,15 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
                 {/* Bottom Section Logout Button */}
                 <div className="p-4 border-t border-gray-100 dark:border-emerald-950/40">
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
+                    <button
+                        onClick={handleLogout}
                         className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer"
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                         <span>Keluar</span>
-                    </Link>
+                    </button>
                 </div>
             </aside>
 
@@ -257,14 +264,12 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                             </div>
 
                             {/* Logout button */}
-                            <Link
-                                href={route('logout')}
-                                method="post"
-                                as="button"
+                            <button
+                                onClick={handleLogout}
                                 className="inline-flex items-center px-3 py-1 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-full transition duration-150 cursor-pointer"
                             >
                                 Keluar
-                            </Link>
+                            </button>
                         </div>
                     </div>
 

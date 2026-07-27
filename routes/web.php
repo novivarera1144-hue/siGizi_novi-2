@@ -33,7 +33,7 @@ Route::get('/api/user/scan-history', function () {
 });
 
 // Semua Rute yang Membutuhkan Login (Auth)
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         if (auth()->user()->email === 'admin@sigizi.com') {
             return redirect()->route('admin.dashboard');

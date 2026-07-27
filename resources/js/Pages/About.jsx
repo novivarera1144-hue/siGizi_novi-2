@@ -39,35 +39,26 @@ export default function About() {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between h-16 items-center">
 
-                            {/* Logo Bulat Asli siGizi */}
-                            <div className="flex items-center space-x-2">
+                            {/* Logo siGizi */}
+                            <Link href="/" prefetch={["hover", "mount"]} className="flex items-center">
                                 <img
-                                    src="/images/logo.png"
+                                    src="/images/logo-sigizi.png"
                                     alt="Logo siGizi"
-                                    className="w-8 h-8 object-contain"
-                                    onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
-                                    }}
+                                    className="h-[85px] w-auto object-contain"
                                 />
-                                <div style={{ display: 'none' }} className="w-8 h-8 rounded-lg bg-[#1F7A54] items-center justify-center text-white font-black text-xl shadow-sm mr-1">
-                                    s
-                                </div>
-                                <span className="text-xl font-bold tracking-tight text-gray-950 dark:text-white flex items-center">
-                                    <span className="text-[#1F7A54] dark:text-emerald-400">si</span>Gizi
-                                </span>
-                            </div>
+                            </Link>
 
                             {/* Navigation Links */}
                             <div className="hidden md:flex items-center space-x-8">
-                                <Link href="/" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Home</Link>
-                                <Link href="/tentang-kami" className="text-sm font-bold text-[#1F7A54] dark:text-emerald-400 border-b-2 border-[#1F7A54] pb-1">Tentang Kami</Link>
+                                <Link href="/" prefetch={["hover", "mount"]} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Home</Link>
+                                <Link href="/tentang-kami" prefetch={["hover", "mount"]} className="text-sm font-bold text-[#1F7A54] dark:text-emerald-400 border-b-2 border-[#1F7A54] pb-1">Tentang Kami</Link>
                             </div>
 
                             {/* Auth Buttons & Dark Mode Toggle (Disesuaikan dengan Home) */}
                             <div className="flex items-center space-x-3">
                                 <Link
                                     href="/login"
+                                    prefetch={["hover", "mount"]}
                                     className="px-5 py-2 text-sm font-bold text-gray-700 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 border border-gray-300 dark:border-emerald-800/60 hover:border-emerald-500 bg-transparent rounded-full transition-all"
                                 >
                                     Login
@@ -75,6 +66,7 @@ export default function About() {
 
                                 <Link
                                     href="/register"
+                                    prefetch={["hover", "mount"]}
                                     className="px-5 py-2 text-sm font-bold text-white bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-600 dark:hover:bg-emerald-700 rounded-full transition-all shadow-sm"
                                 >
                                     Register

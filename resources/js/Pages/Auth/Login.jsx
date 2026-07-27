@@ -4,10 +4,10 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 
 export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, setError } = useForm({
         email: '',
         password: '',
         remember: false,
@@ -16,8 +16,15 @@ export default function Login({ status, canResetPassword }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
+        router.post(route('login'), data, {
+            preserveScroll: true,
+            preserveState: true,
             onFinish: () => reset('password'),
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    setError(key, errors[key]);
+                });
+            },
         });
     };
 
@@ -108,7 +115,6 @@ export default function Login({ status, canResetPassword }) {
                 <div className="pt-2">
                     <PrimaryButton
                         className="w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-200 cursor-pointer"
-                        disabled={processing}
                     >
                         Masuk
                     </PrimaryButton>
@@ -141,6 +147,7 @@ export default function Login({ status, canResetPassword }) {
                     Belum punya akun?{' '}
                     <Link
                         href={route('register')}
+                        prefetch={["hover", "mount"]}
                         className="font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 transition-colors duration-200"
                     >
                         Daftar sekarang
