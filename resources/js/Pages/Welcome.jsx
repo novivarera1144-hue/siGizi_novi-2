@@ -32,34 +32,34 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     // Food Gallery items (Kenali Jenis Makanan)
     const foods = [
         {
-            name: "Nasi Goreng Ayam",
+            name: "Nasi Goreng",
             calories: "450 kkal",
-            image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600"
+            image: "/images/nasigoreng1.jpg"
         },
         {
-            name: "Smoothie Bowl",
+            name: "Smoothie",
             calories: "320 kkal",
-            image: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=600"
+            image: "/images/smoothie2.jpg"
         },
         {
             name: "Salad Sayuran",
             calories: "210 kkal",
-            image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=600"
+            image: "/images/salad1.jpg"
         },
         {
             name: "Ikan Panggang",
             calories: "380 kkal",
-            image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600"
+            image: "/images/ikan3.avif"
         },
         {
-            name: "Avocado Toast",
+            name: "Mango French Toast",
             calories: "290 kkal",
-            image: "https://images.unsplash.com/photo-1541532713592-79a0317b6b77?q=80&w=600"
+            image: "/images/roti2.jpg"
         },
         {
-            name: "Fruit Bowl",
+            name: " Fruit Bowl",
             calories: "185 kkal",
-            image: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?q=80&w=600"
+            image: "/images/buah3.jpg"
         }
     ];
 
@@ -161,29 +161,25 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
             <div className="min-h-screen bg-white text-gray-800 transition-colors duration-300 dark:bg-zinc-950 dark:text-zinc-100 font-sans">
 
                 {/* Navbar/Header */}
-                <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-colors duration-300 dark:bg-zinc-950/90 dark:border-zinc-900">
+                <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/80 transition-colors duration-300 dark:bg-zinc-950/95 dark:border-zinc-900/80">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between h-16 sm:h-20">
 
-                            {/* Logo */}
+                            {/* Logo siGizi */}
                             <div className="flex-shrink-0 flex items-center">
-                                <a href="#" className="flex items-center space-x-2">
-                                    <div className="bg-[#1F7A54] p-1.5 rounded-lg flex items-center justify-center shadow-md">
-                                        <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                        </svg>
-                                    </div>
-                                    <span className="text-xl sm:text-2xl font-bold tracking-tight">
-                                        <span className="text-[#1F7A54]">si</span>
-                                        <span className="text-orange-500">Gizi</span>
-                                    </span>
+                                <a href="#" className="flex items-center group py-1">
+                                    <img
+                                        src="/images/logo-sigizi.png"
+                                        alt="siGizi Logo"
+                                        className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200"
+                                    />
                                 </a>
                             </div>
 
                             {/* Center Navigation Links */}
                             <nav className="hidden md:flex items-center space-x-8">
-                                <a href="#" className="text-[#1F7A54] dark:text-[#2d9e6e] font-semibold border-b-2 border-[#1F7A54] pb-1">Home</a>
-                                <Link href="/tentang-kami" className="text-gray-600 dark:text-gray-300 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-medium transition-colors duration-200">Tentang Kami</Link>
+                                <a href="#" className="text-[#1F7A54] dark:text-emerald-400 font-bold border-b-2 border-[#1F7A54] pb-1">Home</a>
+                                <Link href="/tentang-kami" className="text-gray-800 dark:text-zinc-100 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-semibold transition-colors duration-200">Tentang Kami</Link>
                             </nav>
                             {/* Right Actions: Auth buttons + Dark mode toggle */}
                             <div className="hidden md:flex items-center space-x-4">
@@ -193,7 +189,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     </Link>
                                 ) : (
                                     <>
-                                        <Link href={route('login')} className="px-5 py-2 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-zinc-900 font-semibold text-sm transition-all duration-200">
+                                        <Link href={route('login')} className="px-5 py-2 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:border-[#1F7A54] dark:hover:border-emerald-500 font-semibold text-sm transition-all duration-200">
                                             Login
                                         </Link>
                                         <Link href={route('register')} className="px-5 py-2 rounded-full bg-[#1F7A54] text-white hover:bg-[#186041] font-semibold text-sm shadow-md shadow-[#1F7A54]/20 transition-all duration-200">
@@ -262,8 +258,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     {mobileMenuOpen && (
                         <div className="md:hidden px-4 pt-2 pb-6 border-t border-gray-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 transition-colors duration-300">
                             <div className="flex flex-col space-y-4">
-                                <a href="#" className="text-[#1F7A54] dark:text-[#2d9e6e] font-semibold py-2">Home</a>
-                                <Link href="/tentang-kami" className="text-gray-600 dark:text-gray-300 font-medium py-2 hover:text-[#1F7A54]">Tentang Kami</Link>
+                                <a href="#" className="text-[#1F7A54] dark:text-emerald-400 font-bold py-2">Home</a>
+                                <Link href="/tentang-kami" className="text-gray-800 dark:text-zinc-100 font-semibold py-2 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Tentang Kami</Link>
                                 <hr className="border-gray-100 dark:border-zinc-900" />
                                 {auth?.user ? (
                                     <Link href={route('dashboard')} className="w-full text-center py-2.5 rounded-full border border-[#1F7A54] text-[#1F7A54] font-semibold text-sm">
@@ -285,144 +281,158 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 </header>
 
                 {/* Hero Section */}
-                <section className="relative overflow-hidden pt-12 pb-24 md:py-32 xl:py-40">
-                    {/* Background Food Image with elegant dark green overlay */}
-                    <div className="absolute inset-0 z-0">
+                <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16 transition-colors duration-300">
+                    {/* Background Food Image with Balanced Brightness & Soft Left Dark Gradient */}
+                    <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
                         <img
-                            src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1600"
+                            src="/images/sayuran1.png"
                             alt="Background Makanan Sehat"
-                            className="w-full h-full object-cover filter brightness-[0.25] dark:brightness-[0.15]"
+                            className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05]"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/70 to-transparent"></div>
+                        {/* Gradient Gelap di sebelah kiri agar teks sangat kontras */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent"></div>
                     </div>
 
-                    <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                    {/* Container Utama Konten Hero */}
+                    <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
-                            {/* Left Hero Content */}
-                            <div className="lg:col-span-7 text-white space-y-6">
-
-                                {/* Badge Didukung AI */}
-                                <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wider text-orange-400">
-                                    <svg className="w-4 h-4 text-orange-400 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 11-2 0V6H3a1 1 0 110-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM14 2a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0V6h-1a1 1 0 110-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" clipRule="evenodd" />
-                                    </svg>
-                                    <span>Didukung Teknologi AI</span>
+                            {/* Left Content: Headline & CTA */}
+                            <div className="lg:col-span-7 space-y-5 pl-2 sm:pl-4">
+                                {/* Badge Teknologi AI */}
+                                <div className="inline-flex items-center space-x-2 bg-white/15 border border-white/25 px-3.5 py-1.5 rounded-full backdrop-blur-md">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span className="text-xs font-medium text-white">Didukung Teknologi AI</span>
                                 </div>
 
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                                {/* Judul Utama (Disusun 3 baris ke bawah) */}
+                                <h1
+                                    className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] max-w-xl"
+                                    style={{ WebkitTextStroke: '1.5px white' }}
+                                >
                                     Kenali Gizi <br />
-                                    <span className="text-orange-500">Makananmu</span> <br />
+                                    <span className="text-amber-500" style={{ WebkitTextStroke: '1.5px #f59e0b' }}>Makananmu</span> <br />
                                     Dalam Detik
                                 </h1>
 
-                                <p className="text-gray-300 text-lg max-w-xl leading-relaxed">
-                                    Foto makananmu → AI analisis kandungan nutrisi → dapatkan insight kesehatan dan rekomendasi pola makan sehatmu.
+                                {/* Deskripsi */}
+                                <p className="text-sm sm:text-base text-gray-200 max-w-md font-normal leading-relaxed">
+                                    Foto makananmu &rarr; AI analisis kandungan nutrisi &rarr; dapatkan insight kesehatan dan rekomendasi pola makan sehatmu.
                                 </p>
 
-                                {/* Buttons */}
-                                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                                {/* Tombol Aksi (CTA) */}
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 pt-1">
                                     <a
-                                        href="#cara-kerja"
-                                        className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-[#1F7A54] hover:bg-[#186041] text-white font-bold transition-all duration-300 shadow-lg shadow-[#1F7A54]/30 hover:scale-[1.02]"
+                                        href="#scanner"
+                                        className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-900/40 transition-all duration-300 text-sm"
                                     >
                                         <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                         Mulai Scan Sekarang
                                     </a>
                                     <a
-                                        href="#jenis-makanan"
-                                        className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold transition-all duration-300 backdrop-blur-sm"
+                                        href="#cara-kerja"
+                                        className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md border border-white/25 transition-all duration-300 text-sm"
                                     >
-                                        <svg className="w-5 h-5 mr-2 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
                                         Lihat Demo
                                     </a>
                                 </div>
 
-                                {/* Stats Grid */}
-                                <div className="grid grid-cols-3 gap-6 pt-10 border-t border-white/10 max-w-lg">
+                                {/* Statistik Singkat di Bawah Teks dengan Jarak Aman (Tidak Mepet) */}
+                                <div className="flex items-center space-x-12 pt-8 max-w-md">
                                     <div>
-                                        <div className="text-3xl font-extrabold text-white">10K+</div>
-                                        <div className="text-xs text-gray-400 mt-1 uppercase tracking-wider">Pengguna</div>
+                                        <div
+                                            className="text-2xl sm:text-3xl font-black text-white tracking-tight"
+                                            style={{ WebkitTextStroke: '1px white' }}
+                                        >
+                                            10K+
+                                        </div>
+                                        <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">Pengguna</div>
                                     </div>
                                     <div>
-                                        <div className="text-3xl font-extrabold text-orange-500">98%</div>
-                                        <div className="text-xs text-gray-400 mt-1 uppercase tracking-wider">Akurasi AI</div>
+                                        <div
+                                            className="text-2xl sm:text-3xl font-black text-white tracking-tight"
+                                            style={{ WebkitTextStroke: '1px white' }}
+                                        >
+                                            98%
+                                        </div>
+                                        <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">Akurasi AI</div>
                                     </div>
                                     <div>
-                                        <div className="text-3xl font-extrabold text-white">500+</div>
-                                        <div className="text-xs text-gray-400 mt-1 uppercase tracking-wider">Menu Dikenal</div>
+                                        <div
+                                            className="text-2xl sm:text-3xl font-black text-white tracking-tight"
+                                            style={{ WebkitTextStroke: '1px white' }}
+                                        >
+                                            500+
+                                        </div>
+                                        <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">Menu Dikenal</div>
                                     </div>
                                 </div>
-
                             </div>
 
                             {/* Right Floating Mockup Card */}
-                            <div className="lg:col-span-5 flex justify-center relative">
-
+                            <div className="lg:col-span-5 flex justify-center relative scale-[0.92] transform origin-top">
                                 {/* Fire / 450 kkal Floating Badge */}
-                                <div className="absolute top-6 left-4 sm:left-12 z-20 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100 dark:border-zinc-800 animate-bounce">
-                                    <div className="bg-orange-100 p-1.5 rounded-lg">
+                                <div className="absolute top-2 left-6 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100 animate-bounce">
+                                    <div className="bg-orange-100 p-1.5 rounded-xl">
                                         <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.317.766-.599 1.619-.874 2.417-.293.854-.538 1.482-.773 1.968a3.993 3.993 0 01-.58-1.72 1 1 0 00-1.477-.73c-.385.247-.69.595-.919.964-.226.362-.397.77-.524 1.166-.233.729-.33 1.432-.33 1.968 0 3.207 2.5 5.8 5.684 5.8 3.184 0 5.685-2.6 5.685-5.8 0-1.04-.325-1.99-.877-2.777a1 1 0 00-1.428-.15c-.345.257-.665.558-.934.88-.27.323-.497.669-.675 1.01-.229.439-.427.917-.613 1.348-.184.428-.354.767-.525.996a1.996 1.996 0 01-.577-1.417c0-.295.037-.588.11-.874.14-.523.354-1.087.595-1.637.243-.556.518-1.127.795-1.637.279-.516.559-.92.812-1.206a3.99 3.99 0 011.666-1.16z" clipRule="evenodd" />
                                         </svg>
                                     </div>
-                                    <span className="text-sm font-bold text-gray-800 dark:text-gray-200">450 kkal</span>
+                                    <span className="text-xs font-bold text-gray-800">450 kkal</span>
                                 </div>
 
                                 {/* Floating Mockup Card of Nasi Goreng Ayam */}
-                                <div className="w-full max-w-[340px] bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-zinc-800 transition-all duration-300 hover:scale-[1.02]">
+                                <div className="w-full max-w-[330px] bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
 
-                                    {/* Mock Food Image with Score tag */}
-                                    <div className="relative h-48 w-full overflow-hidden">
+                                    {/* Mock Food Image Container */}
+                                    <div className="relative w-full h-36 overflow-hidden bg-gray-100">
                                         <img
                                             src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=500"
                                             alt="Nasi Goreng Ayam"
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover object-center"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                                         {/* Score Badge */}
-                                        <div className="absolute top-4 right-4 bg-[#1F7A54] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
+                                        <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
                                             Skor 72
                                         </div>
                                     </div>
 
                                     {/* Card Content Details */}
-                                    <div className="p-5 space-y-4">
+                                    <div className="p-4 space-y-3">
                                         <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Nasi Goreng Ayam</h3>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">1 porsi ~ 250g</p>
+                                            <h3 className="text-base font-bold text-gray-900">Nasi Goreng Ayam</h3>
+                                            <p className="text-xs text-gray-500">1 porsi ~ 250g</p>
                                         </div>
 
                                         {/* Grid Nutrisi */}
                                         <div className="grid grid-cols-4 gap-2">
-                                            <div className="bg-red-50 dark:bg-red-950/20 p-2.5 rounded-xl text-center">
-                                                <div className="text-xs text-red-600 dark:text-red-400 font-extrabold">450</div>
-                                                <div className="text-[10px] text-red-500 dark:text-red-400 font-semibold mt-0.5">kkal</div>
-                                                <div className="text-[8px] text-red-400 uppercase tracking-wider mt-1">Kalori</div>
+                                            <div className="bg-emerald-50 p-2 rounded-xl text-center">
+                                                <div className="text-xs text-emerald-600 font-extrabold">450</div>
+                                                <div className="text-[9px] text-emerald-500 font-semibold">kkal</div>
+                                                <div className="text-[8px] text-emerald-400 uppercase tracking-wider mt-0.5">Kalori</div>
                                             </div>
-                                            <div className="bg-blue-50 dark:bg-blue-950/20 p-2.5 rounded-xl text-center">
-                                                <div className="text-xs text-blue-600 dark:text-blue-400 font-extrabold">18g</div>
-                                                <div className="text-[8px] text-blue-400 uppercase tracking-wider mt-2.5">Protein</div>
+                                            <div className="bg-blue-50 p-2 rounded-xl text-center">
+                                                <div className="text-xs text-blue-600 font-extrabold">18g</div>
+                                                <div className="text-[8px] text-blue-400 uppercase tracking-wider mt-2">Protein</div>
                                             </div>
-                                            <div className="bg-amber-50 dark:bg-amber-950/20 p-2.5 rounded-xl text-center">
-                                                <div className="text-xs text-amber-600 dark:text-amber-400 font-extrabold">12g</div>
-                                                <div className="text-[8px] text-amber-400 uppercase tracking-wider mt-2.5">Lemak</div>
+                                            <div className="bg-amber-50 p-2 rounded-xl text-center">
+                                                <div className="text-xs text-amber-600 font-extrabold">12g</div>
+                                                <div className="text-[8px] text-amber-400 uppercase tracking-wider mt-2">Lemak</div>
                                             </div>
-                                            <div className="bg-emerald-50 dark:bg-emerald-950/20 p-2.5 rounded-xl text-center">
-                                                <div className="text-xs text-[#1F7A54] dark:text-emerald-400 font-extrabold">62g</div>
-                                                <div className="text-[8px] text-emerald-400 uppercase tracking-wider mt-2.5">Karbo</div>
+                                            <div className="bg-emerald-50 p-2 rounded-xl text-center">
+                                                <div className="text-xs text-emerald-600 font-extrabold">62g</div>
+                                                <div className="text-[8px] text-emerald-400 uppercase tracking-wider mt-2">Karbo</div>
                                             </div>
                                         </div>
 
                                         {/* Insight Box */}
-                                        <div className="bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100 dark:border-emerald-900/30 p-3 rounded-xl">
-                                            <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium leading-relaxed flex items-start">
-                                                <span className="text-emerald-600 dark:text-emerald-400 font-bold mr-1.5">✓</span>
+                                        <div className="bg-emerald-50/60 border border-emerald-100 p-2.5 rounded-xl">
+                                            <p className="text-xs text-emerald-800 font-medium leading-tight flex items-center">
+                                                <span className="text-emerald-600 font-bold mr-1.5">✓</span>
                                                 Kalori sedang — cocok untuk makan siang aktif
                                             </p>
                                         </div>
@@ -430,15 +440,14 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </div>
 
                                 {/* Floating "Analisis Selesai" Badge */}
-                                <div className="absolute bottom-6 right-2 sm:-right-8 z-20 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100 dark:border-zinc-800 transition-all duration-300 hover:scale-105">
-                                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/30 flex items-center justify-center">
-                                        <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <div className="absolute -bottom-3 right-2 sm:right-6 z-20 bg-white backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100">
+                                    <div className="w-3.5 h-3.5 rounded-full bg-emerald-100 flex items-center justify-center">
+                                        <svg className="w-2.5 h-2.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
-                                    <span className="text-xs font-bold text-gray-800 dark:text-gray-200">Analisis selesai</span>
+                                    <span className="text-[11px] font-bold text-gray-800">Analisis selesai</span>
                                 </div>
-
                             </div>
 
                         </div>
@@ -654,29 +663,32 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 </section>
 
                 {/* Footer Call-To-Action (CTA) Banner */}
-                <section className="py-16 md:py-20 bg-[#1F7A54] relative overflow-hidden text-white text-center">
-                    {/* Background Pattern Mask */}
-                    <div className="absolute inset-0 z-0 opacity-15">
+                <section className="py-16 md:py-20 relative overflow-hidden text-white text-center">
+                    {/* Background Image Asli Tanpa Efek Pudar */}
+                    <div className="absolute inset-0 z-0">
                         <img
-                            src="https://images.unsplash.com/photo-1543353071-10c8ba85a904?q=80&w=1600"
-                            alt="Outlined Salad Background"
-                            className="w-full h-full object-cover filter grayscale blur-[1px]"
+                            src="/images/background2.png"
+                            alt="Background Makanan Sehat"
+                            className="w-full h-full object-cover"
                         />
+                        {/* Overlay Gelap Tipis agar teks putih tetap terbaca jelas di atas foto */}
+                        <div className="absolute inset-0 bg-black/40"></div>
                     </div>
 
                     <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
                         {/* Circle leaf logo outline */}
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 border border-white/20 shadow-md">
-                            <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md">
+                            <svg className="w-6.5 h-6.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Z" />
+                                <path d="M19 2c-2.26 4.33-5.27 7.14-8 10" />
                             </svg>
                         </div>
 
-                        <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">
+                        <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight drop-shadow-md">
                             Mulai hidup lebih sehat hari ini
                         </h2>
 
-                        <p className="text-emerald-100 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                        <p className="text-zinc-100 max-w-xl mx-auto text-sm sm:text-base leading-relaxed drop-shadow">
                             Bergabung dengan ribuan pengguna yang sudah memantau gizi mereka dengan siGizi — gratis, mudah, dan akurat.
                         </p>
 
@@ -696,17 +708,15 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
 
-                            {/* Logo */}
-                            <div className="flex items-center space-x-2">
-                                <div className="bg-[#1F7A54] p-1.5 rounded-lg flex items-center justify-center shadow-md">
-                                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                    </svg>
-                                </div>
-                                <span className="text-lg font-bold tracking-tight">
-                                    <span className="text-[#1F7A54]">si</span>
-                                    <span className="text-orange-500">Gizi</span>
-                                </span>
+                            {/* Logo siGizi Extra Besar */}
+                            <div className="flex-shrink-0 flex items-center">
+                                <a href="#" className="flex items-center group py-1">
+                                    <img
+                                        src="/images/logo-sigizi.png"
+                                        alt="siGizi Logo"
+                                        className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200"
+                                    />
+                                </a>
                             </div>
 
                             {/* Copyright Text */}

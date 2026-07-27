@@ -97,17 +97,13 @@ export default function AuthenticatedLayout({ children }) {
                 {/* Top Section Logo & Links */}
                 <div>
                     {/* Header Logo */}
-                    <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-emerald-950/40">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="bg-[#1F7A54] p-1.5 rounded-lg flex items-center justify-center shadow-sm">
-                                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-bold tracking-tight">
-                                <span className="text-[#1F7A54] dark:text-emerald-400">si</span>
-                                <span className="text-orange-500">Gizi</span>
-                            </span>
+                    <div className="h-24 flex items-center justify-center px-6 border-b border-gray-100 dark:border-emerald-950/40">
+                        <Link href="/" className="flex items-center">
+                            <img
+                                src="/images/logo-sigizi.png"
+                                alt="Logo siGizi"
+                                className="w-[140px] h-auto object-contain"
+                            />
                         </Link>
                     </div>
 
@@ -162,7 +158,7 @@ export default function AuthenticatedLayout({ children }) {
             <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
 
                 {/* Header Navbar - Top Area */}
-                <header className="h-20 bg-white border-b border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
+                <header className="h-14 bg-white border-b border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20 transition-colors duration-300">
 
                     {/* Left: Breadcrumbs / Sidebar toggle */}
                     <div className="flex items-center space-x-4">

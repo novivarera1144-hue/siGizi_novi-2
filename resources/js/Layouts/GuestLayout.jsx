@@ -29,20 +29,21 @@ export default function GuestLayout({ children, title, subtitle }) {
         <div className="min-h-screen flex flex-col bg-[#F8F9FA] dark:bg-[#071A0E] transition-colors duration-300">
 
             {/* NAVBAR UTAMA */}
-            <nav className="w-full bg-white dark:bg-[#071A0E] border-b border-gray-100 dark:border-[#164D2B] px-6 py-4 shadow-sm transition-colors duration-300">
+            <nav className="w-full bg-white dark:bg-[#071A0E] border-b border-gray-100 dark:border-[#164D2B] px-6 py-3 shadow-sm transition-colors duration-300">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
 
-                    {/* Brand Logo Kiri - Menggunakan absolute path */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-lg bg-[#1F7A54] flex items-center justify-center text-white font-black text-lg shadow-sm">
-                            s
+                    {/* Brand Logo Kiri - Ukuran h-10 agar pas dan tidak terlalu kecil */}
+                    <Link href="/" className="flex items-center">
+                        <div className="h-7 w-[150px] overflow-hidden flex items-center">
+                            <img
+                                src="/images/logo-sigizi.png"
+                                alt="Logo siGizi"
+                                className="w-[150px] h-auto object-contain -translate-y-1"
+                            />
                         </div>
-                        <span className="text-xl font-black tracking-tight text-gray-950 dark:text-white">
-                            <span className="text-[#1F7A54] dark:text-emerald-400">si</span>Gizi
-                        </span>
                     </Link>
 
-                    {/* Menu Navigation Tengah - Menggunakan absolute path */}
+                    {/* Menu Navigation Tengah */}
                     <div className="hidden md:flex items-center space-x-8 text-sm font-semibold">
                         <Link
                             href="/"
@@ -54,7 +55,6 @@ export default function GuestLayout({ children, title, subtitle }) {
                             Home
                         </Link>
 
-                        {/* Menggunakan absolute path murni agar tidak terpengaruh halaman /login atau /register */}
                         <Link
                             href="/about"
                             className={currentPath === '/about'
@@ -66,13 +66,13 @@ export default function GuestLayout({ children, title, subtitle }) {
                         </Link>
                     </div>
 
-                    {/* Kanan: Tombol & Dark Mode Toggle - Menggunakan logika dinamis */}
+                    {/* Kanan: Tombol & Dark Mode Toggle */}
                     <div className="flex items-center space-x-3">
                         <Link
                             href="/login"
                             className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-200 ${isLogin
-                                    ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
-                                    : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
+                                ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
+                                : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
                                 }`}
                         >
                             Login
@@ -80,8 +80,8 @@ export default function GuestLayout({ children, title, subtitle }) {
                         <Link
                             href="/register"
                             className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-200 ${isRegister
-                                    ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
-                                    : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
+                                ? "bg-[#1F7A54] dark:bg-emerald-600 text-white shadow-sm"
+                                : "text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white border border-gray-200 dark:border-[#164D2B] bg-transparent"
                                 }`}
                         >
                             Register
@@ -107,28 +107,20 @@ export default function GuestLayout({ children, title, subtitle }) {
             </nav>
 
             {/* AREA UTAMA DI TENGAH */}
-            <div className="flex-1 flex flex-col justify-center items-center pt-10 pb-16 px-4">
+            <div className="w-full flex flex-col items-center pt-3 pb-12 px-4">
 
-                {/* LOGO BESAR DI TENGAH */}
-                <div className="mb-2 flex flex-col items-center">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-14 h-14 rounded-2xl bg-[#1F7A54] flex items-center justify-center text-white font-black text-3xl shadow-md">
-                            s
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-3xl font-black tracking-tight text-gray-950 dark:text-white leading-none">
-                                <span className="text-[#1F7A54] dark:text-emerald-400">si</span>Gizi
-                            </span>
-                            <span className="text-[9px] font-bold tracking-widest text-gray-400 dark:text-[#52B788]/60 uppercase mt-1">
-                                NUTRISI UNTUK HIDUP LEBIH BAIK
-                            </span>
-                        </div>
-                    </div>
+                {/* LOGO BESAR DI TENGAH - Ukuran Jauh Lebih Besar (w-32 h-32) */}
+                <div className="mb-4 flex flex-col items-center">
+                    <img
+                        src="/images/logo-sigizi.png"
+                        alt="Logo siGizi"
+                        className="w-[290px] h-auto object-contain"
+                    />
                 </div>
 
                 {/* JUDUL DAN SUBJUDUL DI BAWAH LOGO */}
                 {title && (
-                    <div className="text-center mt-4 mb-6 max-w-md animate-fade-in">
+                    <div className="text-center mb-6 max-w-md animate-fade-in">
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                             {title}
                         </h2>
