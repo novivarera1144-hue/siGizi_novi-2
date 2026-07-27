@@ -373,65 +373,63 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             </div>
 
                             {/* Right Floating Mockup Card */}
-                            <div className="lg:col-span-5 flex justify-center relative scale-[0.92] transform origin-top">
-                                {/* Fire / 450 kkal Floating Badge */}
-                                <div className="absolute top-2 left-6 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100 animate-bounce">
-                                    <div className="bg-orange-100 p-1.5 rounded-xl">
-                                        <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.317.766-.599 1.619-.874 2.417-.293.854-.538 1.482-.773 1.968a3.993 3.993 0 01-.58-1.72 1 1 0 00-1.477-.73c-.385.247-.69.595-.919.964-.226.362-.397.77-.524 1.166-.233.729-.33 1.432-.33 1.968 0 3.207 2.5 5.8 5.684 5.8 3.184 0 5.685-2.6 5.685-5.8 0-1.04-.325-1.99-.877-2.777a1 1 0 00-1.428-.15c-.345.257-.665.558-.934.88-.27.323-.497.669-.675 1.01-.229.439-.427.917-.613 1.348-.184.428-.354.767-.525.996a1.996 1.996 0 01-.577-1.417c0-.295.037-.588.11-.874.14-.523.354-1.087.595-1.637.243-.556.518-1.127.795-1.637.279-.516.559-.92.812-1.206a3.99 3.99 0 011.666-1.16z" clipRule="evenodd" />
-                                        </svg>
+                            <div className="lg:col-span-5 flex justify-center relative scale-[0.92] transform origin-top pt-12 pb-6">
+                                <div className="w-full max-w-[330px] bg-white dark:bg-[#09170F] rounded-3xl overflow-visible shadow-2xl border border-gray-100 dark:border-emerald-950/40 relative mt-4">
+
+                                    {/* Badge Floating 450 kkal (Ditarik lebih jauh ke atas dan kiri menggunakan -top-12 dan -left-14) */}
+                                    <div className="absolute -top-12 -left-14 z-30 bg-white dark:bg-zinc-900 text-orange-500 font-extrabold text-xs px-4 py-2 rounded-full shadow-xl flex items-center space-x-1.5 border border-orange-100 dark:border-zinc-800 whitespace-nowrap">
+                                        <span>🔥</span>
+                                        <span>450 kkal</span>
                                     </div>
-                                    <span className="text-xs font-bold text-gray-800">450 kkal</span>
-                                </div>
 
-                                {/* Floating Mockup Card of Nasi Goreng Ayam */}
-                                <div className="w-full max-w-[330px] bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
-
-                                    {/* Mock Food Image Container */}
-                                    <div className="relative w-full h-36 overflow-hidden bg-gray-100">
+                                    {/* Mock Food Image Container dengan Teks di Dalamnya */}
+                                    <div className="relative w-full h-52 overflow-hidden rounded-t-3xl bg-gray-100">
                                         <img
                                             src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=500"
                                             alt="Nasi Goreng Ayam"
                                             className="w-full h-full object-cover object-center"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                                        {/* Score Badge */}
-                                        <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                                        {/* Gradasi Hitam Transparan */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                                        {/* Score Badge di Pojok Kanan Atas */}
+                                        <div className="absolute top-3 right-3 bg-[#1F7A54] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
                                             Skor 72
+                                        </div>
+
+                                        {/* Teks Nama Makanan & Porsi di Dalam Foto */}
+                                        <div className="absolute bottom-4 left-4 right-4 text-white">
+                                            <h3 className="text-lg font-bold">Nasi Goreng Ayam</h3>
+                                            <p className="text-xs text-gray-200">1 porsi ≈ 250g</p>
                                         </div>
                                     </div>
 
-                                    {/* Card Content Details */}
+                                    {/* Card Content Details Bagian Bawah */}
                                     <div className="p-4 space-y-3">
-                                        <div>
-                                            <h3 className="text-base font-bold text-gray-900">Nasi Goreng Ayam</h3>
-                                            <p className="text-xs text-gray-500">1 porsi ~ 250g</p>
-                                        </div>
-
                                         {/* Grid Nutrisi */}
                                         <div className="grid grid-cols-4 gap-2">
-                                            <div className="bg-emerald-50 p-2 rounded-xl text-center">
-                                                <div className="text-xs text-emerald-600 font-extrabold">450</div>
-                                                <div className="text-[9px] text-emerald-500 font-semibold">kkal</div>
-                                                <div className="text-[8px] text-emerald-400 uppercase tracking-wider mt-0.5">Kalori</div>
+                                            <div className="bg-orange-50 dark:bg-orange-950/30 p-2 rounded-xl text-center">
+                                                <div className="text-xs text-orange-600 font-extrabold">450</div>
+                                                <div className="text-[9px] text-orange-600 font-semibold">kkal</div>
+                                                <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5">Kalori</div>
                                             </div>
-                                            <div className="bg-blue-50 p-2 rounded-xl text-center">
+                                            <div className="bg-blue-50 dark:bg-blue-950/30 p-2 rounded-xl text-center">
                                                 <div className="text-xs text-blue-600 font-extrabold">18g</div>
-                                                <div className="text-[8px] text-blue-400 uppercase tracking-wider mt-2">Protein</div>
+                                                <div className="text-[8px] text-blue-400 uppercase tracking-wider mt-3.5">Protein</div>
                                             </div>
-                                            <div className="bg-amber-50 p-2 rounded-xl text-center">
+                                            <div className="bg-amber-50 dark:bg-amber-950/30 p-2 rounded-xl text-center">
                                                 <div className="text-xs text-amber-600 font-extrabold">12g</div>
-                                                <div className="text-[8px] text-amber-400 uppercase tracking-wider mt-2">Lemak</div>
+                                                <div className="text-[8px] text-amber-400 uppercase tracking-wider mt-3.5">Lemak</div>
                                             </div>
-                                            <div className="bg-emerald-50 p-2 rounded-xl text-center">
+                                            <div className="bg-emerald-50 dark:bg-emerald-950/30 p-2 rounded-xl text-center">
                                                 <div className="text-xs text-emerald-600 font-extrabold">62g</div>
-                                                <div className="text-[8px] text-emerald-400 uppercase tracking-wider mt-2">Karbo</div>
+                                                <div className="text-[8px] text-emerald-400 uppercase tracking-wider mt-3.5">Karbo</div>
                                             </div>
                                         </div>
 
                                         {/* Insight Box */}
-                                        <div className="bg-emerald-50/60 border border-emerald-100 p-2.5 rounded-xl">
-                                            <p className="text-xs text-emerald-800 font-medium leading-tight flex items-center">
+                                        <div className="bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-2.5 rounded-xl">
+                                            <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium leading-tight flex items-center">
                                                 <span className="text-emerald-600 font-bold mr-1.5">✓</span>
                                                 Kalori sedang — cocok untuk makan siang aktif
                                             </p>
@@ -440,16 +438,15 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </div>
 
                                 {/* Floating "Analisis Selesai" Badge */}
-                                <div className="absolute -bottom-3 right-2 sm:right-6 z-20 bg-white backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100">
-                                    <div className="w-3.5 h-3.5 rounded-full bg-emerald-100 flex items-center justify-center">
-                                        <svg className="w-2.5 h-2.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <div className="absolute -bottom-6 -right-6 sm:-right-8 z-30 bg-white dark:bg-zinc-900 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100 dark:border-zinc-800">
+                                    <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
+                                        <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
-                                    <span className="text-[11px] font-bold text-gray-800">Analisis selesai</span>
+                                    <span className="text-xs font-bold text-gray-800 dark:text-gray-200">Analisis selesai</span>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </section>
