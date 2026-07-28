@@ -11,6 +11,11 @@ export default function ScanPage() {
     const [scanStatus, setScanStatus] = useState('');
     const [scanError, setScanError] = useState(null);
 
+    // State untuk Modal Kamera Webcam Laptop
+    const [isWebcamOpen, setIsWebcamOpen] = useState(false);
+    const videoRef = useRef(null);
+    const mediaStreamRef = useRef(null);
+
     const fileInputRef = useRef(null);
     const cameraInputRef = useRef(null);
 
@@ -64,6 +69,67 @@ export default function ScanPage() {
         }
     };
 
+    // Fungsi Cerdas Tombol Kamera: Deteksi HP atau Laptop
+    const handleCameraClick = () => {
+        // Deteksi sederhana apakah perangkat mobile/HP
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // Jika di HP, langsung panggil input file dengan atribut capture
+            cameraInputRef.current.click();
+        } else {
+            // Jika di Laptop/PC, buka Modal Webcam Live
+            openWebcam();
+        }
+    };
+
+    // Buka Webcam Laptop
+    const openWebcam = async () => {
+        setIsWebcamOpen(true);
+        setScanError(null);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'user' },
+                audio: false
+            });
+            mediaStreamRef.current = stream;
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } catch (err) {
+            setIsWebcamOpen(false);
+            setScanError('Tidak dapat mengakses kamera laptop. Pastikan izin kamera diizinkan oleh browser.');
+        }
+    };
+
+    // Tutup Webcam Laptop
+    const closeWebcam = () => {
+        if (mediaStreamRef.current) {
+            mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        }
+        setIsWebcamOpen(false);
+    };
+
+    // Ambil Foto dari Webcam Laptop
+    const captureWebcam = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+            if (blob) {
+                const file = new File([blob], "webcam-capture.jpg", { type: "image/jpeg" });
+                handleFile(file);
+                closeWebcam();
+            }
+        }, 'image/jpeg', 0.9);
+    };
+
     // Simulate AI Scan and POST to ScanController
     const startAnalysis = () => {
         if (!imagePreview || !imageFile) return;
@@ -76,7 +142,6 @@ export default function ScanPage() {
             setScanProgress((prev) => {
                 if (prev >= 100) {
                     clearInterval(interval);
-                    // Submit the file using Inertia to route('scan.store')
                     setTimeout(() => {
                         router.post(route('scan.store'), {
                             image: imageFile
@@ -139,14 +204,11 @@ export default function ScanPage() {
 
                 {/* Error Banner */}
                 {scanError && (
-                    <div className="bg-red-50 border border-red-200/60 dark:bg-red-950/20 dark:border-red-900/40 text-red-800 dark:text-red-300 px-5 py-4 rounded-3xl flex items-start gap-3.5 shadow-sm animate-fade-in transition-all">
-                        <svg className="w-5 h-5 text-red-500 dark:text-red-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
+                    <div className="bg-red-50 border border-red-200/60 dark:bg-red-950/20 dark:border-red-900/40 text-red-800 dark:text-red-300 px-5 py-4 rounded-3xl flex items-start gap-3.5 shadow-sm">
                         <div className="flex-1 text-sm font-semibold leading-relaxed">
                             {scanError}
                         </div>
-                        <button onClick={() => setScanError(null)} className="text-red-400 hover:text-red-600 dark:hover:text-red-300 font-bold text-lg leading-none p-1 transition-colors">
+                        <button onClick={() => setScanError(null)} className="text-red-400 hover:text-red-600 font-bold text-lg leading-none">
                             &times;
                         </button>
                     </div>
@@ -161,26 +223,17 @@ export default function ScanPage() {
                         onDragOver={handleDrag}
                         onDragLeave={handleDrag}
                         onDrop={handleDrop}
-                        className={`w-full aspect-video sm:h-80 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden transition-all duration-200 ${isDragActive
-                                ? 'border-[#1F7A54] bg-emerald-50/30 dark:border-emerald-500 dark:bg-[#182b1f] scale-[0.99]'
-                                : imagePreview
-                                    ? 'border-gray-200 dark:border-emerald-500/30 dark:bg-[#0b140e]'
-                                    : 'border-gray-300 bg-gray-50/50 hover:bg-gray-50 dark:border-emerald-500/20 dark:bg-[#0b140e] dark:hover:border-emerald-500/50 dark:hover:bg-[#0e1a12]'
+                        className={`w-full aspect-video sm:h-80 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden transition-all duration-200 ${imagePreview ? 'border-gray-200 dark:border-emerald-500/30 dark:bg-[#0b140e]' : 'border-gray-300 bg-gray-50/50 dark:border-emerald-500/20 dark:bg-[#0b140e]'
                             }`}
                     >
                         {imagePreview ? (
-                            // Image Preview Mode
                             <div className="w-full h-full relative group">
-                                <img
-                                    src={imagePreview}
-                                    alt="Preview"
-                                    className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <button
                                         type="button"
                                         onClick={resetImage}
-                                        className="p-3 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-all duration-150 transform hover:scale-105 cursor-pointer"
+                                        className="p-3 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-all cursor-pointer"
                                         title="Hapus foto"
                                     >
                                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -190,9 +243,8 @@ export default function ScanPage() {
                                 </div>
                             </div>
                         ) : (
-                            // Upload Placeholder Mode
                             <div className="text-center p-6 space-y-3">
-                                <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-[#182b1f] border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center mx-auto text-[#1F7A54] dark:text-emerald-400 shadow-inner">
+                                <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-[#182b1f] border border-emerald-100 flex items-center justify-center mx-auto text-[#1F7A54] dark:text-emerald-400">
                                     <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
@@ -207,28 +259,14 @@ export default function ScanPage() {
 
                     {/* Action Buttons Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {/* Hidden inputs */}
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="hidden"
-                        />
-                        <input
-                            ref={cameraInputRef}
-                            type="file"
-                            accept="image/*"
-                            capture="environment"
-                            onChange={handleFileChange}
-                            className="hidden"
-                        />
+                        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                        <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
 
                         {/* Upload Button */}
                         <button
                             type="button"
                             onClick={() => fileInputRef.current.click()}
-                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm"
+                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
                         >
                             <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -236,11 +274,11 @@ export default function ScanPage() {
                             <span>Unggah Foto</span>
                         </button>
 
-                        {/* Camera Button */}
+                        {/* Universal Camera Button (Smart Detection) */}
                         <button
                             type="button"
-                            onClick={() => cameraInputRef.current.click()}
-                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm"
+                            onClick={handleCameraClick}
+                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
                         >
                             <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -256,58 +294,53 @@ export default function ScanPage() {
                             <button
                                 type="button"
                                 onClick={startAnalysis}
-                                className="w-full sm:w-auto px-8 py-3.5 bg-[#1F7A54] hover:bg-[#186041] text-white dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-black font-extrabold text-sm rounded-2xl shadow-lg shadow-[#1F7A54]/15 dark:shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                                className="w-full sm:w-auto px-8 py-3.5 bg-[#1F7A54] hover:bg-[#186041] text-white dark:bg-emerald-500 dark:text-black font-extrabold text-sm rounded-2xl shadow-lg flex items-center justify-center space-x-2 cursor-pointer"
                             >
                                 <span>Analisis Sekarang</span>
-                                <svg className="w-4 h-4 text-white dark:text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
                         </div>
                     )}
-
                 </div>
-
             </div>
 
-            {/* Immersive Fullscreen AI Scanning Simulation Dialog Overlay */}
-            {isScanning && (
-                <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-                    <div className="w-full max-w-md bg-white dark:bg-[#122017] rounded-3xl p-8 border border-gray-100 dark:border-[#1a2e22] shadow-2xl space-y-6 text-center">
-
-                        {/* Scanning Radar/Spinner Animation */}
-                        <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
-                            {/* Outer rotating/pulsing ring */}
-                            <div className="absolute inset-0 rounded-full border-4 border-[#1F7A54]/20 dark:border-emerald-500/20 animate-pulse"></div>
-                            <div className="absolute inset-2 rounded-full border-4 border-[#1F7A54] dark:border-emerald-500 border-t-transparent animate-spin"></div>
-
-                            {/* Inner AI Scanner Logo Icon */}
-                            <div className="w-16 h-16 bg-[#1F7A54] dark:bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-[#1F7A54]/25 dark:shadow-emerald-500/20">
-                                <svg className="w-8 h-8 text-white dark:text-black animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                </svg>
-                            </div>
+            {/* Modal Live Webcam khusus untuk Laptop/PC */}
+            {isWebcamOpen && (
+                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="w-full max-w-xl bg-white dark:bg-[#122017] rounded-3xl p-6 border border-gray-200 dark:border-[#1a2e22] shadow-2xl space-y-4 text-center">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Ambil Foto dengan Webcam</h3>
+                            <button onClick={closeWebcam} className="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
                         </div>
+                        <div className="relative aspect-video bg-black rounded-2xl overflow-hidden flex items-center justify-center">
+                            <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover"></video>
+                        </div>
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button onClick={closeWebcam} className="px-5 py-2.5 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-white rounded-xl font-bold text-sm">Batal</button>
+                            <button onClick={captureWebcam} className="px-6 py-2.5 bg-[#1F7A54] text-white dark:bg-emerald-500 dark:text-black rounded-xl font-bold text-sm">Potret Foto</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-                        {/* Progress Details */}
+            {/* Simulasi Loading AI */}
+            {isScanning && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="w-full max-w-md bg-white dark:bg-[#122017] rounded-3xl p-8 shadow-2xl space-y-6 text-center">
+                        <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+                            <div className="absolute inset-0 rounded-full border-4 border-[#1F7A54]/20 animate-pulse"></div>
+                            <div className="absolute inset-2 rounded-full border-4 border-[#1F7A54] border-t-transparent animate-spin"></div>
+                            <div className="w-16 h-16 bg-[#1F7A54] text-white rounded-full flex items-center justify-center font-bold">AI</div>
+                        </div>
                         <div className="space-y-2">
                             <h3 className="text-lg font-extrabold text-gray-900 dark:text-white">AI Sedang Menganalisis</h3>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-emerald-100/60 min-h-[1.5rem]">{scanStatus}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-emerald-100/60">{scanStatus}</p>
                         </div>
-
-                        {/* Progress Bar Loader */}
-                        <div className="space-y-1">
-                            <div className="w-full bg-gray-100 dark:bg-[#0b140e] rounded-full h-2 overflow-hidden border border-transparent dark:border-[#1a2e22]">
-                                <div
-                                    className="bg-[#1F7A54] dark:bg-emerald-500 h-full rounded-full transition-all duration-150"
-                                    style={{ width: `${scanProgress}%` }}
-                                ></div>
-                            </div>
-                            <div className="text-right">
-                                <span className="text-[10px] font-bold text-[#1F7A54] dark:text-emerald-400">{scanProgress}%</span>
-                            </div>
+                        <div className="w-full bg-gray-100 dark:bg-[#0b140e] rounded-full h-2 overflow-hidden">
+                            <div className="bg-[#1F7A54] dark:bg-emerald-500 h-full transition-all duration-150" style={{ width: `${scanProgress}%` }}></div>
                         </div>
-
                     </div>
                 </div>
             )}
