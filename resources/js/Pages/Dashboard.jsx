@@ -214,73 +214,94 @@ export default function Dashboard({ auth }) {
 
                 </div>
 
-                {/* Bottom Bar Chart: Kalori Minggu Ini */}
+                {/* Bottom Bar Chart: Kalori Minggu Ini dengan Sumbu Angka di Kiri */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
-                        {/* Diperbaiki: Mengarah ke rute laporan mingguan */}
                         <Link href={route('laporan.mingguan')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
                             <span>Lihat laporan</span>
                             <span className="ml-1">→</span>
                         </Link>
                     </div>
 
-                    {/* Styled Div Bar Chart Container */}
-                    <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-64 pt-6 px-2 sm:px-6 relative">
-                        {weeklyData.map((data, idx) => {
-                            const isSelected = selectedDay === data.day;
-                            const currentHeight = Math.min((data.calories / 2500) * 100, 100);
-                            const targetHeight = Math.min((data.target / 2500) * 100, 100);
+                    {/* Chart Wrapper dengan Sumbu Y di Kiri */}
+                    <div className="flex items-end pt-6 pb-2 px-2 sm:px-4">
 
-                            return (
-                                <div
-                                    key={idx}
-                                    onClick={() => setSelectedDay(data.day)}
-                                    className={`flex flex-col items-center group relative w-full pt-6 cursor-pointer transition-all duration-200 ${isSelected
-                                        ? 'bg-emerald-50/80 dark:bg-[#182b1f] rounded-2xl px-2 pb-2 scale-[1.03] border border-emerald-300 dark:border-emerald-500/20'
-                                        : 'hover:bg-gray-50 dark:hover:bg-[#182b1f]/50 rounded-2xl px-2 pb-2'
-                                        }`}
-                                >
-                                    {/* Tooltip box for selected state */}
-                                    {isSelected && (
-                                        <div className="absolute -top-12 z-30 bg-gray-900 dark:bg-[#0b140e] p-2.5 rounded-xl border border-gray-700 dark:border-[#1a2e22] shadow-xl text-center min-w-[100px] transition-all duration-200">
-                                            <p className="text-[10px] text-gray-400 dark:text-emerald-100/50 font-bold uppercase">{data.day}</p>
-                                            <p className="text-xs text-white font-bold mt-0.5">
-                                                kalori: <span className="text-emerald-400">{data.calories}</span>
-                                            </p>
-                                            <p className="text-[9px] text-gray-300 dark:text-emerald-100/40 font-semibold">target: {data.target}</p>
+                        {/* Kolom Angka Sumbu Y (Kiri) */}
+                        <div className="flex flex-col justify-between h-44 text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 pr-3 text-right select-none shrink-0">
+                            <span>2.400</span>
+                            <span>1.800</span>
+                            <span>1.200</span>
+                            <span>600</span>
+                            <span>0</span>
+                        </div>
+
+                        {/* Bar Chart Container */}
+                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-44 w-full relative border-l border-b border-gray-100 dark:border-[#1a2e22] pl-2">
+                            {weeklyData.map((data, idx) => {
+                                const isSelected = selectedDay === data.day;
+                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
+                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
+
+                                return (
+                                    <div
+                                        key={idx}
+                                        onClick={() => setSelectedDay(data.day)}
+                                        className={`flex flex-col items-center group relative w-full pt-4 cursor-pointer transition-all duration-200 ${isSelected
+                                            ? 'bg-emerald-50/80 dark:bg-[#182b1f] rounded-2xl px-1 pb-1 scale-[1.03] border border-emerald-300 dark:border-emerald-500/20'
+                                            : 'hover:bg-gray-50 dark:hover:bg-[#182b1f]/50 rounded-2xl px-1 pb-1'
+                                            }`}
+                                    >
+                                        {/* Tooltip box for selected state */}
+                                        {isSelected && (
+                                            <div className="absolute -top-12 z-30 bg-gray-900 dark:bg-[#0b140e] p-2.5 rounded-xl border border-gray-700 dark:border-[#1a2e22] shadow-xl text-center min-w-[100px] transition-all duration-200">
+                                                <p className="text-[10px] text-gray-400 dark:text-emerald-100/50 font-bold uppercase">{data.day}</p>
+                                                <p className="text-xs text-white font-bold mt-0.5">
+                                                    kalori: <span className="text-emerald-400">{data.calories}</span>
+                                                </p>
+                                                <p className="text-[9px] text-gray-300 dark:text-emerald-100/40 font-semibold">target: {data.target}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Graph Columns adjacent */}
+                                        <div className="flex space-x-1 items-end justify-center w-full h-36">
+                                            {/* Batang Aktual (Hijau Terang) */}
+                                            <div
+                                                style={{ height: `${currentHeight}%` }}
+                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-300 ${isSelected
+                                                    ? 'bg-[#22c55e] dark:bg-emerald-400 shadow-md shadow-emerald-500/20'
+                                                    : 'bg-[#22c55e]/90 dark:bg-emerald-500/80 hover:bg-[#22c55e]'
+                                                    }`}
+                                            ></div>
+                                            {/* Batang Target (Hitam/Gelap) */}
+                                            <div
+                                                style={{ height: `${targetHeight}%` }}
+                                                className="w-2.5 sm:w-3.5 rounded-t-sm bg-gray-900 dark:bg-gray-800 transition-all duration-300"
+                                            ></div>
                                         </div>
-                                    )}
 
-                                    {/* Graph Columns adjacent */}
-                                    <div className="flex space-x-1.5 items-end justify-center w-full h-40">
-                                        {/* Left Green Bar: consumed */}
-                                        <div
-                                            style={{ height: `${currentHeight}%` }}
-                                            className={`w-3 sm:w-4 rounded-t-sm transition-all duration-300 ${isSelected
-                                                ? 'bg-[#1F7A54] dark:bg-emerald-500 shadow-md shadow-emerald-500/20 scale-x-110'
-                                                : 'bg-emerald-600/60 dark:bg-emerald-600/60 group-hover:bg-[#1F7A54] dark:group-hover:bg-emerald-500'
-                                                }`}
-                                        ></div>
-                                        {/* Right Light Green/Gray Bar: target */}
-                                        <div
-                                            style={{ height: `${targetHeight}%` }}
-                                            className={`w-3 sm:w-4 rounded-t-sm transition-all duration-300 ${isSelected
-                                                ? 'bg-gray-200 dark:bg-[#0b140e]'
-                                                : 'bg-gray-100 dark:bg-[#0b140e]/60'
-                                                }`}
-                                        ></div>
+                                        <span className={`text-xs font-bold mt-2 block transition-colors duration-200 ${isSelected
+                                            ? 'text-[#1F7A54] dark:text-emerald-400'
+                                            : 'text-gray-400 dark:text-emerald-100/40'
+                                            }`}>
+                                            {data.day}
+                                        </span>
                                     </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
-                                    <span className={`text-xs font-bold mt-3 block transition-colors duration-200 ${isSelected
-                                        ? 'text-[#1F7A54] dark:text-emerald-400'
-                                        : 'text-gray-400 dark:text-emerald-100/40'
-                                        }`}>
-                                        {data.day}
-                                    </span>
-                                </div>
-                            );
-                        })}
+                    {/* Legenda Indikator Diagram (Aktual vs Target) */}
+                    <div className="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-gray-100 dark:border-[#1a2e22]">
+                        <div className="flex items-center space-x-2">
+                            <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Aktual</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <div className="w-3 h-3 rounded-full bg-gray-900 dark:bg-gray-700"></div>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Target</span>
+                        </div>
                     </div>
 
                 </div>
