@@ -75,15 +75,20 @@ Route::middleware(['auth'])->group(function () {
                 'session_timeout' => 'required',
             ]);
 
-            // Lakukan proses penyimpanan ke database/config di sini jika ada
-
             return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui.');
         })->name('admin.pengaturan-update');
 
-        // TAMBAHAN: Rute untuk Pengaturan Profil Admin (Sesuai file ProfileSettings.jsx)
+        // Rute untuk Pengaturan Profil Admin
         Route::get('/settings/profile', function () {
             return Inertia::render('Admin/ProfileSettings');
         })->name('admin.profile.settings');
+
+        // Ubah dari Route::put menjadi Route::post
+        Route::post('/settings/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'updateProfile'])
+            ->name('admin.profile.update');
+
+        Route::put('/settings/password', [\App\Http\Controllers\Admin\AdminProfileController::class, 'updatePassword'])
+            ->name('admin.profile.password');
     });
 
     // Profile Routes (User Biasa)

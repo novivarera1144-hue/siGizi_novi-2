@@ -459,9 +459,14 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                         </div>
 
                         {/* User Profile Avatar */}
-                        <div className="w-8 h-8 rounded-full bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-sm shadow-sm">
+                        <Link
+                            href={route('admin.profile.settings')}
+                            prefetch={["hover", "mount"]}
+                            className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-sm shadow-sm transition duration-150 cursor-pointer"
+                            title="Pengaturan Profil"
+                        >
                             {user.name ? user.name.charAt(0).toUpperCase() : 'B'}
-                        </div>
+                        </Link>
                     </div>
                 </header>
 
