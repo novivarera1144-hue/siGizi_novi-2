@@ -9,6 +9,23 @@ export default function AuthenticatedLayout({ children }) {
     const [notificationOpen, setNotificationOpen] = useState(false);
     const notificationRef = useRef(null);
 
+    // State untuk Instant Search di Top Bar
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const searchRef = useRef(null);
+
+    // Dummy data contoh untuk pencarian (Dashboard sudah ditambahkan di sini)
+    const dummySearchData = [
+        { name: 'Dashboard Utama', category: 'Menu', route: 'dashboard' },
+        { name: 'Nasi Goreng Spesial', category: 'Makanan', route: 'dashboard' },
+        { name: 'Scan Makanan Baru', category: 'Menu', route: 'scan' },
+        { name: 'Laporan Mingguan Nutrisi', category: 'Laporan', route: 'laporan.mingguan' },
+        { name: 'Riwayat Konsumsi Kalori', category: 'Riwayat', route: 'riwayat' },
+        { name: 'AI Assistant Gizi', category: 'Bantuan', route: 'ai.assistant' },
+        { name: 'Pengaturan Profil', category: 'Akun', route: 'profile.edit' },
+    ];
+
     const handleLogout = (e) => {
         e.preventDefault();
         router.post(route('logout'), {}, {
@@ -43,6 +60,47 @@ export default function AuthenticatedLayout({ children }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // Effect untuk menutup dropdown search jika klik di luar area
+    useEffect(() => {
+        const handleClickOutsideSearch = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setIsSearching(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutsideSearch);
+        return () => document.removeEventListener('mousedown', handleClickOutsideSearch);
+    }, []);
+
+    // Handler ketika mengetik di search bar
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+
+        if (query.trim() === '') {
+            setSearchResults([]);
+            setIsSearching(false);
+            return;
+        }
+
+        setIsSearching(true);
+        const filtered = dummySearchData.filter((item) =>
+            item.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchResults(filtered);
+    };
+
+    // Handler ketika tombol Enter ditekan di search bar
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchResults.length > 0) {
+                router.visit(route(searchResults[0].route));
+                setIsSearching(false);
+                setSearchQuery('');
+            }
+        }
+    };
 
     // 3. Handler Toggle Dark Mode
     const toggleDarkMode = () => {
@@ -141,8 +199,8 @@ export default function AuthenticatedLayout({ children }) {
                                     href={item.route !== '#' ? route(item.route) : '#'}
                                     prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
                                     className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                        ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
-                                        : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
+                                            ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
+                                            : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
                                         }`}
                                 >
                                     {item.icon}
@@ -201,16 +259,60 @@ export default function AuthenticatedLayout({ children }) {
 
                     {/* Right: Search + Toggle Dark Mode + Notification + Profile */}
                     <div className="flex items-center space-x-4">
-                        {/* Search Bar */}
-                        <div className="relative hidden md:block">
-                            <input
-                                type="text"
-                                placeholder="Cari..."
-                                className="w-48 lg:w-64 bg-gray-50 dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-100/40 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#1F7A54] dark:focus:ring-emerald-500 transition-all"
-                            />
-                            <svg className="w-4 h-4 text-gray-400 dark:text-emerald-500/70 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+
+                        {/* Search Bar dengan Instant Dropdown & Enter Support */}
+                        <div className="relative hidden md:block" ref={searchRef}>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Cari menu, fitur..."
+                                    className="w-48 lg:w-64 bg-gray-50 dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-100/40 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#1F7A54] dark:focus:ring-emerald-500 transition-all"
+                                />
+                                <svg className="w-4 h-4 text-gray-400 dark:text-emerald-500/70 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => { setSearchQuery(''); setSearchResults([]); setIsSearching(false); }}
+                                        className="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xs font-bold"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Dropdown Hasil Pencarian */}
+                            {isSearching && (
+                                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0E1F16] border border-gray-100 dark:border-emerald-950/60 rounded-2xl shadow-xl py-2 z-50">
+                                    <div className="px-3 py-1.5 border-b border-gray-100 dark:border-emerald-950/40 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                        Hasil Pencarian (Tekan Enter)
+                                    </div>
+                                    <div className="max-h-60 overflow-y-auto">
+                                        {searchResults.length > 0 ? (
+                                            searchResults.map((item, idx) => (
+                                                <Link
+                                                    key={idx}
+                                                    href={route(item.route)}
+                                                    onClick={() => setIsSearching(false)}
+                                                    className="px-3.5 py-2.5 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors flex items-center justify-between cursor-pointer block"
+                                                >
+                                                    <span className="text-xs font-semibold text-gray-800 dark:text-emerald-100">{item.name}</span>
+                                                    <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-[#1F7A54] dark:text-emerald-300 px-2 py-0.5 rounded-md font-medium">
+                                                        {item.category}
+                                                    </span>
+                                                </Link>
+                                            ))
+                                        ) : (
+                                            <div className="px-4 py-6 text-center text-xs text-gray-400 dark:text-emerald-400/50">
+                                                Tidak ada hasil untuk "{searchQuery}"
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* TOGGLE DARK/LIGHT MODE BUTTON */}
@@ -261,10 +363,8 @@ export default function AuthenticatedLayout({ children }) {
                                         </button>
                                     </div>
 
-                                    {/* Daftar List Notifikasi (Bisa di-scroll dengan max-height) */}
+                                    {/* Daftar List Notifikasi */}
                                     <div className="divide-y divide-gray-50 dark:divide-emerald-950/30 max-h-72 overflow-y-auto custom-scrollbar">
-
-                                        {/* Item 1 */}
                                         <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start relative">
                                             <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
                                             <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-[#1F7A54] dark:text-emerald-300 flex-shrink-0 mt-0.5">
@@ -277,7 +377,6 @@ export default function AuthenticatedLayout({ children }) {
                                             </div>
                                         </div>
 
-                                        {/* Item 2 */}
                                         <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start relative">
                                             <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
                                             <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-300 flex-shrink-0 mt-0.5">
@@ -289,31 +388,6 @@ export default function AuthenticatedLayout({ children }) {
                                                 <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">Kemarin</span>
                                             </div>
                                         </div>
-
-                                        {/* Item 3 */}
-                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start opacity-75">
-                                            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-300 flex-shrink-0 mt-0.5">
-                                                💡
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Tips Gizi Harian</p>
-                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Pastikan konsumsi air putih minimal 8 gelas sehari untuk menjaga metabolisme.</p>
-                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">3 hari lalu</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Item 4 (Contoh tambahan untuk melihat efek scroll) */}
-                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start opacity-75">
-                                            <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-600 dark:text-purple-300 flex-shrink-0 mt-0.5">
-                                                📊
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Laporan Mingguan Siap</p>
-                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Ringkasan grafik nutrisi minggu lalu sudah dapat dilihat di menu Laporan Mingguan.</p>
-                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">5 hari lalu</span>
-                                            </div>
-                                        </div>
-
                                     </div>
 
                                     {/* Footer Dropdown */}
@@ -329,7 +403,7 @@ export default function AuthenticatedLayout({ children }) {
                             )}
                         </div>
 
-                        {/* User Profile Initial Icon (Interaktif menuju Halaman Profil) */}
+                        {/* User Profile Initial Icon */}
                         <Link
                             href={route('profile.edit')}
                             prefetch={["hover", "mount"]}
