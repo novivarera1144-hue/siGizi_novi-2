@@ -35,11 +35,11 @@ export default function Dashboard() {
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Pengguna</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">1,248</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">+12 minggu ini</p>
-                        </div >
-                    </div >
+                        </div>
+                    </div>
 
                     {/* Total Scan Card */}
-                    < div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4" >
+                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4">
                         <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -49,11 +49,11 @@ export default function Dashboard() {
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Scan</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">8,742</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">+156 hari ini</p>
-                        </div >
-                    </div >
+                        </div>
+                    </div>
 
                     {/* Pengguna Aktif Card */}
-                    < div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4" >
+                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4">
                         <div className="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -63,11 +63,11 @@ export default function Dashboard() {
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Pengguna Aktif</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">342</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Hari ini</p>
-                        </div >
-                    </div >
+                        </div>
+                    </div>
 
                     {/* Akurasi AI Card */}
-                    < div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4" >
+                    <div className="bg-white dark:bg-[#0b1f16] p-6 rounded-3xl border border-gray-100 dark:border-emerald-800/20 shadow-sm flex flex-col justify-between space-y-4">
                         <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -77,17 +77,15 @@ export default function Dashboard() {
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Akurasi AI</p>
                             <h3 className="text-3xl font-bold text-gray-800 dark:text-white">94.2%</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Rata-rata 7 hari</p>
-                        </div >
-                    </div >
-                </div >
+                        </div>
+                    </div>
+                </div>
 
                 {/* Bar Chart Section: Scan per Hari */}
                 <div className="bg-white dark:bg-[#122017] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-[#1a2e22]">
                     <h2 className="text-base font-extrabold text-gray-900 dark:text-white mb-6">Scan per Hari (7 Hari Terakhir)</h2>
 
-                    {/* Dotted lines + Bar columns custom component */}
                     <div className="relative pt-6 pb-2 px-2 sm:px-6">
-                        {/* Dotted background grid lines */}
                         <div className="absolute inset-x-0 top-6 bottom-14 flex flex-col justify-between pointer-events-none px-6">
                             {[260, 195, 130, 65, 0].map((val) => (
                                 <div key={val} className="w-full flex items-center relative h-0">
@@ -95,55 +93,49 @@ export default function Dashboard() {
                                         {val}
                                     </span>
                                     <div className="w-full border-b border-dashed border-gray-100 dark:border-[#1a2e22]"></div>
-                                </div >
-                            ))
-                            }
-                        </div >
-
-                        {/* Flex bars container */}
-                        < div className="relative z-10 grid grid-cols-7 gap-2 sm:gap-6 items-end h-56 pt-2" >
-                            {
-                                weeklyScanData.map((data, idx) => (
-                                    <div key={idx} className="flex flex-col items-center group relative w-full h-full justify-end cursor-pointer">
-                                        {/* Tooltip on hover */}
-                                        <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 z-30 bg-gray-900 dark:bg-[#07130C] p-2 rounded-xl border border-gray-700 dark:border-emerald-800/40 shadow-xl text-center min-w-[70px]">
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase">{data.day}</p>
-                                            <p className="text-xs text-white font-bold mt-0.5">{data.scans} scan</p>
-                                        </div>
-
-                                        {/* Bar itself */}
-                                        <div
-                                            style={{ height: `${data.heightPct}%` }}
-                                            className="w-10 bg-[#15803d] dark:bg-[#34D399] rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-400 transition-all duration-300 shadow-sm"
-                                        ></div>
-
-                                        {/* Label under bar */}
-                                        < span className="text-xs font-bold text-gray-400 dark:text-emerald-100/60 mt-3 pt-1 block h-5" >
-                                            {data.day}
-                                        </span >
-                                    </div >
-                                ))
-                            }
-                        </div >
-                    </div >
-                </div >
-
-                {/* Bottom row grid: Activities & Kelola Konten */}
-                < div className="grid grid-cols-1 lg:grid-cols-3 gap-6" >
-                    {/* Log Aktivitas Terbaru (2/3 width) */}
-                    <div className="lg:col-span-2 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Aktivitas Terkini</h2>
-                            <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400 cursor-pointer hover:underline">
-                                Lihat semua
-                            </span>
+                                </div>
+                            ))}
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="relative z-10 grid grid-cols-7 gap-2 sm:gap-6 items-end h-56 pt-2">
+                            {weeklyScanData.map((data, idx) => (
+                                <div key={idx} className="flex flex-col items-center group relative w-full h-full justify-end cursor-pointer">
+                                    <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 z-30 bg-gray-900 dark:bg-[#07130C] p-2 rounded-xl border border-gray-700 dark:border-emerald-800/40 shadow-xl text-center min-w-[70px]">
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase">{data.day}</p>
+                                        <p className="text-xs text-white font-bold mt-0.5">{data.scans} scan</p>
+                                    </div>
+
+                                    <div
+                                        style={{ height: `${data.heightPct}%` }}
+                                        className="w-10 bg-[#15803d] dark:bg-[#34D399] rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-400 transition-all duration-300 shadow-sm"
+                                    ></div>
+
+                                    <span className="text-xs font-bold text-gray-400 dark:text-emerald-100/60 mt-3 pt-1 block h-5">
+                                        {data.day}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom row grid: Activities & Kelola Konten */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Log Aktivitas Terbaru (2/3 width) dengan Scroll */}
+                    <div className="lg:col-span-2 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col">
+                        <div className="mb-4">
+                            <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Aktivitas Terkini</h2>
+                        </div>
+
+                        {/* Area list aktivitas yang bisa di-scroll */}
+                        <div className="max-h-[240px] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
                             {[
                                 { name: "Budi Raharjo", action: "melakukan scan makanan Nasi Goreng", time: "5 menit yang lalu", avatar: "B" },
                                 { name: "Siti Aminah", action: "mendaftar sebagai pengguna baru", time: "1 jam yang lalu", avatar: "S" },
                                 { name: "Ahsan Kamil", action: "berkonsultasi dengan AI Assistant", time: "3 jam yang lalu", avatar: "A" },
+                                // Ditambahkan data dummy ekstra agar efek scroll langsung terlihat
+                                { name: "Dewi Lestari", action: "melakukan scan makanan Pecel Lele", time: "4 jam yang lalu", avatar: "D" },
+                                { name: "Rizky Fauzi", action: "memperbarui profil akun", time: "5 jam yang lalu", avatar: "R" },
                             ].map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#16291e]/50 rounded-2xl transition-all duration-200">
                                     <div className="flex items-center space-x-3">
@@ -154,14 +146,14 @@ export default function Dashboard() {
                                             <h4 className="text-sm font-bold text-gray-900 dark:text-white">{item.name}</h4>
                                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-0.5">{item.action}</p>
                                         </div>
-                                    </div >
+                                    </div>
                                     <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">
                                         {item.time}
                                     </span>
-                                </div >
+                                </div>
                             ))}
-                        </div >
-                    </div >
+                        </div>
+                    </div>
 
                     {/* Kelola Konten (1/3 width) */}
                     <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
@@ -192,9 +184,9 @@ export default function Dashboard() {
                                 KELOLA TIPS GIZI HARIAN
                             </Link>
                         </div>
-                    </div >
-                </div >
-            </div >
-        </AdminLayout >
+                    </div>
+                </div>
+            </div>
+        </AdminLayout>
     );
 }
