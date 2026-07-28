@@ -79,9 +79,14 @@ Route::middleware(['auth'])->group(function () {
 
             return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui.');
         })->name('admin.pengaturan-update');
+
+        // TAMBAHAN: Rute untuk Pengaturan Profil Admin (Sesuai file ProfileSettings.jsx)
+        Route::get('/settings/profile', function () {
+            return Inertia::render('Admin/ProfileSettings');
+        })->name('admin.profile.settings');
     });
 
-    // Profile Routes
+    // Profile Routes (User Biasa)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

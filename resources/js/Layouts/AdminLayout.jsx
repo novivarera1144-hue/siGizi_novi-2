@@ -1,9 +1,63 @@
 import { Link, usePage, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function AdminLayout({ children, activePage = 'dashboard', title, subtitle }) {
     const user = usePage().props.auth?.user || { name: 'Administrator', email: 'admin@sigizi.com' };
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    // State untuk Fitur Pencarian Interaktif
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const searchRef = useRef(null);
+
+    // State untuk Fitur Notifikasi Interaktif & Scrollable (Dummy data ditambah agar langsung bisa scroll)
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [notifications, setNotifications] = useState([
+        {
+            id: 1,
+            title: 'Pengguna Baru Terdaftar',
+            description: 'Budi Santoso mendaftarkan akun baru sebagai warga.',
+            time: '5 menit lalu',
+            read: false,
+        },
+        {
+            id: 2,
+            title: 'Laporan Sistem',
+            description: 'Backup basis data mingguan berhasil dijalankan otomatis.',
+            time: '1 jam lalu',
+            read: false,
+        },
+        {
+            id: 3,
+            title: 'Pembaruan Tampilan',
+            description: 'Konfigurasi halaman utama berhasil diperbarui.',
+            time: 'Kemarin',
+            read: true,
+        },
+        {
+            id: 4,
+            title: 'Peringatan Kapasitas Server',
+            description: 'Penggunaan penyimpanan database mencapai 80%.',
+            time: '2 hari lalu',
+            read: false,
+        },
+        {
+            id: 5,
+            title: 'Validasi Data Gizi',
+            description: 'Terdapat 15 data laporan posyandu baru yang perlu verifikasi.',
+            time: '3 hari lalu',
+            read: true,
+        },
+        {
+            id: 6,
+            title: 'Keamanan Akun',
+            description: 'Login terdeteksi dari perangkat baru di area Jakarta.',
+            time: '4 hari lalu',
+            read: true,
+        },
+    ]);
+    const notificationRef = useRef(null);
 
     const handleLogout = (e) => {
         e.preventDefault();
@@ -92,14 +146,89 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             icon: (
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3" />
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                 </svg>
             ),
             route: 'admin.pengaturan-sistem',
         },
     ];
 
-    // Find dynamic breadcrumb title based on active page
+    // Dummy Data Interaktif untuk Pencarian
+    const dummySearchData = [
+        { name: 'Dashboard Admin', category: 'Menu Utama', route: 'admin.dashboard' },
+        { name: 'Kelola Pengguna & Akun', category: 'Manajemen', route: 'admin.kelola-pengguna' },
+        { name: 'Kelola Tampilan & Konten', category: 'Manajemen', route: 'admin.kelola-tampilan' },
+        { name: 'Laporan Global & Statistik', category: 'Analitik', route: 'admin.laporan-global' },
+        { name: 'Pengaturan Sistem & Konfigurasi', category: 'Sistem', route: 'admin.pengaturan-sistem' },
+    ];
+
+    // Logika ketika mengetik di input pencarian
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        setIsSearchFocused(true);
+
+        if (query.trim() === '') {
+            setSearchResults([]);
+        } else {
+            const filtered = dummySearchData.filter((item) =>
+                item.name.toLowerCase().includes(query.toLowerCase()) ||
+                item.category.toLowerCase().includes(query.toLowerCase())
+            );
+            setSearchResults(filtered);
+        }
+    };
+
+    const handleInputFocus = () => {
+        setIsSearchFocused(true);
+        if (searchQuery.trim() !== '') {
+            const filtered = dummySearchData.filter((item) =>
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.category.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setSearchResults(filtered);
+        } else {
+            setSearchResults([]);
+        }
+    };
+
+    // Handler Notifikasi
+    const markAllAsRead = () => {
+        setNotifications(notifications.map(n => ({ ...n, read: true })));
+    };
+
+    const toggleNotificationRead = (id) => {
+        setNotifications(notifications.map(n => n.id === id ? { ...n, read: !n.read } : n));
+    };
+
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    // Tutup dropdown jika klik di luar area search atau notification
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setIsSearchFocused(false);
+            }
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                setIsNotificationOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchResults.length > 0) {
+                // Memastikan pemanggilan route aman menggunakan penanganan route helper ziggy
+                const targetRoute = typeof route === 'function' ? route(searchResults[0].route) : searchResults[0].route;
+                router.visit(targetRoute);
+                setIsSearchFocused(false);
+            }
+        }
+    };
+
     const currentPageInfo = menuItems.find(item => item.key === activePage) || menuItems[0];
 
     return (
@@ -132,8 +261,8 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                     href={route(item.route)}
                                     prefetch={["hover", "mount"]}
                                     className={`w-full flex items-center gap-4 px-4 py-3 rounded-full text-sm transition-all duration-200 ${isCurrent
-                                            ? 'bg-[#1e7e34] text-white font-semibold shadow-md shadow-emerald-700/20'
-                                            : 'text-slate-600 hover:text-[#1e7e34] hover:bg-emerald-50/55 dark:text-slate-300 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
+                                        ? 'bg-[#1e7e34] text-white font-semibold shadow-md shadow-emerald-700/20'
+                                        : 'text-slate-600 hover:text-[#1e7e34] hover:bg-emerald-50/55 dark:text-slate-300 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
                                         }`}
                                 >
                                     {item.icon}
@@ -195,16 +324,54 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
                     {/* Right Navbar Controls */}
                     <div className="flex items-center space-x-4">
-                        {/* Search Input */}
-                        <div className="relative hidden md:block">
-                            <input
-                                type="text"
-                                placeholder="Cari..."
-                                className="w-48 lg:w-64 bg-gray-50 dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-100/40 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#1F7A54] dark:focus:ring-emerald-500 transition-all"
-                            />
-                            <svg className="w-4 h-4 text-gray-400 dark:text-emerald-500/70 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                        {/* Search Input Interaktif dengan Dropdown */}
+                        <div className="relative hidden md:block" ref={searchRef}>
+                            <div className="relative flex items-center">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                    onFocus={handleInputFocus}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Cari menu, fitur..."
+                                    className="w-48 lg:w-64 bg-gray-50 dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-100/40 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#1F7A54] dark:focus:ring-emerald-500 transition-all"
+                                />
+                                <svg className="w-4 h-4 text-gray-400 dark:text-emerald-500/70 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => { setSearchQuery(''); setSearchResults([]); }}
+                                        className="absolute right-3 text-gray-400 hover:text-gray-600 dark:hover:text-emerald-300 text-xs font-bold"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Dropdown Hasil Pencarian Interaktif */}
+                            {isSearchFocused && searchResults.length > 0 && (
+                                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/80 rounded-2xl shadow-2xl py-3 z-50">
+                                    <div className="px-4 pb-2 text-[10px] font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-wider border-b border-gray-100 dark:border-emerald-900/40">
+                                        HASIL PENCARIAN
+                                    </div>
+                                    <div className="max-h-60 overflow-y-auto pt-2 space-y-1">
+                                        {searchResults.map((item, index) => (
+                                            <Link
+                                                key={index}
+                                                href={route(item.route)}
+                                                onClick={() => setIsSearchFocused(false)}
+                                                className="flex items-center justify-between px-4 py-2.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 transition-colors"
+                                            >
+                                                <span className="font-semibold">{item.name}</span>
+                                                <span className="text-[10px] px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-emerald-900/60 text-gray-600 dark:text-emerald-300 font-medium">
+                                                    {item.category}
+                                                </span>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Dark Mode Toggle */}
@@ -223,12 +390,72 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                             )}
                         </button>
 
-                        {/* Notification Bell */}
-                        <div className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#09170F]"></span>
+                        {/* Notification Bell Interaktif */}
+                        <div className="relative" ref={notificationRef}>
+                            <button
+                                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                                className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer focus:outline-none"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#09170F]"></span>
+                                )}
+                            </button>
+
+                            {/* Dropdown Notifikasi dengan Scroll */}
+                            {isNotificationOpen && (
+                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/85 rounded-2xl shadow-2xl py-3 z-50">
+                                    <div className="flex items-center justify-between px-4 pb-2 border-b border-gray-100 dark:border-emerald-900/40">
+                                        <div className="flex items-center space-x-2">
+                                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200">Notifikasi</span>
+                                            {unreadCount > 0 && (
+                                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 font-bold">
+                                                    {unreadCount} baru
+                                                </span>
+                                            )}
+                                        </div>
+                                        {unreadCount > 0 && (
+                                            <button
+                                                onClick={markAllAsRead}
+                                                className="text-[10px] text-[#1F7A54] dark:text-emerald-400 font-bold hover:underline cursor-pointer"
+                                            >
+                                                Tandai semua dibaca
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Daftar Notifikasi dengan Scroll (max-h-80 & overflow-y-auto) */}
+                                    <div className="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-emerald-950/40">
+                                        {notifications.length > 0 ? (
+                                            notifications.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => toggleNotificationRead(item.id)}
+                                                    className={`p-4 cursor-pointer transition-colors flex items-start space-x-3 ${item.read
+                                                        ? 'bg-white dark:bg-[#0B1E13] opacity-75'
+                                                        : 'bg-emerald-50/50 dark:bg-emerald-950/20'
+                                                        } hover:bg-emerald-50 dark:hover:bg-emerald-900/30`}
+                                                >
+                                                    <span className={`w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ${item.read ? 'bg-gray-300 dark:bg-emerald-800' : 'bg-[#1F7A54] dark:bg-emerald-400'}`}></span>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between">
+                                                            <h4 className="text-xs font-bold text-gray-900 dark:text-white">{item.title}</h4>
+                                                            <span className="text-[10px] text-gray-400 dark:text-emerald-500">{item.time}</span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-600 dark:text-emerald-100/70 mt-0.5">{item.description}</p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="p-6 text-center text-xs text-gray-400 dark:text-emerald-500">
+                                                Tidak ada notifikasi baru.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* User Profile Avatar */}
