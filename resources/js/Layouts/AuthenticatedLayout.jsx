@@ -1,9 +1,13 @@
 import { Link, usePage, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    // State untuk mengontrol buka/tutup dropdown notifikasi
+    const [notificationOpen, setNotificationOpen] = useState(false);
+    const notificationRef = useRef(null);
 
     const handleLogout = (e) => {
         e.preventDefault();
@@ -28,6 +32,17 @@ export default function AuthenticatedLayout({ children }) {
             localStorage.setItem('theme', 'light');
         }
     }, [darkMode]);
+
+    // Effect untuk menutup dropdown notifikasi jika klik di luar area
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                setNotificationOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // 3. Handler Toggle Dark Mode
     const toggleDarkMode = () => {
@@ -186,7 +201,7 @@ export default function AuthenticatedLayout({ children }) {
 
                     {/* Right: Search + Toggle Dark Mode + Notification + Profile */}
                     <div className="flex items-center space-x-4">
-                        {/* Search Bar (SEDAH DIPERBAIKI) */}
+                        {/* Search Bar */}
                         <div className="relative hidden md:block">
                             <input
                                 type="text"
@@ -205,30 +220,124 @@ export default function AuthenticatedLayout({ children }) {
                             className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:text-amber-300 dark:hover:text-amber-200 transition-colors focus:outline-none cursor-pointer"
                         >
                             {darkMode ? (
-                                /* Icon Sun (terang) */
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                                 </svg>
                             ) : (
-                                /* Icon Moon (gelap) */
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                                 </svg>
                             )}
                         </button>
 
-                        {/* Notifications Icon */}
-                        <div className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#09170F]"></span>
+                        {/* Notifications Icon with Interactive Rich Dropdown */}
+                        <div className="relative" ref={notificationRef}>
+                            <button
+                                onClick={() => setNotificationOpen(!notificationOpen)}
+                                title="Notifikasi"
+                                className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer focus:outline-none transition-colors"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#09170F]"></span>
+                            </button>
+
+                            {/* Dropdown Box Notifikasi */}
+                            {notificationOpen && (
+                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0E1F16] border border-gray-100 dark:border-emerald-950/60 rounded-2xl shadow-xl py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+
+                                    {/* Header Notifikasi */}
+                                    <div className="flex items-center justify-between px-4 pb-2.5 border-b border-gray-100 dark:border-emerald-950/40">
+                                        <div className="flex items-center space-x-2">
+                                            <span className="text-xs font-bold text-gray-800 dark:text-emerald-100">Notifikasi</span>
+                                            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-[#1F7A54] dark:text-emerald-300 px-2 py-0.5 rounded-full font-semibold">2 Baru</span>
+                                        </div>
+                                        <button
+                                            onClick={() => setNotificationOpen(false)}
+                                            className="text-[11px] text-[#1F7A54] dark:text-emerald-400 hover:underline font-semibold"
+                                        >
+                                            Tandai semua dibaca
+                                        </button>
+                                    </div>
+
+                                    {/* Daftar List Notifikasi (Bisa di-scroll dengan max-height) */}
+                                    <div className="divide-y divide-gray-50 dark:divide-emerald-950/30 max-h-72 overflow-y-auto custom-scrollbar">
+
+                                        {/* Item 1 */}
+                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start relative">
+                                            <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
+                                            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-[#1F7A54] dark:text-emerald-300 flex-shrink-0 mt-0.5">
+                                                🥗
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Waktunya Makan Siang!</p>
+                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Jangan lupa catat dan scan menu makan siangmu hari ini agar target gizi tercapai.</p>
+                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">Baru saja</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Item 2 */}
+                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start relative">
+                                            <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
+                                            <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-300 flex-shrink-0 mt-0.5">
+                                                🎉
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Target Kalori Terpenuhi</p>
+                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Hebat! Target nutrisi mingguanmu menunjukkan tren positif yang konsisten.</p>
+                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">Kemarin</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Item 3 */}
+                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start opacity-75">
+                                            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-300 flex-shrink-0 mt-0.5">
+                                                💡
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Tips Gizi Harian</p>
+                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Pastikan konsumsi air putih minimal 8 gelas sehari untuk menjaga metabolisme.</p>
+                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">3 hari lalu</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Item 4 (Contoh tambahan untuk melihat efek scroll) */}
+                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start opacity-75">
+                                            <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-600 dark:text-purple-300 flex-shrink-0 mt-0.5">
+                                                📊
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Laporan Mingguan Siap</p>
+                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Ringkasan grafik nutrisi minggu lalu sudah dapat dilihat di menu Laporan Mingguan.</p>
+                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">5 hari lalu</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    {/* Footer Dropdown */}
+                                    <div className="px-4 pt-2.5 text-center border-t border-gray-100 dark:border-emerald-950/40 flex justify-center items-center">
+                                        <button
+                                            onClick={() => setNotificationOpen(false)}
+                                            className="text-[11px] font-bold text-gray-400 hover:text-gray-600 dark:text-emerald-500 dark:hover:text-emerald-300 cursor-pointer"
+                                        >
+                                            Tutup
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        {/* User Profile Initial Icon */}
-                        <div className="w-8 h-8 rounded-full bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 flex items-center justify-center font-extrabold text-sm shadow-sm">
+                        {/* User Profile Initial Icon (Interaktif menuju Halaman Profil) */}
+                        <Link
+                            href={route('profile.edit')}
+                            prefetch={["hover", "mount"]}
+                            className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#164D2B] dark:bg-[#34D399] dark:hover:bg-[#28b57a] text-white dark:text-emerald-950 flex items-center justify-center font-extrabold text-sm shadow-sm transition-all duration-200 cursor-pointer"
+                            title="Buka Profil"
+                        >
                             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                        </div>
+                        </Link>
                     </div>
 
                 </header>
