@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Camera, Pencil, ChevronRight, Target, Bell, ShieldCheck, Star, LogOut, X, Eye, EyeOff, ChevronLeft, Send } from 'lucide-react';
@@ -17,10 +17,24 @@ export default function Edit({ auth }) {
 
     // Data states
     const [profileData, setProfileData] = useState({
-        name: user?.name || 'Budi Santoso',
-        email: user?.email || 'budi@email.com',
+        name: user?.name || 'Nadin Aulia Putri',
+        email: user?.email || 'nadinaulia261@gmail.com',
         phone: '+62 812-3456-7890',
     });
+
+    // Photo states
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const fileInputRef = useRef(null);
+
+    // Temporary states for editing profile in modal
+    const [tempProfileData, setTempProfileData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+    });
+    const [tempPhotoFile, setTempPhotoFile] = useState(null);
+    const [tempPhotoPreview, setTempPhotoPreview] = useState(null);
 
     const [healthTarget, setHealthTarget] = useState({
         goal: 'Menjaga Berat Badan',
@@ -44,7 +58,66 @@ export default function Edit({ auth }) {
     const [rating, setRating] = useState(0);
 
     // Handlers
-    const handleSaveProfile = () => setShowEditProfileModal(false);
+    const openEditProfileModal = () => {
+        setTempProfileData({
+            name: profileData.name,
+            email: profileData.email,
+            phone: profileData.phone,
+        });
+        setTempPhotoFile(photoFile);
+        setTempPhotoPreview(photoPreview);
+        setShowEditProfileModal(true);
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setTempPhotoFile(file);
+            setTempPhotoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleDeletePhoto = () => {
+        setTempPhotoFile(null);
+        setTempPhotoPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const handleSaveProfile = () => {
+        // Create FormData for simulation/API request preparation
+        const formData = new FormData();
+        formData.append('name', tempProfileData.name);
+        formData.append('email', tempProfileData.email);
+        formData.append('phone', tempProfileData.phone);
+        if (tempPhotoFile) {
+            formData.append('photo', tempPhotoFile);
+        } else {
+            formData.append('delete_photo', 'true');
+        }
+
+        // Log simulated request content
+        console.log('--- Preparing Profile Save Request ---');
+        console.log('Name:', formData.get('name'));
+        console.log('Email:', formData.get('email'));
+        console.log('Phone:', formData.get('phone'));
+        console.log('Photo File:', formData.get('photo'));
+        console.log('Delete Photo:', formData.get('delete_photo'));
+        console.log('--------------------------------------');
+
+        // Commit temporary state to main states
+        setProfileData({
+            name: tempProfileData.name,
+            email: tempProfileData.email,
+            phone: tempProfileData.phone,
+        });
+        setPhotoFile(tempPhotoFile);
+        setPhotoPreview(tempPhotoPreview);
+
+        setShowEditProfileModal(false);
+    };
+
     const handleSaveGoal = () => setShowGoalSettingModal(false);
     const handleSaveReview = () => setShowReviewModal(false);
 
@@ -62,11 +135,15 @@ export default function Edit({ auth }) {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-950/30 rounded-bl-full -z-10 opacity-50"></div>
 
                 {/* Avatar */}
-                <div className="w-24 h-24 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-4xl font-bold border-4 border-white dark:border-[#09170F] shadow-sm flex-shrink-0 relative">
-                    {profileData.name.charAt(0).toUpperCase()}
+                <div className="w-24 h-24 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-4xl font-bold border-4 border-white dark:border-[#09170F] shadow-sm flex-shrink-0 relative overflow-hidden">
+                    {photoPreview ? (
+                        <img src={photoPreview} alt="Foto Profil" className="w-full h-full object-cover" />
+                    ) : (
+                        profileData.name.charAt(0).toUpperCase()
+                    )}
                     <button
-                        onClick={() => setShowEditProfileModal(true)}
-                        className="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#0C1E14] rounded-full flex items-center justify-center shadow border border-gray-100 dark:border-emerald-800/60 text-gray-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition"
+                        onClick={openEditProfileModal}
+                        className="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#0C1E14] rounded-full flex items-center justify-center shadow border border-gray-100 dark:border-emerald-800/60 text-gray-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition z-10"
                     >
                         <Pencil size={14} />
                     </button>
@@ -83,7 +160,7 @@ export default function Edit({ auth }) {
 
                 {/* Tombol Edit Profil */}
                 <button
-                    onClick={() => setShowEditProfileModal(true)}
+                    onClick={openEditProfileModal}
                     className="flex items-center justify-center w-10 h-10 bg-gray-50 dark:bg-[#0C1E14] border border-gray-100 dark:border-emerald-800/50 text-gray-500 dark:text-emerald-400 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900/40 hover:border-emerald-100 dark:hover:border-emerald-700 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors shrink-0 shadow-sm"
                 >
                     <Pencil size={18} />
@@ -130,7 +207,7 @@ export default function Edit({ auth }) {
 
             {/* --- Daftar Menu Pengaturan --- */}
             <div className="bg-white dark:bg-[#09170F] rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 overflow-hidden mb-8 transition-colors">
-                <button onClick={() => setShowEditProfileModal(true)} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
+                <button onClick={openEditProfileModal} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
                     <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><Pencil size={18} /></div>
                     <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Edit Profil</p></div>
                     <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
@@ -271,32 +348,73 @@ export default function Edit({ auth }) {
             {showEditProfileModal && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
                     <div className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
-                        <button onClick={() => setShowEditProfileModal(false)} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition">
+                         <button onClick={() => setShowEditProfileModal(false)} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition">
                             <X size={20} />
                         </button>
                         <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Edit Profil</h3>
 
                         <div className="flex flex-col items-center mb-6">
-                            <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-3xl font-bold mb-3 border-4 border-white dark:border-[#09170F] shadow-sm">
-                                {profileData.name.charAt(0).toUpperCase()}
+                            <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-3xl font-bold mb-3 border-4 border-white dark:border-[#09170F] shadow-sm relative overflow-hidden">
+                                {tempPhotoPreview ? (
+                                    <img src={tempPhotoPreview} alt="Pratinjau Foto" className="w-full h-full object-cover" />
+                                ) : (
+                                    tempProfileData.name ? tempProfileData.name.charAt(0).toUpperCase() : 'N'
+                                )}
                             </div>
-                            <button className="px-4 py-1.5 bg-emerald-600 dark:bg-[#20D080] text-white dark:text-slate-950 text-xs font-bold rounded-full hover:bg-emerald-700 dark:hover:bg-emerald-400 transition">
-                                Ubah Foto
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => fileInputRef.current.click()}
+                                    className="px-4 py-1.5 bg-emerald-600 dark:bg-[#20D080] text-white dark:text-slate-950 text-xs font-bold rounded-full hover:bg-emerald-700 dark:hover:bg-emerald-400 transition"
+                                >
+                                    Ubah Foto
+                                </button>
+                                {tempPhotoPreview && (
+                                    <button
+                                        type="button"
+                                        onClick={handleDeletePhoto}
+                                        className="px-4 py-1.5 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-xs font-bold rounded-full hover:bg-red-200 dark:hover:bg-red-900/40 transition"
+                                    >
+                                        Hapus Foto
+                                    </button>
+                                )}
+                            </div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                accept="image/*"
+                                className="hidden"
+                            />
                         </div>
 
                         <div className="space-y-4 mb-6">
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Nama Lengkap</label>
-                                <input type="text" defaultValue={profileData.name} className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none" />
+                                <input
+                                    type="text"
+                                    value={tempProfileData.name}
+                                    onChange={(e) => setTempProfileData({ ...tempProfileData, name: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none"
+                                />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Email</label>
-                                <input type="email" defaultValue={profileData.email} className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none" />
+                                <input
+                                    type="email"
+                                    value={tempProfileData.email}
+                                    onChange={(e) => setTempProfileData({ ...tempProfileData, email: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none"
+                                />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Nomor Telepon</label>
-                                <input type="text" defaultValue={profileData.phone} className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none" />
+                                <input
+                                    type="text"
+                                    value={tempProfileData.phone}
+                                    onChange={(e) => setTempProfileData({ ...tempProfileData, phone: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none"
+                                />
                             </div>
                         </div>
 
