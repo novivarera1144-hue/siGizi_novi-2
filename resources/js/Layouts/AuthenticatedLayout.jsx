@@ -3,7 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
+    const { url } = usePage();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [url]);
 
     // State untuk mengontrol buka/tutup dropdown notifikasi
     const [notificationOpen, setNotificationOpen] = useState(false);

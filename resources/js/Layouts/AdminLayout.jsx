@@ -3,7 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function AdminLayout({ children, activePage = 'dashboard', title, subtitle }) {
     const user = usePage().props.auth?.user || { name: 'Administrator', email: 'admin@sigizi.com' };
+    const { url } = usePage();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [url]);
 
     // State untuk Fitur Pencarian Interaktif
     const [searchQuery, setSearchQuery] = useState('');

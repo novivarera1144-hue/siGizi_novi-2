@@ -8,6 +8,8 @@ export default function GuestLayout({ children, title, subtitle }) {
             (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
     );
 
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
     useEffect(() => {
         if (darkMode) {
             document.documentElement.classList.add('dark');
@@ -106,8 +108,49 @@ export default function GuestLayout({ children, title, subtitle }) {
                                 </svg>
                             )}
                         </button>
+
+                        {/* Hamburger Button */}
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="p-2 rounded-full md:hidden text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white focus:outline-none bg-gray-100 dark:bg-[#0B2B18] hover:bg-gray-200 dark:hover:bg-[#164D2B] transition-all cursor-pointer ml-1"
+                            aria-label="Toggle Navigation Menu"
+                        >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                {mobileMenuOpen ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                                )}
+                            </svg>
+                        </button>
                     </div>
                 </div>
+
+                {/* Mobile Dropdown Menu */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden mt-3 pt-3 border-t border-gray-100 dark:border-[#164D2B] flex flex-col space-y-2 animate-in slide-in-from-top-2 duration-200">
+                        <Link
+                            href="/"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all ${currentPath === '/' || currentPath === ''
+                                ? "bg-emerald-50 dark:bg-emerald-950/40 text-[#1F7A54] dark:text-emerald-400"
+                                : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-emerald-950/20"
+                            }`}
+                        >
+                            Home
+                        </Link>
+                        <Link
+                            href="/tentang-kami"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all ${currentPath === '/tentang-kami'
+                                ? "bg-emerald-50 dark:bg-emerald-950/40 text-[#1F7A54] dark:text-emerald-400"
+                                : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-emerald-950/20"
+                            }`}
+                        >
+                            Tentang Kami
+                        </Link>
+                    </div>
+                )}
             </nav>
 
             {/* AREA UTAMA DI TENGAH */}
