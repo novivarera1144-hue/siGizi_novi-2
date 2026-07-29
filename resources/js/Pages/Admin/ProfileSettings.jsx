@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function ProfileSettings() {
     const { auth, flash } = usePage().props;
@@ -11,10 +11,12 @@ export default function ProfileSettings() {
         name: user.name,
         email: user.email,
         avatar: null,
+        remove_avatar: false, // Tambahan flag untuk menghapus foto di backend jika diperlukan
     });
 
     // Preview foto profil lokal
     const [avatarPreview, setAvatarPreview] = useState(user.avatar || null);
+    const fileInputRef = useRef(null);
 
     // Form data untuk update password
     const passwordForm = useForm({
@@ -30,7 +32,18 @@ export default function ProfileSettings() {
         const file = e.target.files[0];
         if (file) {
             profileForm.setData('avatar', file);
+            profileForm.setData('remove_avatar', false);
             setAvatarPreview(URL.createObjectURL(file));
+        }
+    };
+
+    // Fungsi untuk menghapus foto profil
+    const handleRemoveAvatar = () => {
+        profileForm.setData('avatar', null);
+        profileForm.setData('remove_avatar', true);
+        setAvatarPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
     };
 
@@ -95,12 +108,12 @@ export default function ProfileSettings() {
                                     <img src={avatarPreview} alt="Foto Profil" className="w-24 h-24 rounded-full object-cover shadow-md mx-auto" />
                                 ) : (
                                     <div className="w-24 h-24 rounded-full bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-3xl shadow-md mx-auto">
-                                        {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                                        {profileForm.data.name ? profileForm.data.name.charAt(0).toUpperCase() : 'A'}
                                     </div>
                                 )}
                             </div>
-                            <h3 className="text-base font-extrabold text-gray-900 dark:text-white truncate">{user.name}</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold truncate mt-0.5">{user.email}</p>
+                            <h3 className="text-base font-extrabold text-gray-900 dark:text-white truncate">{profileForm.data.name}</h3>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold truncate mt-0.5">{profileForm.data.email}</p>
                             <div className="mt-4 inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-wider">
                                 Administrator
                             </div>
@@ -116,15 +129,30 @@ export default function ProfileSettings() {
 
                             <form onSubmit={submitProfile} className="space-y-6">
                                 <div className="space-y-4">
-                                    {/* Upload Foto Profil Input */}
+                                    {/* Upload Foto Profil Input dengan Tombol Hapus */}
                                     <div>
                                         <label className="block text-[10px] font-extrabold text-gray-400 dark:text-emerald-500 uppercase tracking-widest mb-2">Foto Profil</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleAvatarChange}
-                                            className="w-full text-xs text-gray-500 dark:text-emerald-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 dark:file:bg-emerald-950/60 dark:file:text-emerald-400 hover:file:bg-emerald-100 cursor-pointer"
-                                        />
+                                        <div className="flex items-center gap-3 flex-wrap">
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleAvatarChange}
+                                                className="w-full sm:w-auto text-xs text-gray-500 dark:text-emerald-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 dark:file:bg-emerald-950/60 dark:file:text-emerald-400 hover:file:bg-emerald-100 cursor-pointer"
+                                            />
+                                            {avatarPreview && (
+                                                <button
+                                                    type="button"
+                                                    onClick={handleRemoveAvatar}
+                                                    className="px-3.5 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-xs font-bold rounded-xl transition duration-150 flex items-center gap-1.5"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    Hapus Foto
+                                                </button>
+                                            )}
+                                        </div>
                                         {profileForm.errors.avatar && (
                                             <span className="text-xs text-red-500 font-medium mt-1.5 block">{profileForm.errors.avatar}</span>
                                         )}
@@ -254,8 +282,8 @@ export default function ProfileSettings() {
                             <button
                                 onClick={toggle2fa}
                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${is2faEnabled
-                                        ? 'bg-emerald-600 text-white shadow-md'
-                                        : 'bg-gray-200 dark:bg-emerald-950/60 text-gray-700 dark:text-emerald-400'
+                                    ? 'bg-emerald-600 text-white shadow-md'
+                                    : 'bg-gray-200 dark:bg-emerald-950/60 text-gray-700 dark:text-emerald-400'
                                     }`}
                             >
                                 {is2faEnabled ? 'Aktif' : 'Nonaktif'}
