@@ -185,22 +185,22 @@ export default function Edit({ auth }) {
                 </div>
 
                 {/* Grid Info Target */}
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Tujuan</p>
-                        <p className="font-bold text-gray-900 dark:text-white">{healthTarget.goal}</p>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
+                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Tujuan</p>
+                        <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">{healthTarget.goal}</p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Target Kalori</p>
-                        <p className="font-bold text-gray-900 dark:text-white">{healthTarget.targetCalories} <span className="text-sm font-medium text-gray-500 dark:text-emerald-500/80">kkal/hari</span></p>
+                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
+                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Target Kalori</p>
+                        <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{healthTarget.targetCalories} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kkal/hari</span></p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Berat Badan</p>
-                        <p className="font-bold text-gray-900 dark:text-white">{healthTarget.weight} <span className="text-sm font-medium text-gray-500 dark:text-emerald-500/80">kg</span></p>
+                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
+                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Berat Badan</p>
+                        <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{healthTarget.weight} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kg</span></p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Tinggi Badan</p>
-                        <p className="font-bold text-gray-900 dark:text-white">{healthTarget.height} <span className="text-sm font-medium text-gray-500 dark:text-emerald-500/80">cm</span></p>
+                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
+                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Tinggi Badan</p>
+                        <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{healthTarget.height} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">cm</span></p>
                     </div>
                 </div>
             </div>

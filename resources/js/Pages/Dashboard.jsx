@@ -111,7 +111,7 @@ export default function Dashboard({ auth }) {
                         <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
                             DASHBOARD
                         </span>
-                        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
                             Selamat pagi, {user?.name ?? 'Budi'} 👏
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-1">
@@ -122,9 +122,9 @@ export default function Dashboard({ auth }) {
                     <Link
                         href="/scan"
                         prefetch={["hover", "mount"]}
-                        className="inline-flex items-center space-x-2 px-5 py-3 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-black font-bold text-sm rounded-2xl shadow-lg transition-all duration-200 cursor-pointer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-black font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-lg transition-all duration-200 cursor-pointer"
                     >
-                        <svg className="w-4 h-4 text-white dark:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <svg className="w-4 h-4 text-white dark:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Scan Makanan</span>
@@ -132,19 +132,21 @@ export default function Dashboard({ auth }) {
                 </div>
 
                 {/* 4 Stat Cards Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                     {stats.map((stat, idx) => (
-                        <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
-                            <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
-                                {stat.icon}
+                        <div key={idx} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-3 sm:space-y-4">
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
+                                <div className="scale-75 sm:scale-100 flex items-center justify-center">
+                                    {stat.icon}
+                                </div>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
-                                <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+                                <p className="text-[9px] sm:text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
+                                <h3 className="text-lg sm:text-2xl font-extrabold text-gray-900 dark:text-white leading-tight">
                                     {stat.value}
-                                    {stat.unit && <span className="text-xs font-medium text-gray-400 dark:text-emerald-100/60 ml-1">{stat.unit}</span>}
+                                    {stat.unit && <span className="text-[10px] sm:text-xs font-medium text-gray-400 dark:text-emerald-100/60 ml-1">{stat.unit}</span>}
                                 </h3>
-                                <p className="text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
+                                <p className="text-[9px] sm:text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
                             </div>
                         </div>
                     ))}
@@ -264,11 +266,11 @@ export default function Dashboard({ auth }) {
                                         )}
 
                                         {/* Graph Columns adjacent */}
-                                        <div className="flex space-x-1 items-end justify-center w-full h-36">
+                                        <div className="flex space-x-0.5 sm:space-x-1 items-end justify-center w-full h-36">
                                             {/* Batang Aktual (Hijau Terang) */}
                                             <div
                                                 style={{ height: `${currentHeight}%` }}
-                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-300 ${isHovered
+                                                className={`w-1.5 sm:w-3.5 rounded-t-sm transition-all duration-300 ${isHovered
                                                     ? 'bg-[#22c55e] dark:bg-emerald-400 shadow-md shadow-emerald-500/20'
                                                     : 'bg-[#22c55e]/90 dark:bg-emerald-500/80 hover:bg-[#22c55e]'
                                                     }`}
@@ -276,7 +278,7 @@ export default function Dashboard({ auth }) {
                                             {/* Batang Target (Hitam/Gelap) */}
                                             <div
                                                 style={{ height: `${targetHeight}%` }}
-                                                className="w-2.5 sm:w-3.5 rounded-t-sm bg-gray-900 dark:bg-gray-800 transition-all duration-300"
+                                                className="w-1.5 sm:w-3.5 rounded-t-sm bg-gray-900 dark:bg-gray-800 transition-all duration-300"
                                             ></div>
                                         </div>
 
