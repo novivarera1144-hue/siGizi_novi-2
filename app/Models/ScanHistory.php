@@ -17,7 +17,7 @@ class ScanHistory extends Model
         'foto_scan',
         'kalori_terdeteksi',
         'protein',
-        'karboh',
+        'karbo',
         'lemak',
     ];
 

@@ -107,6 +107,8 @@ class ScanController extends Controller
                 'recommendations' => $recommendations,
                 'badge' => $badge,
             ];
+            
+            $userId = auth()->id() ?? 1;
 
             ScanHistory::create([
                 'user_id' => auth()->id(),
