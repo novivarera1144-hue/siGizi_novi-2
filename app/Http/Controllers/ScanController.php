@@ -110,13 +110,12 @@ class ScanController extends Controller
 
             ScanHistory::create([
                 'user_id' => auth()->id(),
-                'nama_makanan' => $foodName,
+                'nama_Makanan' => $foodName,
                 'foto_scan' => $imageUrl,
                 'kalori_terdeteksi' => $calories,
                 'protein' => $protG,
-                'karbohidrat' => $karboG,
+                'karbo' => $karboG,
                 'lemak' => $lemakG,
-                'analisis_lengkap_ai' => $data,
             ]);
 
             // 5. Render ResultPage via Inertia
@@ -133,6 +132,8 @@ class ScanController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            // Hentikan program dan tampilkan error persis dibawah browser
+            dd($e->getMessage());
             Log::error('Scan Error: ' . $e->getMessage());
             return back()->withErrors([
                 'image' => 'Terjadi kesalahan sistem saat menganalisis gambar: ' . $e->getMessage()
