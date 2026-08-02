@@ -9,9 +9,9 @@ export default function Dashboard({ auth }) {
     // Stat cards values
     const stats = [
         {
-            title: "Kalori Hari Ini",
+            title: "KALORI HARI INI",
             value: "1,248",
-            unit: "",
+            unit: "kkal",
             target: "Target: 2,000 kkal",
             color: "bg-orange-500 text-white",
             icon: (
@@ -21,7 +21,7 @@ export default function Dashboard({ auth }) {
             )
         },
         {
-            title: "Protein",
+            title: "PROTEIN",
             value: "68g",
             target: "Target: 90g",
             color: "bg-blue-500 text-white",
@@ -32,7 +32,7 @@ export default function Dashboard({ auth }) {
             )
         },
         {
-            title: "Lemak",
+            title: "LEMAK",
             value: "42g",
             target: "Target: 65g",
             color: "bg-amber-400 text-black",
@@ -43,7 +43,7 @@ export default function Dashboard({ auth }) {
             )
         },
         {
-            title: "Karbohidrat",
+            title: "KARBOHIDRAT",
             value: "156g",
             target: "Target: 250g",
             color: "bg-emerald-500 text-white",
@@ -88,13 +88,13 @@ export default function Dashboard({ auth }) {
         }
     ];
 
-    // Weekly Bar data
+    // Weekly Calorie Bar data
     const weeklyData = [
         { day: "Sen", calories: 1600, target: 2000 },
-        { day: "Sel", calories: 2100, target: 2000 },
-        { day: "Rab", calories: 1500, target: 2000 },
+        { day: "Sel", calories: 1900, target: 2000 },
+        { day: "Rab", calories: 1720, target: 2000 },
         { day: "Kam", calories: 1960, target: 2000 },
-        { day: "Jum", calories: 2200, target: 2000 },
+        { day: "Jum", calories: 2100, target: 2000 },
         { day: "Sab", calories: 1400, target: 2000 },
         { day: "Min", calories: 1200, target: 2000 },
     ];
@@ -142,6 +142,7 @@ export default function Dashboard({ auth }) {
                                 <p className="text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
                                 <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">
                                     {stat.value}
+                                    {stat.unit && <span className="text-xs font-medium text-gray-400 dark:text-emerald-100/60 ml-1">{stat.unit}</span>}
                                 </h3>
                                 <p className="text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
                             </div>
@@ -156,7 +157,7 @@ export default function Dashboard({ auth }) {
                     <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Nutrisi Hari Ini</h2>
-                            <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 tracking-wider">18 JUN 2025</span>
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 tracking-wider">22 JUL 2026</span>
                         </div>
 
                         <div className="space-y-6">
@@ -213,8 +214,8 @@ export default function Dashboard({ auth }) {
 
                 </div>
 
-                {/* Bottom Bar Chart: Kalori Minggu Ini dengan Animasi Geser & Tooltip Interaktif */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm relative">
+                {/* Bottom Bar Chart: Kalori Minggu Ini (Tanpa Angka Sumbu Y & Label Aktual Diganti Kalori) */}
+                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
                         <Link href={route('laporan.mingguan')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
@@ -223,56 +224,79 @@ export default function Dashboard({ auth }) {
                         </Link>
                     </div>
 
-                    {/* Chart Bar Container */}
-                    <div className="grid grid-cols-7 gap-4 sm:gap-12 items-end h-40 px-2 sm:px-8 pb-2">
-                        {weeklyData.map((data, idx) => {
-                            const currentHeight = Math.min((data.calories / 2500) * 100, 100);
-                            const targetHeight = Math.min((data.target / 2500) * 100, 100);
-                            const isHovered = hoveredDay === data.day;
+                    {/* Chart Wrapper */}
+                    <div className="flex items-end pt-6 pb-2 px-2 sm:px-4">
 
-                            return (
-                                <div
-                                    key={idx}
-                                    onMouseEnter={() => setHoveredDay(data.day)}
-                                    onMouseLeave={() => setHoveredDay(null)}
-                                    className={`flex flex-col items-center group relative h-full justify-end cursor-pointer rounded-2xl transition-all duration-300 py-2 ${isHovered ? 'bg-gray-100/90 dark:bg-[#182b1f]/80 translate-y-[-4px]' : 'hover:translate-y-[-2px]'
-                                        }`}
-                                >
-                                    {/* Tooltip Pop-up dengan Animasi Geser Naik */}
-                                    {isHovered && (
-                                        <div className="absolute -top-16 z-20 bg-white dark:bg-[#1b2f23] border border-gray-200 dark:border-emerald-800/60 shadow-2xl rounded-2xl p-2.5 w-28 text-center transition-all duration-300 transform translate-y-0 opacity-100">
-                                            <p className="text-[11px] font-bold text-gray-800 dark:text-white">{data.day}</p>
-                                            <p className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 mt-0.5">
-                                                kalori : {data.calories}
-                                            </p>
-                                            <p className="text-[9px] text-gray-400 dark:text-emerald-100/50">
-                                                target : {data.target}
-                                            </p>
+                        {/* Bar Chart Container (Tanpa Sumbu Y di Kiri) */}
+                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-44 w-full relative border-b border-gray-100 dark:border-[#1a2e22] px-2">
+                            {weeklyData.map((data, idx) => {
+                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
+                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
+                                const isHovered = hoveredDay === data.day;
+
+                                return (
+                                    <div
+                                        key={idx}
+                                        onMouseEnter={() => setHoveredDay(data.day)}
+                                        onMouseLeave={() => setHoveredDay(null)}
+                                        className="flex flex-col items-center group relative w-full pt-4 rounded-2xl px-1 pb-1 cursor-pointer"
+                                    >
+                                        {/* Kotak Tooltip Interaktif */}
+                                        {isHovered && (
+                                            <div className="absolute -top-20 bg-gray-900 text-white text-[11px] font-medium py-2 px-3 rounded-2xl shadow-xl z-30 pointer-events-none transition-all flex flex-col space-y-0.5 min-w-[95px] border border-gray-800">
+                                                <span className="font-extrabold text-emerald-400 mb-0.5 border-b border-gray-800 pb-0.5">
+                                                    {data.day}
+                                                </span>
+                                                <div className="flex justify-between items-center text-[10px]">
+                                                    <span className="text-gray-400">Kalori :</span>
+                                                    <span className="font-bold text-white ml-2">{data.calories}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-[10px]">
+                                                    <span className="text-gray-400">Target :</span>
+                                                    <span className="font-bold text-white ml-2">{data.target}</span>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Graph Columns adjacent */}
+                                        <div className="flex space-x-1 items-end justify-center w-full h-36">
+                                            {/* Batang Kalori (Hijau Terang) */}
+                                            <div
+                                                style={{ height: `${currentHeight}%` }}
+                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered
+                                                        ? 'bg-emerald-400 dark:bg-emerald-300 shadow-md'
+                                                        : 'bg-[#22c55e]/90 dark:bg-emerald-500/80'
+                                                    }`}
+                                            ></div>
+                                            {/* Batang Target (Hitam/Gelap) */}
+                                            <div
+                                                style={{ height: `${targetHeight}%` }}
+                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered
+                                                        ? 'bg-gray-700 dark:bg-gray-600'
+                                                        : 'bg-gray-900 dark:bg-gray-800'
+                                                    }`}
+                                            ></div>
                                         </div>
-                                    )}
 
-                                    {/* Batang Berdampingan dengan Efek Animasi Skala & Geser */}
-                                    <div className="flex space-x-1.5 items-end justify-center w-full h-full">
-                                        <div
-                                            style={{ height: `${currentHeight}%` }}
-                                            className={`w-3.5 sm:w-5 rounded-t-md transition-all duration-300 ease-out transform ${isHovered ? 'bg-[#1b6b49] scale-105 shadow-md' : 'bg-[#237c57]'
-                                                }`}
-                                        ></div>
-                                        <div
-                                            style={{ height: `${targetHeight}%` }}
-                                            className={`w-3.5 sm:w-5 rounded-t-md transition-all duration-300 ease-out transform ${isHovered ? 'bg-gray-300 dark:bg-[#254230] scale-105' : 'bg-gray-100 dark:bg-[#1a2e22]'
-                                                }`}
-                                        ></div>
+                                        <span className={`text-xs font-bold mt-2 block transition-colors ${isHovered ? 'text-[#1F7A54] dark:text-emerald-400' : 'text-gray-400 dark:text-emerald-100/40'}`}>
+                                            {data.day}
+                                        </span>
                                     </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
-                                    {/* Label Hari */}
-                                    <span className={`text-xs font-bold mt-3 block transition-colors duration-200 ${isHovered ? 'text-[#1F7A54] dark:text-emerald-400' : 'text-gray-400 dark:text-emerald-100/40'
-                                        }`}>
-                                        {data.day}
-                                    </span>
-                                </div>
-                            );
-                        })}
+                    {/* Legenda Indikator Diagram (Kalori vs Target) */}
+                    <div className="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-gray-100 dark:border-[#1a2e22]">
+                        <div className="flex items-center space-x-2">
+                            <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Kalori</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <div className="w-3 h-3 rounded-full bg-gray-900 dark:bg-gray-700"></div>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Target</span>
+                        </div>
                     </div>
 
                 </div>
