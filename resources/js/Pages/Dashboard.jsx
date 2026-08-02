@@ -88,16 +88,18 @@ export default function Dashboard({ auth }) {
         }
     ];
 
-    // Weekly Calorie Bar data
+    // Weekly Calorie Bar data dengan koreksi Rabu (1720) dan Minggu (1248)
     const weeklyData = [
-        { day: "Sen", calories: 1600, target: 2000 },
-        { day: "Sel", calories: 1900, target: 2000 },
+        { day: "Sen", calories: 1850, target: 2000 },
+        { day: "Sel", calories: 2100, target: 2000 },
         { day: "Rab", calories: 1720, target: 2000 },
-        { day: "Kam", calories: 1960, target: 2000 },
-        { day: "Jum", calories: 2100, target: 2000 },
-        { day: "Sab", calories: 1400, target: 2000 },
-        { day: "Min", calories: 1200, target: 2000 },
+        { day: "Kam", calories: 1950, target: 2000 },
+        { day: "Jum", calories: 2250, target: 2000 },
+        { day: "Sab", calories: 1248, target: 2000 },
+        { day: "Min", calories: 1248, target: 2000 },
     ];
+
+    const MAX_VAL = 2400;
 
     return (
         <AuthenticatedLayout>
@@ -205,7 +207,6 @@ export default function Dashboard({ auth }) {
                                     </div>
 
                                     <div className={`w-8 h-8 rounded-full ${item.scoreColor} flex items-center justify-center font-bold text-xs shadow-sm shrink-0`}>
-                                        {item.score}
                                     </div>
                                 </div>
                             ))}
@@ -214,9 +215,9 @@ export default function Dashboard({ auth }) {
 
                 </div>
 
-                {/* Bottom Bar Chart: Kalori Minggu Ini (Tanpa Angka Sumbu Y & Label Aktual Diganti Kalori) */}
+                {/* Bottom Bar Chart: Kalori Minggu Ini (Skala Tinggi Batang Akurat Menempel ke Garis Grid) */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
-                    <div className="flex justify-between items-center mb-8">
+                    <div className="flex justify-between items-center mb-6">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
                         <Link href={route('laporan.mingguan')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
                             <span>Lihat laporan</span>
@@ -224,14 +225,34 @@ export default function Dashboard({ auth }) {
                         </Link>
                     </div>
 
-                    {/* Chart Wrapper */}
-                    <div className="flex items-end pt-6 pb-2 px-2 sm:px-4">
+                    {/* Chart Wrapper dengan Sumbu Y & Grid yang Akurat */}
+                    <div className="flex items-end pt-2 pb-1 px-1 sm:px-2">
 
-                        {/* Bar Chart Container (Tanpa Sumbu Y di Kiri) */}
-                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-44 w-full relative border-b border-gray-100 dark:border-[#1a2e22] px-2">
+                        {/* Label Angka Sumbu Y dengan tinggi persis (h-48) agar pas dengan garis grid */}
+                        <div className="flex flex-col justify-between h-48 text-[10px] font-bold text-gray-400 dark:text-emerald-100/50 pr-3 text-right select-none shrink-0 translate-y-2">
+                            <span className="leading-none">2400</span>
+                            <span className="leading-none">1800</span>
+                            <span className="leading-none">1200</span>
+                            <span className="leading-none">600</span>
+                            <span className="leading-none">0</span>
+                        </div>
+
+                        {/* Bar Chart Container dengan Garis Latar Belakang (Grid) */}
+                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-48 w-full relative border-b border-gray-200 dark:border-[#1a2e22] px-2">
+
+                            {/* Garis-garis Grid Horizontal Latar Belakang (Tepat 5 Garis) */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full"></div>
+                            </div>
+
                             {weeklyData.map((data, idx) => {
-                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
-                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
+                                // Kalkulasi presisi persentase tinggi berdasarkan MAX_VAL (2400)
+                                const currentHeight = (data.calories / MAX_VAL) * 100;
+                                const targetHeight = (data.target / MAX_VAL) * 100;
                                 const isHovered = hoveredDay === data.day;
 
                                 return (
@@ -239,7 +260,7 @@ export default function Dashboard({ auth }) {
                                         key={idx}
                                         onMouseEnter={() => setHoveredDay(data.day)}
                                         onMouseLeave={() => setHoveredDay(null)}
-                                        className="flex flex-col items-center group relative w-full pt-4 rounded-2xl px-1 pb-1 cursor-pointer"
+                                        className="flex flex-col items-center group relative w-full pt-2 rounded-2xl px-1 pb-1 cursor-pointer z-10"
                                     >
                                         {/* Kotak Tooltip Interaktif */}
                                         {isHovered && (
@@ -248,7 +269,7 @@ export default function Dashboard({ auth }) {
                                                     {data.day}
                                                 </span>
                                                 <div className="flex justify-between items-center text-[10px]">
-                                                    <span className="text-gray-400">Kalori :</span>
+                                                    <span className="text-gray-400">Aktual :</span>
                                                     <span className="font-bold text-white ml-2">{data.calories}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center text-[10px]">
@@ -259,21 +280,21 @@ export default function Dashboard({ auth }) {
                                         )}
 
                                         {/* Graph Columns adjacent */}
-                                        <div className="flex space-x-1 items-end justify-center w-full h-36">
-                                            {/* Batang Kalori (Hijau Terang) */}
+                                        <div className="flex space-x-1 items-end justify-center w-full h-48">
+                                            {/* Batang Aktual (Hijau) */}
                                             <div
                                                 style={{ height: `${currentHeight}%` }}
                                                 className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered
-                                                        ? 'bg-emerald-400 dark:bg-emerald-300 shadow-md'
-                                                        : 'bg-[#22c55e]/90 dark:bg-emerald-500/80'
+                                                    ? 'bg-emerald-400 dark:bg-emerald-300 shadow-md'
+                                                    : 'bg-[#22c55e]/90 dark:bg-emerald-500/80'
                                                     }`}
                                             ></div>
-                                            {/* Batang Target (Hitam/Gelap) */}
+                                            {/* Batang Target (Gelap) */}
                                             <div
                                                 style={{ height: `${targetHeight}%` }}
                                                 className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered
-                                                        ? 'bg-gray-700 dark:bg-gray-600'
-                                                        : 'bg-gray-900 dark:bg-gray-800'
+                                                    ? 'bg-gray-700 dark:bg-gray-600'
+                                                    : 'bg-gray-900 dark:bg-gray-800'
                                                     }`}
                                             ></div>
                                         </div>
@@ -287,11 +308,11 @@ export default function Dashboard({ auth }) {
                         </div>
                     </div>
 
-                    {/* Legenda Indikator Diagram (Kalori vs Target) */}
+                    {/* Legenda Indikator Diagram (Aktual vs Target) */}
                     <div className="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-gray-100 dark:border-[#1a2e22]">
                         <div className="flex items-center space-x-2">
                             <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
-                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Kalori</span>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Aktual</span>
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="w-3 h-3 rounded-full bg-gray-900 dark:bg-gray-700"></div>
