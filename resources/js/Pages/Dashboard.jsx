@@ -4,14 +4,14 @@ import { useState } from 'react';
 
 export default function Dashboard({ auth }) {
     const user = auth.user;
-    const [hoveredDay, setHoveredDay] = useState('Kam'); // Default aktif di hari Kamis
+    const [hoveredDay, setHoveredDay] = useState(null);
 
     // Stat cards values
     const stats = [
         {
-            title: "KALORI HARI INI",
+            title: "Kalori Hari Ini",
             value: "1,248",
-            unit: "kkal",
+            unit: "",
             target: "Target: 2,000 kkal",
             color: "bg-orange-500 text-white",
             icon: (
@@ -21,7 +21,7 @@ export default function Dashboard({ auth }) {
             )
         },
         {
-            title: "PROTEIN",
+            title: "Protein",
             value: "68g",
             target: "Target: 90g",
             color: "bg-blue-500 text-white",
@@ -32,7 +32,7 @@ export default function Dashboard({ auth }) {
             )
         },
         {
-            title: "LEMAK",
+            title: "Lemak",
             value: "42g",
             target: "Target: 65g",
             color: "bg-amber-400 text-black",
@@ -43,7 +43,7 @@ export default function Dashboard({ auth }) {
             )
         },
         {
-            title: "KARBOHIDRAT",
+            title: "Karbohidrat",
             value: "156g",
             target: "Target: 250g",
             color: "bg-emerald-500 text-white",
@@ -88,13 +88,13 @@ export default function Dashboard({ auth }) {
         }
     ];
 
-    // Weekly Calorie Bar data
+    // Weekly Bar data
     const weeklyData = [
         { day: "Sen", calories: 1600, target: 2000 },
-        { day: "Sel", calories: 1900, target: 2000 },
+        { day: "Sel", calories: 2100, target: 2000 },
         { day: "Rab", calories: 1500, target: 2000 },
         { day: "Kam", calories: 1960, target: 2000 },
-        { day: "Jum", calories: 2100, target: 2000 },
+        { day: "Jum", calories: 2200, target: 2000 },
         { day: "Sab", calories: 1400, target: 2000 },
         { day: "Min", calories: 1200, target: 2000 },
     ];
@@ -111,7 +111,7 @@ export default function Dashboard({ auth }) {
                         <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
                             DASHBOARD
                         </span>
-                        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
                             Selamat pagi, {user?.name ?? 'Budi'} 👏
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-1">
@@ -122,9 +122,9 @@ export default function Dashboard({ auth }) {
                     <Link
                         href="/scan"
                         prefetch={["hover", "mount"]}
-                        className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-black font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-lg transition-all duration-200 cursor-pointer"
+                        className="inline-flex items-center space-x-2 px-5 py-3 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-black font-bold text-sm rounded-2xl shadow-lg transition-all duration-200 cursor-pointer"
                     >
-                        <svg className="w-4 h-4 text-white dark:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="w-4 h-4 text-white dark:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Scan Makanan</span>
@@ -132,21 +132,18 @@ export default function Dashboard({ auth }) {
                 </div>
 
                 {/* 4 Stat Cards Row */}
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {stats.map((stat, idx) => (
-                        <div key={idx} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-3 sm:space-y-4">
-                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
-                                <div className="scale-75 sm:scale-100 flex items-center justify-center">
-                                    {stat.icon}
-                                </div>
+                        <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
+                            <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
+                                {stat.icon}
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[9px] sm:text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
-                                <h3 className="text-lg sm:text-2xl font-extrabold text-gray-900 dark:text-white leading-tight">
+                                <p className="text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
+                                <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">
                                     {stat.value}
-                                    {stat.unit && <span className="text-[10px] sm:text-xs font-medium text-gray-400 dark:text-emerald-100/60 ml-1">{stat.unit}</span>}
                                 </h3>
-                                <p className="text-[9px] sm:text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
+                                <p className="text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
                             </div>
                         </div>
                     ))}
@@ -159,7 +156,7 @@ export default function Dashboard({ auth }) {
                     <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Nutrisi Hari Ini</h2>
-                            <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 tracking-wider">22 JUL 2026</span>
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 tracking-wider">18 JUN 2025</span>
                         </div>
 
                         <div className="space-y-6">
@@ -216,8 +213,8 @@ export default function Dashboard({ auth }) {
 
                 </div>
 
-                {/* Bottom Bar Chart: Kalori Minggu Ini dengan Hover Effect */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
+                {/* Bottom Bar Chart: Kalori Minggu Ini dengan Animasi Geser & Tooltip Interaktif */}
+                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm relative">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
                         <Link href={route('laporan.mingguan')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
@@ -226,84 +223,56 @@ export default function Dashboard({ auth }) {
                         </Link>
                     </div>
 
-                    {/* Chart Wrapper dengan Sumbu Y di Kiri */}
-                    <div className="flex items-end pt-6 pb-2 px-2 sm:px-4">
+                    {/* Chart Bar Container */}
+                    <div className="grid grid-cols-7 gap-4 sm:gap-12 items-end h-40 px-2 sm:px-8 pb-2">
+                        {weeklyData.map((data, idx) => {
+                            const currentHeight = Math.min((data.calories / 2500) * 100, 100);
+                            const targetHeight = Math.min((data.target / 2500) * 100, 100);
+                            const isHovered = hoveredDay === data.day;
 
-                        {/* Kolom Angka Sumbu Y (Kiri) */}
-                        <div className="flex flex-col justify-between h-44 text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 pr-3 text-right select-none shrink-0">
-                            <span>2.400</span>
-                            <span>1.800</span>
-                            <span>1.200</span>
-                            <span>600</span>
-                            <span>0</span>
-                        </div>
-
-                        {/* Bar Chart Container */}
-                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-44 w-full relative border-l border-b border-gray-100 dark:border-[#1a2e22] pl-2">
-                            {weeklyData.map((data, idx) => {
-                                const isHovered = hoveredDay === data.day;
-                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
-                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
-
-                                return (
-                                    <div
-                                        key={idx}
-                                        onMouseEnter={() => setHoveredDay(data.day)}
-                                        className={`flex flex-col items-center group relative w-full pt-4 cursor-pointer transition-all duration-200 ${isHovered
-                                            ? 'bg-emerald-50/80 dark:bg-[#182b1f] rounded-2xl px-1 pb-1 scale-[1.03] border border-emerald-300 dark:border-emerald-500/20'
-                                            : 'hover:bg-gray-50 dark:hover:bg-[#182b1f]/50 rounded-2xl px-1 pb-1'
-                                            }`}
-                                    >
-                                        {/* Tooltip box yang muncul otomatis saat di-hover */}
-                                        {isHovered && (
-                                            <div className="absolute -top-12 z-30 bg-gray-900 dark:bg-[#0b140e] p-2.5 rounded-xl border border-gray-700 dark:border-[#1a2e22] shadow-xl text-center min-w-[100px] transition-all duration-200 pointer-events-none">
-                                                <p className="text-[10px] text-gray-400 dark:text-emerald-100/50 font-bold uppercase">{data.day}</p>
-                                                <p className="text-xs text-white font-bold mt-0.5">
-                                                    kalori: <span className="text-emerald-400">{data.calories}</span>
-                                                </p>
-                                                <p className="text-[9px] text-gray-300 dark:text-emerald-100/40 font-semibold">target: {data.target}</p>
-                                            </div>
-                                        )}
-
-                                        {/* Graph Columns adjacent */}
-                                        <div className="flex space-x-0.5 sm:space-x-1 items-end justify-center w-full h-36">
-                                            {/* Batang Aktual (Hijau Terang) */}
-                                            <div
-                                                style={{ height: `${currentHeight}%` }}
-                                                className={`w-1.5 sm:w-3.5 rounded-t-sm transition-all duration-300 ${isHovered
-                                                    ? 'bg-[#22c55e] dark:bg-emerald-400 shadow-md shadow-emerald-500/20'
-                                                    : 'bg-[#22c55e]/90 dark:bg-emerald-500/80 hover:bg-[#22c55e]'
-                                                    }`}
-                                            ></div>
-                                            {/* Batang Target (Hitam/Gelap) */}
-                                            <div
-                                                style={{ height: `${targetHeight}%` }}
-                                                className="w-1.5 sm:w-3.5 rounded-t-sm bg-gray-900 dark:bg-gray-800 transition-all duration-300"
-                                            ></div>
+                            return (
+                                <div
+                                    key={idx}
+                                    onMouseEnter={() => setHoveredDay(data.day)}
+                                    onMouseLeave={() => setHoveredDay(null)}
+                                    className={`flex flex-col items-center group relative h-full justify-end cursor-pointer rounded-2xl transition-all duration-300 py-2 ${isHovered ? 'bg-gray-100/90 dark:bg-[#182b1f]/80 translate-y-[-4px]' : 'hover:translate-y-[-2px]'
+                                        }`}
+                                >
+                                    {/* Tooltip Pop-up dengan Animasi Geser Naik */}
+                                    {isHovered && (
+                                        <div className="absolute -top-16 z-20 bg-white dark:bg-[#1b2f23] border border-gray-200 dark:border-emerald-800/60 shadow-2xl rounded-2xl p-2.5 w-28 text-center transition-all duration-300 transform translate-y-0 opacity-100">
+                                            <p className="text-[11px] font-bold text-gray-800 dark:text-white">{data.day}</p>
+                                            <p className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 mt-0.5">
+                                                kalori : {data.calories}
+                                            </p>
+                                            <p className="text-[9px] text-gray-400 dark:text-emerald-100/50">
+                                                target : {data.target}
+                                            </p>
                                         </div>
+                                    )}
 
-                                        <span className={`text-xs font-bold mt-2 block transition-colors duration-200 ${isHovered
-                                            ? 'text-[#1F7A54] dark:text-emerald-400'
-                                            : 'text-gray-400 dark:text-emerald-100/40'
-                                            }`}>
-                                            {data.day}
-                                        </span>
+                                    {/* Batang Berdampingan dengan Efek Animasi Skala & Geser */}
+                                    <div className="flex space-x-1.5 items-end justify-center w-full h-full">
+                                        <div
+                                            style={{ height: `${currentHeight}%` }}
+                                            className={`w-3.5 sm:w-5 rounded-t-md transition-all duration-300 ease-out transform ${isHovered ? 'bg-[#1b6b49] scale-105 shadow-md' : 'bg-[#237c57]'
+                                                }`}
+                                        ></div>
+                                        <div
+                                            style={{ height: `${targetHeight}%` }}
+                                            className={`w-3.5 sm:w-5 rounded-t-md transition-all duration-300 ease-out transform ${isHovered ? 'bg-gray-300 dark:bg-[#254230] scale-105' : 'bg-gray-100 dark:bg-[#1a2e22]'
+                                                }`}
+                                        ></div>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
 
-                    {/* Legenda Indikator Diagram (Aktual vs Target) */}
-                    <div className="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-gray-100 dark:border-[#1a2e22]">
-                        <div className="flex items-center space-x-2">
-                            <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
-                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Aktual</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <div className="w-3 h-3 rounded-full bg-gray-900 dark:bg-gray-700"></div>
-                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Target</span>
-                        </div>
+                                    {/* Label Hari */}
+                                    <span className={`text-xs font-bold mt-3 block transition-colors duration-200 ${isHovered ? 'text-[#1F7A54] dark:text-emerald-400' : 'text-gray-400 dark:text-emerald-100/40'
+                                        }`}>
+                                        {data.day}
+                                    </span>
+                                </div>
+                            );
+                        })}
                     </div>
 
                 </div>
