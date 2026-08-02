@@ -195,7 +195,7 @@ export default function AiAssistant() {
             <Head title="AI Assistant" />
 
             {/* ── Chat Container Card ─────────────────────────────────── */}
-            <div className="h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-[#09170F] rounded-3xl border border-gray-100 dark:border-emerald-950/80 shadow-sm overflow-hidden transition-colors">
+            <div className="h-[calc(100vh-14rem)] sm:h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-[#09170F] rounded-3xl border border-gray-100 dark:border-emerald-950/80 shadow-sm overflow-hidden transition-colors">
 
                 {/* ── Chat Header ─────────────────────────────────────── */}
                 <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100 dark:border-emerald-950/80 bg-gray-50/50 dark:bg-[#0C1E14]">

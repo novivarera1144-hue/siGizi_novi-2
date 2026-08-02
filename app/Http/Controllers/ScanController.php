@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GeminiApiException;
+use App\Models\ScanHistory;
 use App\Services\GeminiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -106,6 +107,18 @@ class ScanController extends Controller
                 'recommendations' => $recommendations,
                 'badge' => $badge,
             ];
+            
+            $userId = auth()->id() ?? 1;
+
+            ScanHistory::create([
+                'user_id' => auth()->id(),
+                'nama_Makanan' => $foodName,
+                'foto_scan' => $imageUrl,
+                'kalori_terdeteksi' => $calories,
+                'protein' => $protG,
+                'karbo' => $karboG,
+                'lemak' => $lemakG,
+            ]);
 
             // 5. Render ResultPage via Inertia
             return Inertia::render('ResultPage', [
@@ -121,6 +134,8 @@ class ScanController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            // Hentikan program dan tampilkan error persis dibawah browser
+            dd($e->getMessage());
             Log::error('Scan Error: ' . $e->getMessage());
             return back()->withErrors([
                 'image' => 'Terjadi kesalahan sistem saat menganalisis gambar: ' . $e->getMessage()

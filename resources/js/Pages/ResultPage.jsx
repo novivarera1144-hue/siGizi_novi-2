@@ -38,7 +38,7 @@ export default function ResultPage({ data }) {
         <AuthenticatedLayout>
             <Head title="Hasil Analisis - siGizi" />
 
-            <div className="max-w-6xl mx-auto p-6 space-y-8">
+            <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
 
                 {/* Top Section: Breadcrumb / Search & Step Indicators */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -68,7 +68,7 @@ export default function ResultPage({ data }) {
                     </div>
 
                     {/* Step Pill Indicator */}
-                    <div className="flex items-center space-x-2 text-xs font-bold bg-gray-100 dark:bg-[#122017] p-1.5 rounded-full border border-gray-200 dark:border-[#1a2e22]">
+                    <div className="flex items-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-xs font-bold bg-gray-100 dark:bg-[#122017] p-1 sm:p-1.5 rounded-full border border-gray-200 dark:border-[#1a2e22] max-w-full overflow-x-auto whitespace-nowrap">
                         <span className="px-3 py-1 text-gray-400 dark:text-emerald-100/40">1. Upload</span>
                         <span className="text-gray-300 dark:text-emerald-900">&gt;</span>
                         <span className="px-3 py-1 text-gray-400 dark:text-emerald-100/40">2. AI Analisis</span>
@@ -85,7 +85,7 @@ export default function ResultPage({ data }) {
                     {/* SISI KIRI (Gambar & Health Insight) */}
                     <div className="w-full md:w-5/12 flex flex-col gap-6">
                         {/* Food Image Card */}
-                        <div className="bg-white dark:bg-[#122017] rounded-3xl overflow-hidden border border-gray-100 dark:border-[#1a2e22] shadow-sm relative aspect-[4/3] w-full min-h-[320px]">
+                        <div className="bg-white dark:bg-[#122017] rounded-3xl overflow-hidden border border-gray-100 dark:border-[#1a2e22] shadow-sm relative aspect-[4/3] w-full min-h-[240px] sm:min-h-[320px]">
                             <img
                                 src={image}
                                 alt={foodName}
@@ -222,7 +222,7 @@ export default function ResultPage({ data }) {
                     </Link>
                     <Link
                         href={route('dashboard')}
-                        className="flex-1 sm:flex-initial ml-auto px-8 py-3.5 bg-gray-900 hover:bg-gray-800 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-black text-white font-extrabold text-sm rounded-xl text-center shadow-lg transition-all"
+                        className="flex-1 sm:flex-initial sm:ml-auto px-8 py-3.5 bg-gray-900 hover:bg-gray-800 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-black text-white font-extrabold text-sm rounded-xl text-center shadow-lg transition-all"
                     >
                         Lihat Riwayat
                     </Link>

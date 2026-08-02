@@ -243,7 +243,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                 }`}>
                 <div>
                     {/* Header Logo */}
-                    <div className="py-6 px-4 border-b border-gray-100 dark:border-emerald-950/40 flex items-center justify-center">
+                    <div className="py-6 px-6 border-b border-gray-100 dark:border-emerald-950/40 flex items-center justify-between relative">
                         <Link href="/" prefetch={["hover", "mount"]} className="flex items-center justify-center">
                             <img
                                 src="/images/logo-sigizi.png"
@@ -251,6 +251,16 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 className="h-15 w-auto object-contain"
                             />
                         </Link>
+                        {/* Close button for mobile sidebar drawer */}
+                        <button
+                            onClick={() => setSidebarOpen(false)}
+                            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:text-emerald-500 dark:hover:text-emerald-300 hover:bg-gray-100 dark:hover:bg-emerald-950/40 focus:outline-none transition-colors"
+                            title="Tutup Menu"
+                        >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
 
                     {/* Navigation Items */}
@@ -275,20 +285,19 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 </Link>
                             );
                         })}
+                        {/* Logout button in the same vertical flow, spaced below main admin items */}
+                        <div className="pt-4 border-t border-gray-100 dark:border-emerald-950/40 mt-4">
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer"
+                            >
+                                <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                <span>Keluar</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                {/* Bottom Section Logout Button */}
-                <div className="p-4 border-t border-gray-100 dark:border-emerald-950/40">
-                    <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer"
-                    >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        <span>Keluar</span>
-                    </button>
                 </div>
             </aside>
 

@@ -58,48 +58,48 @@ export default function LaporanMingguan({ auth }) {
                 </div>
 
                 {/* Grid 4 Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     {/* Rata-rata Kalori */}
-                    <div className="bg-white dark:bg-[#122017] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition">
-                        <div className="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-500 flex items-center justify-center mb-4">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-500 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-1">Rata-rata Kalori</p>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">1824 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/50">kkal/hari</span></h2>
+                            <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Rata-rata Kalori</p>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">1824 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">kkal/hari</span></h2>
                         </div>
                     </div>
 
                     {/* Avg Protein */}
-                    <div className="bg-white dark:bg-[#122017] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition">
-                        <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-500 dark:text-blue-400 flex items-center justify-center mb-4">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-500 dark:text-blue-400 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-1">Avg Protein</p>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">76g <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/50">per hari</span></h2>
+                            <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Avg Protein</p>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">76g <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">per hari</span></h2>
                         </div>
                     </div>
 
                     {/* Hari Terpenuhi */}
-                    <div className="bg-white dark:bg-[#122017] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition">
-                        <div className="w-11 h-11 rounded-xl bg-green-50 dark:bg-[#182b1f] text-green-500 dark:text-emerald-400 flex items-center justify-center mb-4">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-green-50 dark:bg-[#182b1f] text-green-500 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-1">Hari Terpenuhi</p>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">5/7 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/50">target kalori</span></h2>
+                            <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Hari Terpenuhi</p>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">5/7 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">target kalori</span></h2>
                         </div>
                     </div>
 
                     {/* Skor Rata-rata */}
-                    <div className="bg-white dark:bg-[#122017] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition">
-                        <div className="w-11 h-11 rounded-xl bg-yellow-50 dark:bg-amber-950/40 text-yellow-500 dark:text-amber-400 flex items-center justify-center mb-4">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-yellow-50 dark:bg-amber-950/40 text-yellow-500 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-1">Skor Rata-rata</p>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">83 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/50">dari 100</span></h2>
+                            <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Skor Rata-rata</p>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">83 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">dari 100</span></h2>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ export default function LaporanMingguan({ auth }) {
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Kalori Harian vs Target</h2>
                     </div>
-                    <div className="w-full h-[350px]">
+                    <div className="w-full h-[250px] sm:h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -134,7 +134,7 @@ export default function LaporanMingguan({ auth }) {
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Tren Nutrisi Minggu Ini</h2>
                     </div>
-                    <div className="w-full h-[350px]">
+                    <div className="w-full h-[250px] sm:h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={lineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -159,7 +159,7 @@ export default function LaporanMingguan({ auth }) {
                     {/* Keseimbangan Nutrisi */}
                     <div className="bg-white dark:bg-[#122017] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col hover:shadow-md transition">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Keseimbangan Nutrisi</h2>
-                        <div className="flex-1 w-full h-[300px] flex items-center justify-center">
+                        <div className="flex-1 w-full h-[250px] sm:h-[300px] flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                                     <PolarGrid stroke="currentColor" className="text-gray-200 dark:text-emerald-950" />
