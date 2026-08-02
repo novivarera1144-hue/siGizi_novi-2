@@ -7,6 +7,7 @@ use App\Models\ScanHistory;
 use App\Services\GeminiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ScanController extends Controller
@@ -26,7 +27,12 @@ class ScanController extends Controller
         ]);
 
         try {
-            // 2. Simpan gambar ke public storage untuk ditampilkan di ResultPage
+            // 2. Pastikan folder uploads ada di public storage
+            if (!Storage::disk('public')->exists('uploads')) {
+                Storage::disk('public')->makeDirectory('uploads');
+            }
+
+            // Simpan gambar ke public storage untuk ditampilkan di ResultPage
             $path = $request->file('image')->store('uploads', 'public');
             $imageUrl = asset('storage/' . $path);
 
@@ -108,15 +114,16 @@ class ScanController extends Controller
                 'badge' => $badge,
             ];
             
+            // Gunakan fallback ID 1 jika pengguna tidak sedang terautentikasi (guest)
             $userId = auth()->id() ?? 1;
 
             ScanHistory::create([
-                'user_id' => auth()->id(),
-                'nama_Makanan' => $foodName,
+                'user_id' => $userId,
+                'nama_makanan' => $foodName,
                 'foto_scan' => $imageUrl,
                 'kalori_terdeteksi' => $calories,
                 'protein' => $protG,
-                'karbo' => $karboG,
+                'karbohidrat' => $karboG, // <-- Diubah dari 'karbo' ke 'karbohidrat'
                 'lemak' => $lemakG,
             ]);
 
@@ -134,8 +141,6 @@ class ScanController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            // Hentikan program dan tampilkan error persis dibawah browser
-            dd($e->getMessage());
             Log::error('Scan Error: ' . $e->getMessage());
             return back()->withErrors([
                 'image' => 'Terjadi kesalahan sistem saat menganalisis gambar: ' . $e->getMessage()

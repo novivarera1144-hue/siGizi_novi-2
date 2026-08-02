@@ -13,11 +13,11 @@ class ScanHistory extends Model
 
     protected $fillable = [
         'user_id',
-        'nama_Makanan',
+        'nama_makanan',      // Diubah dari 'nama_Makanan' menjadi 'nama_makanan'
         'foto_scan',
         'kalori_terdeteksi',
         'protein',
-        'karbo',
+        'karbohidrat',       // Diubah dari 'karbo' menjadi 'karbohidrat'
         'lemak',
     ];
 

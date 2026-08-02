@@ -85,7 +85,7 @@ class GeminiService
                     ],
                     'required' => ['nama_makanan', 'total_kalori', 'protein', 'lemak', 'karbohidrat', 'health_insight', 'saran_rekomendasi'],
                 ],
-                'maxOutputTokens' => 1024,
+                'maxOutputTokens' => 2048,
             ],
         ];
 
@@ -149,13 +149,17 @@ class GeminiService
             throw new GeminiApiException('Gemini API mengembalikan response kosong.');
         }
 
-        // 7. Clean up the text response before JSON decoding
-        //    Gemini sometimes returns JSON wrapped in markdown code fences or with extra whitespace
+        // 7. Clean up the text response and extract pure JSON block
         $rawResponse = trim($textResponse);
 
         // Strip markdown code fences if present (```json ... ``` or ``` ... ```)
         if (preg_match('/^```(?:json)?\s*\n?(.*?)\n?\s*```$/s', $rawResponse, $matches)) {
             $rawResponse = trim($matches[1]);
+        }
+
+        // Ambil murni isi di dalam kurung kurawal pembuka dan penutup pertama/terakhir
+        if (($firstOpen = strpos($rawResponse, '{')) !== false && ($lastClose = strrpos($rawResponse, '}')) !== false) {
+            $rawResponse = substr($rawResponse, $firstOpen, $lastClose - $firstOpen + 1);
         }
 
         // Clean control characters (e.g. C0 & C1 control characters) that break json_decode
@@ -170,7 +174,7 @@ class GeminiService
         $jsonErrorMsg = json_last_error_msg();
 
         if ($jsonError !== JSON_ERROR_NONE) {
-            // Attempt to repair truncated JSON (missing closing braces/brackets)
+            // Attempt to repair truncated JSON (missing closing braces/brackets/quotes)
             $repaired = $this->attemptJsonRepair($cleanedText);
             if ($repaired !== null) {
                 $data = $repaired;
@@ -211,7 +215,7 @@ class GeminiService
         // Build conversation contents with history for context
         $contents = [];
 
-        // Add conversation history (last 10 exchanges max to stay within token limits)
+        // Add conversation history (last 20 messages max to stay within token limits)
         $recentHistory = array_slice($history, -20);
         foreach ($recentHistory as $msg) {
             $contents[] = [
@@ -304,16 +308,20 @@ class GeminiService
     }
 
     /**
-     * Attempt to repair truncated JSON by adding missing closing braces/brackets.
-     *
-     * Gemini sometimes returns JSON that is cut off at the end, missing
-     * closing } or ] characters. This method tries to fix that.
+     * Attempt to repair truncated JSON by adding missing closing braces/brackets and quotes.
      *
      * @param  string  $json  The potentially truncated JSON string
      * @return array|null  Parsed array if repair succeeded, null otherwise
      */
     protected function attemptJsonRepair(string $json): ?array
     {
+        $json = trim($json);
+
+        // Jika jumlah tanda kutip ganjil, berarti string terpotong di dalam teks value
+        if (substr_count($json, '"') % 2 !== 0) {
+            $json .= '"';
+        }
+
         // Count opening and closing braces/brackets
         $openBraces = substr_count($json, '{');
         $closeBraces = substr_count($json, '}');
