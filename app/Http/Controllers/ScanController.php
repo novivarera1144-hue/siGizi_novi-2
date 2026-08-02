@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataNutrisi;
+use Illuminate\Support\Facades\Auth;
 use App\Exceptions\GeminiApiException;
 use App\Models\ScanHistory;
 use App\Services\GeminiService;
@@ -125,6 +127,15 @@ class ScanController extends Controller
                 'protein' => $protG,
                 'karbohidrat' => $karboG, // <-- Diubah dari 'karbo' ke 'karbohidrat'
                 'lemak' => $lemakG,
+            ]);
+
+            DataNutrisi::create([
+                'user_id'      => $userId,
+                'nama_makanan' => $foodName,
+                'kalori'       => $calories,
+                'protein'      => $protG,
+                'karbohidrat'  => $karboG,
+                'lemak'        => $lemakG,
             ]);
 
             // 5. Render ResultPage via Inertia

@@ -7,6 +7,8 @@ use App\Services\GeminiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use App\Models\RiwayatChatAi;
+use Illuminate\Support\Facades\Auth;
 
 class AiChatController extends Controller
 {
@@ -37,11 +39,19 @@ class AiChatController extends Controller
         ]);
 
         try {
+            $userMessage = $request->input('message');
+
             $reply = $geminiService->chat(
-                $request->input('message'),
+                $userMessage,
                 $request->input('history', [])
             );
 
+            RiwayatChatAi::create([
+                'user_id'    => Auth::id(), 
+                'pesan_user' => $userMessage,
+                'respon_ai'  => $reply,
+            ]);
+            
             return response()->json([
                 'success' => true,
                 'reply' => $reply,
