@@ -16,6 +16,7 @@ class DataNutrisi extends Model
     protected $fillable = [
         'user_id',
         'nama_makanan',
+        'gambar_makanan',
         'kalori',
         'protein',
         'karbohidrat',

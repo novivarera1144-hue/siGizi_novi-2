@@ -132,6 +132,7 @@ class ScanController extends Controller
             DataNutrisi::create([
                 'user_id'      => $userId,
                 'nama_makanan' => $foodName,
+                'gambar_makanan' => $imageUrl,
                 'kalori'       => $calories,
                 'protein'      => $protG,
                 'karbohidrat'  => $karboG,
