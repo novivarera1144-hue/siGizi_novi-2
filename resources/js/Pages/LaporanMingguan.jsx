@@ -159,13 +159,14 @@ export default function LaporanMingguan({ auth }) {
                     {/* Keseimbangan Nutrisi */}
                     <div className="bg-white dark:bg-[#122017] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col hover:shadow-md transition">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Keseimbangan Nutrisi</h2>
-                        <div className="flex-1 w-full h-[250px] sm:h-[300px] flex items-center justify-center">
+                        {/* Diperbaiki tinggi kontainer di mobile menjadi h-[280px] agar grafik tampil sempurna */}
+                        <div className="w-full h-[280px] sm:h-[320px] flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                                     <PolarGrid stroke="currentColor" className="text-gray-200 dark:text-emerald-950" />
                                     <PolarAngleAxis
                                         dataKey="subject"
-                                        tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                                        tick={{ fill: 'currentColor', fontSize: 11, fontWeight: 500 }}
                                         className="text-gray-700 dark:text-emerald-400"
                                     />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
