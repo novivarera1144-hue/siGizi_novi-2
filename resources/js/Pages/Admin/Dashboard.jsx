@@ -1,9 +1,16 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Dashboard() {
-    // Mock data for scan per day
-    const weeklyScanData = [
+export default function Dashboard({ stats: initialStats, weeklyScanData: initialWeekly }) {
+    const stats = initialStats || {
+        totalUsers: 1248,
+        totalScans: 8742,
+        activeUsers: 342,
+        aiAccuracy: '94.2%'
+    };
+
+    // Data for scan per day
+    const weeklyScanData = initialWeekly || [
         { day: "Sen", scans: 110, heightPct: 42 },
         { day: "Sel", scans: 170, heightPct: 65 },
         { day: "Rab", scans: 135, heightPct: 52 },
@@ -33,8 +40,8 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Pengguna</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">1,248</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">+12 minggu ini</p>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{typeof stats.totalUsers === 'number' ? stats.totalUsers.toLocaleString() : stats.totalUsers}</h3>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">Terdaftar di Supabase</p>
                         </div>
                     </div>
 
@@ -47,8 +54,8 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Scan</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">8,742</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">+156 hari ini</p>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{typeof stats.totalScans === 'number' ? stats.totalScans.toLocaleString() : stats.totalScans}</h3>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">Tersimpan di Supabase</p>
                         </div>
                     </div>
 
@@ -61,8 +68,8 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Pengguna Aktif</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">342</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">Hari ini</p>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{stats.activeUsers}</h3>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40">Minggu ini</p>
                         </div>
                     </div>
 
@@ -75,7 +82,7 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Akurasi AI</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">94.2%</h3>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{stats.aiAccuracy}</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Rata-rata 7 hari</p>
                         </div>
                     </div>

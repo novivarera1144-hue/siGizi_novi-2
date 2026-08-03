@@ -6,9 +6,15 @@ import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 
-export default function LaporanMingguan({ auth }) {
+export default function LaporanMingguan({
+    auth,
+    barData: initialBar,
+    lineData: initialLine,
+    radarData: initialRadar,
+    summaryStats: initialSummary
+}) {
     // Data untuk Kalori Harian vs Target
-    const barData = [
+    const barData = initialBar || [
         { name: 'Sen', Aktual: 1850, Target: 2000 },
         { name: 'Sel', Aktual: 2100, Target: 2000 },
         { name: 'Rab', Aktual: 1720, Target: 2000 },
@@ -19,7 +25,7 @@ export default function LaporanMingguan({ auth }) {
     ];
 
     // Data untuk Tren Nutrisi Minggu Ini
-    const lineData = [
+    const lineData = initialLine || [
         { name: 'Sen', Protein: 70, Lemak: 65, Karbo: 230 },
         { name: 'Sel', Protein: 85, Lemak: 70, Karbo: 270 },
         { name: 'Rab', Protein: 65, Lemak: 50, Karbo: 210 },
@@ -30,7 +36,7 @@ export default function LaporanMingguan({ auth }) {
     ];
 
     // Data untuk Keseimbangan Nutrisi (Radar)
-    const radarData = [
+    const radarData = initialRadar || [
         { subject: 'Kalori', A: 85, fullMark: 100 },
         { subject: 'Protein', A: 76, fullMark: 100 },
         { subject: 'Lemak', A: 65, fullMark: 100 },
@@ -38,6 +44,15 @@ export default function LaporanMingguan({ auth }) {
         { subject: 'Serat', A: 60, fullMark: 100 },
         { subject: 'Vitamin', A: 70, fullMark: 100 },
     ];
+
+    const summary = initialSummary || {
+        avgCalories: 1824,
+        avgProtein: 76,
+        targetMetDays: 5,
+        avgScore: 83,
+        totalCalories: 12768,
+        totalScans: 14
+    };
 
     return (
         <AuthenticatedLayout user={auth?.user}>
@@ -66,7 +81,7 @@ export default function LaporanMingguan({ auth }) {
                         </div>
                         <div>
                             <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Rata-rata Kalori</p>
-                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">1824 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">kkal/hari</span></h2>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{summary.avgCalories} <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">kkal/hari</span></h2>
                         </div>
                     </div>
 
@@ -77,7 +92,7 @@ export default function LaporanMingguan({ auth }) {
                         </div>
                         <div>
                             <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Avg Protein</p>
-                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">76g <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">per hari</span></h2>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{summary.avgProtein}g <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">per hari</span></h2>
                         </div>
                     </div>
 
@@ -88,7 +103,7 @@ export default function LaporanMingguan({ auth }) {
                         </div>
                         <div>
                             <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Hari Terpenuhi</p>
-                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">5/7 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">target kalori</span></h2>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{summary.targetMetDays}/7 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">target kalori</span></h2>
                         </div>
                     </div>
 
@@ -99,7 +114,7 @@ export default function LaporanMingguan({ auth }) {
                         </div>
                         <div>
                             <p className="text-[11px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/70 mb-0.5 sm:mb-1">Skor Rata-rata</p>
-                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">83 <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">dari 100</span></h2>
+                            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{summary.avgScore} <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-emerald-100/50">dari 100</span></h2>
                         </div>
                     </div>
                 </div>
@@ -189,35 +204,35 @@ export default function LaporanMingguan({ auth }) {
                                 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Total kalori dikonsumsi</span>
                                 <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                    12,768 kkal
+                                    {summary.totalCalories.toLocaleString()} kkal
                                 </span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-[#1a2e22]">
                                 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Hari mencapai target</span>
                                 <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                    5 dari 7 hari
+                                    {summary.targetMetDays} dari 7 hari
                                 </span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-[#1a2e22]">
                                 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Hari kelebihan kalori</span>
                                 <span className="text-sm font-bold text-amber-500 dark:text-amber-400 flex items-center gap-1.5">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                    2 hari (Sel & Jum)
+                                    {7 - summary.targetMetDays} hari
                                 </span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-[#1a2e22]">
                                 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Makanan di-scan</span>
                                 <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                    14 makanan
+                                    {summary.totalScans} makanan
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Rata-rata skor makanan</span>
                                 <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                    83 / 100
+                                    {summary.avgScore} / 100
                                 </span>
                             </div>
                         </div>

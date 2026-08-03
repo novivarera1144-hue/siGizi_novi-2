@@ -1,9 +1,9 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
 
-export default function LaporanGlobal() {
-    // Data dummy untuk diagram per bulan
-    const monthlyTrends = [
+export default function LaporanGlobal({ monthlyTrends: initialTrends, topFoods: initialFoods, globalStats }) {
+    // Data untuk diagram per bulan
+    const monthlyTrends = initialTrends || [
         { month: 'Jan', count: 3200 },
         { month: 'Feb', count: 4100 },
         { month: 'Mar', count: 3800 },
@@ -18,7 +18,7 @@ export default function LaporanGlobal() {
         { month: 'Des', count: 4821 },
     ];
 
-    const topFoods = [
+    const topFoods = initialFoods || [
         { name: 'Nasi Goreng', count: '1,240' },
         { name: 'Mie Ayam', count: '930' },
         { name: 'Gado-gado', count: '742' },

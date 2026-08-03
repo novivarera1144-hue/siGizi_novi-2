@@ -118,18 +118,24 @@ class ScanController extends Controller
             
             // Gunakan fallback ID 1 jika pengguna tidak sedang terautentikasi (guest)
             $userId = auth()->id() ?? 1;
+            $now = now()->toIso8601String();
 
-            ScanHistory::create([
+            // Sync ke Supabase via SupabaseService
+            $supabase = app(\App\Services\SupabaseService::class);
+            
+            $supabase->insert('riwayat_scan_makanans', [
                 'user_id' => $userId,
                 'nama_makanan' => $foodName,
                 'foto_scan' => $imageUrl,
                 'kalori_terdeteksi' => $calories,
                 'protein' => $protG,
-                'karbohidrat' => $karboG, // <-- Diubah dari 'karbo' ke 'karbohidrat'
+                'karbohidrat' => $karboG,
                 'lemak' => $lemakG,
+                'created_at' => $now,
+                'updated_at' => $now,
             ]);
 
-            DataNutrisi::create([
+            $supabase->insert('data_nutrisis', [
                 'user_id'      => $userId,
                 'nama_makanan' => $foodName,
                 'gambar_makanan' => $imageUrl,
@@ -137,7 +143,33 @@ class ScanController extends Controller
                 'protein'      => $protG,
                 'karbohidrat'  => $karboG,
                 'lemak'        => $lemakG,
+                'created_at'   => $now,
+                'updated_at'   => $now,
             ]);
+
+            try {
+                ScanHistory::create([
+                    'user_id' => $userId,
+                    'nama_makanan' => $foodName,
+                    'foto_scan' => $imageUrl,
+                    'kalori_terdeteksi' => $calories,
+                    'protein' => $protG,
+                    'karbohidrat' => $karboG,
+                    'lemak' => $lemakG,
+                ]);
+
+                DataNutrisi::create([
+                    'user_id'      => $userId,
+                    'nama_makanan' => $foodName,
+                    'gambar_makanan' => $imageUrl,
+                    'kalori'       => $calories,
+                    'protein'      => $protG,
+                    'karbohidrat'  => $karboG,
+                    'lemak'        => $lemakG,
+                ]);
+            } catch (\Exception $e) {
+                Log::info('Local DB save skipped/failed: ' . $e->getMessage());
+            }
 
             // 5. Render ResultPage via Inertia
             return Inertia::render('ResultPage', [

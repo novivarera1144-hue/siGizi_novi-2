@@ -17,9 +17,20 @@ class AiChatController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('AiAssistant');
+        $userId = Auth::id() ?? 1;
+        $supabase = app(\App\Services\SupabaseService::class);
+        $chats = $supabase->get('riwayat_chat_ais', [
+            'select' => '*',
+            'user_id' => 'eq.' . $userId,
+            'order' => 'id.asc',
+            'limit' => 50
+        ]);
+
+        return Inertia::render('AiAssistant', [
+            'initialHistory' => $chats
+        ]);
     }
 
     /**
@@ -46,11 +57,27 @@ class AiChatController extends Controller
                 $request->input('history', [])
             );
 
-            RiwayatChatAi::create([
-                'user_id'    => Auth::id(), 
+            $userId = Auth::id() ?? 1;
+            $now = now()->toIso8601String();
+
+            $supabase = app(\App\Services\SupabaseService::class);
+            $supabase->insert('riwayat_chat_ais', [
+                'user_id'    => $userId,
                 'pesan_user' => $userMessage,
                 'respon_ai'  => $reply,
+                'created_at' => $now,
+                'updated_at' => $now,
             ]);
+
+            try {
+                RiwayatChatAi::create([
+                    'user_id'    => $userId, 
+                    'pesan_user' => $userMessage,
+                    'respon_ai'  => $reply,
+                ]);
+            } catch (\Exception $e) {
+                // Ignore local DB error if any
+            }
             
             return response()->json([
                 'success' => true,

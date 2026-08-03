@@ -60,7 +60,7 @@ const MOCK_DATA = [
     },
 ];
 
-export default function RiwayatScanPage() {
+export default function RiwayatScanPage({ scanHistory }) {
     const [history, setHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -71,9 +71,13 @@ export default function RiwayatScanPage() {
     const tabs = ['Semua', 'Hari Ini', 'Minggu Ini', 'Bulan Ini'];
 
     useEffect(() => {
-        setHistory(MOCK_DATA);
+        if (scanHistory && scanHistory.length > 0) {
+            setHistory(scanHistory);
+        } else {
+            setHistory(MOCK_DATA);
+        }
         setIsLoading(false);
-    }, []);
+    }, [scanHistory]);
 
     // Helper untuk mewarnai badge skor sesuai aturan desain (#1F7A54) & Dark Mode
     const getScoreStyle = (score) => {
