@@ -11,13 +11,12 @@ export default function ScanPage() {
     const [scanStatus, setScanStatus] = useState('');
     const [scanError, setScanError] = useState(null);
 
-    // State untuk Modal Kamera Webcam Laptop
+    // State untuk Modal Kamera Webcam
     const [isWebcamOpen, setIsWebcamOpen] = useState(false);
     const videoRef = useRef(null);
     const mediaStreamRef = useRef(null);
 
     const fileInputRef = useRef(null);
-    const cameraInputRef = useRef(null);
 
     // Dynamic scan status text during simulation
     useEffect(() => {
@@ -69,21 +68,7 @@ export default function ScanPage() {
         }
     };
 
-    // Fungsi Cerdas Tombol Kamera: Deteksi HP atau Laptop
-    const handleCameraClick = () => {
-        // Deteksi sederhana apakah perangkat mobile/HP
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-        if (isMobile) {
-            // Jika di HP, langsung panggil input file dengan atribut capture
-            cameraInputRef.current.click();
-        } else {
-            // Jika di Laptop/PC, buka Modal Webcam Live
-            openWebcam();
-        }
-    };
-
-    // Buka Webcam Laptop
+    // Buka Webcam (Digunakan untuk Desktop maupun Mobile agar seragam)
     const openWebcam = async () => {
         setIsWebcamOpen(true);
         setScanError(null);
@@ -98,11 +83,11 @@ export default function ScanPage() {
             }
         } catch (err) {
             setIsWebcamOpen(false);
-            setScanError('Tidak dapat mengakses kamera laptop. Pastikan izin kamera diizinkan oleh browser.');
+            setScanError('Tidak dapat mengakses kamera. Pastikan izin kamera diizinkan oleh browser.');
         }
     };
 
-    // Tutup Webcam Laptop
+    // Tutup Webcam
     const closeWebcam = () => {
         if (mediaStreamRef.current) {
             mediaStreamRef.current.getTracks().forEach(track => track.stop());
@@ -110,7 +95,7 @@ export default function ScanPage() {
         setIsWebcamOpen(false);
     };
 
-    // Ambil Foto dari Webcam Laptop
+    // Ambil Foto dari Webcam
     const captureWebcam = () => {
         const video = videoRef.current;
         if (!video) return;
@@ -260,7 +245,6 @@ export default function ScanPage() {
                     {/* Action Buttons Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                        <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
 
                         {/* Upload Button */}
                         <button
@@ -274,10 +258,10 @@ export default function ScanPage() {
                             <span>Unggah Foto</span>
                         </button>
 
-                        {/* Universal Camera Button (Smart Detection) */}
+                        {/* Camera Button (Selalu Membuka Modal Webcam di Semua Perangkat) */}
                         <button
                             type="button"
-                            onClick={handleCameraClick}
+                            onClick={openWebcam}
                             className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
                         >
                             <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -306,7 +290,7 @@ export default function ScanPage() {
                 </div>
             </div>
 
-            {/* Modal Live Webcam khusus untuk Laptop/PC */}
+            {/* Modal Live Webcam */}
             {isWebcamOpen && (
                 <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                     <div className="w-full max-w-xl bg-white dark:bg-[#122017] rounded-3xl p-6 border border-gray-200 dark:border-[#1a2e22] shadow-2xl space-y-4 text-center">
