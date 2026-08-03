@@ -2,25 +2,67 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 
 export default function AuthenticatedLayout({ children }) {
-    const user = usePage().props.auth.user;
-    const { url } = usePage();
+    const { auth, url } = usePage().props;
+    const user = auth?.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         setSidebarOpen(false);
     }, [url]);
 
-    // State untuk mengontrol buka/tutup dropdown notifikasi
     const [notificationOpen, setNotificationOpen] = useState(false);
     const notificationRef = useRef(null);
 
-    // State untuk Instant Search di Top Bar
+    // State data notifikasi agar status "unread" (isRead) bisa berubah dinamis
+    const [notifications, setNotifications] = useState([
+        {
+            id: 1,
+            icon: '🥗',
+            title: 'Waktunya Makan Siang!',
+            message: 'Jangan lupa catat dan scan menu makan siangmu hari ini agar target gizi tercapai.',
+            time: 'Baru saja',
+            isRead: false,
+        },
+        {
+            id: 2,
+            icon: '🎯',
+            title: 'Target Kalori Terpenuhi',
+            message: 'Hebat! Target nutrisi mingguanmu menunjukkan tren positif yang konsisten.',
+            time: 'Kemarin',
+            isRead: false,
+        },
+        {
+            id: 3,
+            icon: '💧',
+            title: 'Pengingat Minum Air',
+            message: 'Jangan biarkan tubuhmu dehidrasi. Yuk, minum segelas air sekarang.',
+            time: '2 hari lalu',
+            isRead: false,
+        },
+        // Tambahan data dummy agar fitur scroll langsung aktif dan terlihat
+        {
+            id: 4,
+            icon: '🏃',
+            title: 'Aktivitas Fisik Tercapai',
+            message: 'Kamu telah berjalan 8.000 langkah hari ini. Pertahankan!',
+            time: '3 hari lalu',
+            isRead: false,
+        },
+        {
+            id: 5,
+            icon: '🍎',
+            title: 'Tips Kesehatan Harian',
+            message: 'Konsumsi buah kaya vitamin C di siang hari untuk menjaga imun tubuh.',
+            time: '4 hari lalu',
+            isRead: true, // Contoh yang sudah dibaca sebelumnya
+        }
+    ]);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const searchRef = useRef(null);
 
-    // Dummy data contoh untuk pencarian (Dashboard sudah ditambahkan di sini)
     const dummySearchData = [
         { name: 'Dashboard Utama', category: 'Menu', route: 'dashboard' },
         { name: 'Nasi Goreng Spesial', category: 'Makanan', route: 'dashboard' },
@@ -39,12 +81,13 @@ export default function AuthenticatedLayout({ children }) {
         });
     };
 
-    // 1. Inisialisasi State Dark Mode dari localStorage
     const [darkMode, setDarkMode] = useState(() => {
-        return localStorage.getItem('theme') === 'dark';
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('theme') === 'dark';
+        }
+        return false;
     });
 
-    // 2. Effect untuk menambah/menghapus class 'dark' pada elemen <html>
     useEffect(() => {
         if (darkMode) {
             document.documentElement.classList.add('dark');
@@ -55,7 +98,6 @@ export default function AuthenticatedLayout({ children }) {
         }
     }, [darkMode]);
 
-    // Effect untuk menutup dropdown notifikasi jika klik di luar area
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -66,7 +108,6 @@ export default function AuthenticatedLayout({ children }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Effect untuk menutup dropdown search jika klik di luar area
     useEffect(() => {
         const handleClickOutsideSearch = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -77,7 +118,6 @@ export default function AuthenticatedLayout({ children }) {
         return () => document.removeEventListener('mousedown', handleClickOutsideSearch);
     }, []);
 
-    // Handler ketika mengetik di search bar
     const handleSearchChange = (e) => {
         const query = e.target.value;
         setSearchQuery(query);
@@ -95,7 +135,6 @@ export default function AuthenticatedLayout({ children }) {
         setSearchResults(filtered);
     };
 
-    // Handler ketika tombol Enter ditekan di search bar
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -107,12 +146,27 @@ export default function AuthenticatedLayout({ children }) {
         }
     };
 
-    // 3. Handler Toggle Dark Mode
     const toggleDarkMode = () => {
         setDarkMode((prev) => !prev);
     };
 
-    // Sidebar navigation mapping
+    // Fungsi saat satu notifikasi diklik (tanda hijau & status dibaca diperbarui)
+    const handleNotificationClick = (id) => {
+        setNotifications(prev =>
+            prev.map(item => item.id === id ? { ...item, isRead: true } : item)
+        );
+    };
+
+    // Fungsi "Tandai semua dibaca"
+    const handleMarkAllAsRead = () => {
+        setNotifications(prev =>
+            prev.map(item => ({ ...item, isRead: true }))
+        );
+    };
+
+    // Hitung jumlah notifikasi yang belum dibaca
+    const unreadCount = notifications.filter(item => !item.isRead).length;
+
     const menuItems = [
         {
             name: 'Dashboard',
@@ -170,20 +224,25 @@ export default function AuthenticatedLayout({ children }) {
         },
     ];
 
-    const activeMenuItem = menuItems.find(item => item.route !== '#' && route().current(item.route));
+    const checkIsActive = (routeName) => {
+        try {
+            return typeof route === 'function' && route().current(routeName);
+        } catch {
+            return false;
+        }
+    };
+
+    const activeMenuItem = menuItems.find(item => item.route !== '#' && checkIsActive(item.route));
     const currentPageTitle = activeMenuItem ? activeMenuItem.name : 'Dashboard';
 
     return (
-        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300">
+        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#05100B] dark:text-emerald-50 flex transition-colors duration-300">
 
-            {/* Sidebar Navigation - Left Panel */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
+            {/* Sidebar Navigation */}
+            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-emerald-100/60 dark:bg-[#08160E] dark:border-emerald-900/30 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between shadow-sm ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
                 }`}>
-
-                {/* Top Section Logo & Links */}
                 <div>
-                    {/* Header Logo */}
-                    <div className="h-24 flex items-center justify-between px-6 border-b border-gray-100 dark:border-emerald-950/40 relative">
+                    <div className="h-24 flex items-center justify-between px-6 border-b border-emerald-50 dark:border-emerald-900/20 relative">
                         <Link href="/" prefetch={["hover", "mount"]} className="flex items-center">
                             <img
                                 src="/images/logo-sigizi.png"
@@ -191,11 +250,9 @@ export default function AuthenticatedLayout({ children }) {
                                 className="w-[140px] h-auto object-contain"
                             />
                         </Link>
-                        {/* Close button for mobile sidebar drawer */}
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:text-emerald-500 dark:hover:text-emerald-300 hover:bg-gray-100 dark:hover:bg-emerald-950/40 focus:outline-none transition-colors"
-                            title="Tutup Menu"
+                            className="lg:hidden p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/40 transition-colors"
                         >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -203,28 +260,30 @@ export default function AuthenticatedLayout({ children }) {
                         </button>
                     </div>
 
-                    {/* Navigation Items */}
-                    <div className="px-4 py-6 space-y-1.5">
-                        <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-widest block mb-4">Pengguna</span>
+                    <div className="px-4 py-6 space-y-1.5 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar">
+                        <span className="px-3 text-[10px] font-bold text-emerald-600/70 dark:text-emerald-500 uppercase tracking-widest block mb-4">Pengguna</span>
                         {menuItems.map((item, idx) => {
-                            const isCurrent = item.route !== '#' && route().current(item.route);
+                            const isCurrent = checkIsActive(item.route);
                             return (
                                 <Link
                                     key={idx}
                                     href={item.route !== '#' ? route(item.route) : '#'}
                                     prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
-                                    className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                        ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
-                                        : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
+                                    className={`relative w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
+                                            ? 'bg-[#1F7A54] text-white dark:bg-emerald-500/20 dark:text-emerald-300 font-bold shadow-md shadow-[#1F7A54]/20'
+                                            : 'text-gray-600 hover:text-[#1F7A54] hover:bg-emerald-50/70 dark:text-emerald-300/80 dark:hover:text-emerald-100 dark:hover:bg-emerald-900/20'
                                         }`}
                                 >
+                                    {isCurrent && (
+                                        <div className="absolute left-0 top-2.5 bottom-2.5 w-1.5 bg-white dark:bg-emerald-400 rounded-r-full shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+                                    )}
                                     {item.icon}
                                     <span>{item.name}</span>
                                 </Link>
                             );
                         })}
-                        {/* Logout button in the same vertical flow, spaced below Profil */}
-                        <div className="pt-4 border-t border-gray-100 dark:border-emerald-950/40 mt-4">
+
+                        <div className="pt-4 border-t border-emerald-50 dark:border-emerald-900/20 mt-4">
                             <button
                                 onClick={handleLogout}
                                 className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer"
@@ -237,50 +296,33 @@ export default function AuthenticatedLayout({ children }) {
                         </div>
                     </div>
                 </div>
-
             </aside>
 
-            {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
-                <div
-                    onClick={() => setSidebarOpen(false)}
-                    className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
-                ></div>
+                <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"></div>
             )}
 
-            {/* Main Content Area */}
+            {/* Main Content */}
             <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
-
-                {/* Header Navbar - Top Area */}
-                <header className="h-14 bg-white border-b border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20 transition-colors duration-300">
-
-                    {/* Left: Breadcrumbs / Sidebar toggle / Mobile Title */}
-                    <div className="flex items-center space-x-3">
+                <header className="h-14 bg-white border-b border-emerald-100/60 dark:bg-[#08160E] dark:border-emerald-900/30 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20 transition-colors duration-300">
+                    <div className="flex items-center space-x-4">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-2 rounded-lg bg-gray-50 dark:bg-emerald-950/40 lg:hidden text-gray-500 dark:text-emerald-300 hover:bg-gray-100"
+                            className="p-2 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/40 lg:hidden text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100"
                         >
                             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-
-                        {/* Teks penanda halaman khusus tampilan mobile di sebelah tombol hamburger */}
-                        <span className="sm:hidden text-sm font-bold text-gray-800 dark:text-emerald-300 truncate">
-                            {currentPageTitle}
-                        </span>
-
-                        <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-600">
-                            <span className="hover:text-gray-600 dark:hover:text-emerald-400 cursor-pointer">siGizi</span>
+                        <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-500">
+                            <span>siGizi</span>
                             <span>&gt;</span>
                             <span className="text-[#1F7A54] dark:text-emerald-400 font-bold">{currentPageTitle}</span>
                         </div>
                     </div>
 
-                    {/* Right: Search + Toggle Dark Mode + Notification + Profile */}
                     <div className="flex items-center space-x-4">
-
-                        {/* Search Bar dengan Instant Dropdown & Enter Support */}
+                        {/* Search */}
                         <div className="relative hidden md:block" ref={searchRef}>
                             <div className="relative">
                                 <input
@@ -289,132 +331,121 @@ export default function AuthenticatedLayout({ children }) {
                                     onChange={handleSearchChange}
                                     onKeyDown={handleKeyDown}
                                     placeholder="Cari menu, fitur..."
-                                    className="w-48 lg:w-64 bg-gray-50 dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-100/40 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#1F7A54] dark:focus:ring-emerald-500 transition-all"
+                                    className="w-48 lg:w-64 bg-emerald-50/30 dark:bg-[#0D2217] border border-emerald-100 dark:border-emerald-900/40 rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-gray-700 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-400/50 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-400 transition-all"
                                 />
-                                <svg className="w-4 h-4 text-gray-400 dark:text-emerald-500/70 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                                {searchQuery && (
-                                    <button
-                                        onClick={() => { setSearchQuery(''); setSearchResults([]); setIsSearching(false); }}
-                                        className="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xs font-bold"
-                                    >
-                                        ✕
-                                    </button>
-                                )}
                             </div>
-
-                            {/* Dropdown Hasil Pencarian */}
                             {isSearching && (
-                                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0E1F16] border border-gray-100 dark:border-emerald-950/60 rounded-2xl shadow-xl py-2 z-50">
-                                    <div className="px-3 py-1.5 border-b border-gray-100 dark:border-emerald-950/40 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                                        Hasil Pencarian (Tekan Enter)
+                                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0B1E13] border border-emerald-100 dark:border-emerald-900/40 rounded-2xl shadow-xl py-2 z-50">
+                                    <div className="px-3 py-1.5 border-b border-emerald-50 dark:border-emerald-900/30 text-[10px] font-bold text-emerald-600 uppercase tracking-wider">
+                                        Hasil Pencarian
                                     </div>
-                                    <div className="max-h-60 overflow-y-auto">
+                                    <div className="max-h-60 overflow-y-auto custom-scrollbar">
                                         {searchResults.length > 0 ? (
                                             searchResults.map((item, idx) => (
                                                 <Link
                                                     key={idx}
                                                     href={route(item.route)}
                                                     onClick={() => setIsSearching(false)}
-                                                    className="px-3.5 py-2.5 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors flex items-center justify-between cursor-pointer block"
+                                                    className="px-3.5 py-2.5 hover:bg-emerald-50/60 dark:hover:bg-emerald-900/30 transition-colors flex items-center justify-between cursor-pointer block"
                                                 >
                                                     <span className="text-xs font-semibold text-gray-800 dark:text-emerald-100">{item.name}</span>
-                                                    <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-[#1F7A54] dark:text-emerald-300 px-2 py-0.5 rounded-md font-medium">
+                                                    <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/60 text-[#1F7A54] dark:text-emerald-300 px-2 py-0.5 rounded-md font-medium">
                                                         {item.category}
                                                     </span>
                                                 </Link>
                                             ))
                                         ) : (
-                                            <div className="px-4 py-6 text-center text-xs text-gray-400 dark:text-emerald-400/50">
-                                                Tidak ada hasil untuk "{searchQuery}"
-                                            </div>
+                                            <div className="px-4 py-6 text-center text-xs text-gray-400">Tidak ada hasil</div>
                                         )}
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* TOGGLE DARK/LIGHT MODE BUTTON */}
+                        {/* Dark Mode */}
                         <button
                             onClick={toggleDarkMode}
-                            title={darkMode ? "Ubah ke Light Mode" : "Ubah ke Dark Mode"}
-                            className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:text-amber-300 dark:hover:text-amber-200 transition-colors focus:outline-none cursor-pointer"
+                            className="p-2 rounded-full text-emerald-600 hover:text-emerald-700 dark:text-amber-300 transition-colors bg-emerald-50/50 dark:bg-emerald-950/40 cursor-pointer"
                         >
-                            {darkMode ? (
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                </svg>
-                            ) : (
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                </svg>
-                            )}
+                            {darkMode ? '☀️' : '🌙'}
                         </button>
 
-                        {/* Notifications Icon with Interactive Rich Dropdown */}
+                        {/* Notifications */}
                         <div className="relative" ref={notificationRef}>
                             <button
                                 onClick={() => setNotificationOpen(!notificationOpen)}
-                                title="Notifikasi"
-                                className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer focus:outline-none transition-colors"
+                                className="relative p-2 rounded-full text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 cursor-pointer bg-emerald-50/50 dark:bg-emerald-950/40"
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
-                                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#09170F]"></span>
+                                {/* Titik merah indikator di ikon lonceng hanya muncul jika ada yang belum dibaca */}
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border border-white dark:border-[#08160E]"></span>
+                                )}
                             </button>
 
-                            {/* Dropdown Box Notifikasi */}
                             {notificationOpen && (
-                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0E1F16] border border-gray-100 dark:border-emerald-950/60 rounded-2xl shadow-xl py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-
-                                    {/* Header Notifikasi */}
-                                    <div className="flex items-center justify-between px-4 pb-2.5 border-b border-gray-100 dark:border-emerald-950/40">
+                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0B1E13] border border-emerald-100 dark:border-emerald-900/40 rounded-2xl shadow-xl pt-3 pb-2 z-50">
+                                    <div className="flex items-center justify-between px-4 pb-2.5 border-b border-emerald-50 dark:border-emerald-900/30">
                                         <div className="flex items-center space-x-2">
                                             <span className="text-xs font-bold text-gray-800 dark:text-emerald-100">Notifikasi</span>
-                                            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-[#1F7A54] dark:text-emerald-300 px-2 py-0.5 rounded-full font-semibold">2 Baru</span>
+                                            {unreadCount > 0 && (
+                                                <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/60 text-[#1F7A54] dark:text-emerald-300 px-2 py-0.5 rounded-full font-semibold">
+                                                    {unreadCount} Baru
+                                                </span>
+                                            )}
                                         </div>
                                         <button
-                                            onClick={() => setNotificationOpen(false)}
-                                            className="text-[11px] text-[#1F7A54] dark:text-emerald-400 hover:underline font-semibold"
+                                            onClick={handleMarkAllAsRead}
+                                            className="text-[11px] text-[#1F7A54] dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
                                         >
                                             Tandai semua dibaca
                                         </button>
                                     </div>
 
-                                    {/* Daftar List Notifikasi */}
-                                    <div className="divide-y divide-gray-50 dark:divide-emerald-950/30 max-h-72 overflow-y-auto custom-scrollbar">
-                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start relative">
-                                            <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
-                                            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-[#1F7A54] dark:text-emerald-300 flex-shrink-0 mt-0.5">
-                                                🥗
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Waktunya Makan Siang!</p>
-                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Jangan lupa catat dan scan menu makan siangmu hari ini agar target gizi tercapai.</p>
-                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">Baru saja</span>
-                                            </div>
-                                        </div>
+                                    {/* LIST NOTIFIKASI DENGAN SCROLL (max-h-72 & overflow-y-auto memastikan scrollbar aktif) */}
+                                    <div className="divide-y divide-emerald-50/50 dark:divide-emerald-900/20 max-h-[280px] overflow-y-auto custom-scrollbar">
+                                        {notifications.length > 0 ? (
+                                            notifications.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => handleNotificationClick(item.id)}
+                                                    className={`px-4 py-3 transition-colors cursor-pointer flex gap-3 items-start relative ${item.isRead
+                                                            ? 'opacity-60 bg-transparent hover:bg-emerald-50/20'
+                                                            : 'hover:bg-emerald-50/40 dark:hover:bg-emerald-900/20'
+                                                        }`}
+                                                >
+                                                    {/* Titik hijau penanda unread. Jika isRead true (sudah dibaca), titik hijaunya hilang */}
+                                                    {!item.isRead && (
+                                                        <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
+                                                    )}
 
-                                        <div className="px-4 py-3 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer flex gap-3 items-start relative">
-                                            <span className="absolute top-4 right-4 w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full"></span>
-                                            <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-300 flex-shrink-0 mt-0.5">
-                                                🎉
+                                                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
+                                                        {item.icon}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">{item.title}</p>
+                                                        <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">{item.message}</p>
+                                                        <span className="text-[10px] text-emerald-600/70 dark:text-emerald-400 mt-1 block">{item.time}</span>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="px-4 py-8 text-center text-xs text-gray-400 dark:text-emerald-400/50">
+                                                Tidak ada notifikasi baru
                                             </div>
-                                            <div>
-                                                <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">Target Kalori Terpenuhi</p>
-                                                <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">Hebat! Target nutrisi mingguanmu menunjukkan tren positif yang konsisten.</p>
-                                                <span className="text-[10px] text-gray-400 dark:text-emerald-500 mt-1 block">Kemarin</span>
-                                            </div>
-                                        </div>
+                                        )}
                                     </div>
 
-                                    {/* Footer Dropdown */}
-                                    <div className="px-4 pt-2.5 text-center border-t border-gray-100 dark:border-emerald-950/40 flex justify-center items-center">
+                                    {/* Tombol Tutup */}
+                                    <div className="px-4 pt-2 mt-1 border-t border-emerald-50 dark:border-emerald-900/35">
                                         <button
                                             onClick={() => setNotificationOpen(false)}
-                                            className="text-[11px] font-bold text-gray-400 hover:text-gray-600 dark:text-emerald-500 dark:hover:text-emerald-300 cursor-pointer"
+                                            className="w-full py-2 bg-emerald-50/60 hover:bg-emerald-100/70 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/40 text-[#1F7A54] dark:text-emerald-300 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                                         >
                                             Tutup
                                         </button>
@@ -423,59 +454,22 @@ export default function AuthenticatedLayout({ children }) {
                             )}
                         </div>
 
-                        {/* User Profile Initial Icon */}
-                        <Link
-                            href={route('profile.edit')}
-                            prefetch={["hover", "mount"]}
-                            className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#164D2B] dark:bg-[#34D399] dark:hover:bg-[#28b57a] text-white dark:text-emerald-950 flex items-center justify-center font-extrabold text-sm shadow-sm transition-all duration-200 cursor-pointer"
-                            title="Buka Profil"
-                        >
-                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                        </Link>
+                        {/* Profile Initial */}
+                        {user && (
+                            <Link
+                                href={route('profile.edit')}
+                                className="w-8 h-8 rounded-full bg-[#1F7A54] text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer"
+                            >
+                                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                            </Link>
+                        )}
                     </div>
-
                 </header>
 
-                {/* Main Content Area wrapper */}
                 <main className="flex-1 p-4 sm:p-8 pb-24 lg:pb-8">
                     {children}
                 </main>
-
-                {/* Bottom Navigation Bar for Mobile/Tablet */}
-                <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#122017] border-t border-gray-100 dark:border-emerald-950/60 lg:hidden shadow-[0_-4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_-4px_12px_rgba(0,0,0,0.2)]">
-                    <div className="flex justify-around items-center h-16 px-2">
-                        {menuItems.map((item, idx) => {
-                            const isCurrent = item.route !== '#' && route().current(item.route);
-                            let shortName = item.name;
-                            if (item.name === 'Scan Makanan') shortName = 'Scan';
-                            if (item.name === 'Lap. Mingguan') shortName = 'Laporan';
-                            if (item.name === 'Riwayat Scan') shortName = 'Riwayat';
-                            if (item.name === 'AI Assistant') shortName = 'AI';
-
-                            return (
-                                <Link
-                                    key={idx}
-                                    href={item.route !== '#' ? route(item.route) : '#'}
-                                    prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
-                                    className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all duration-200 ${isCurrent
-                                            ? 'text-[#1F7A54] dark:text-emerald-400 font-bold'
-                                            : 'text-gray-400 hover:text-gray-600 dark:text-emerald-300/40 dark:hover:text-emerald-300'
-                                        }`}
-                                >
-                                    <div className={`p-1 rounded-lg transition-colors ${isCurrent ? 'bg-emerald-50 dark:bg-emerald-950/30' : ''}`}>
-                                        {item.icon}
-                                    </div>
-                                    <span className="text-[10px] mt-0.5 font-semibold tracking-tight">
-                                        {shortName}
-                                    </span>
-                                </Link>
-                            );
-                        })}
-                    </div>
-                </div>
-
             </div>
-
         </div>
     );
 }
