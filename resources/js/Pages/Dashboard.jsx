@@ -6,6 +6,61 @@ export default function Dashboard({ auth }) {
     const user = auth.user;
     const [hoveredDay, setHoveredDay] = useState(null);
 
+    // State untuk mengontrol visibilitas panel pop-up notifikasi
+    const [showNotifications, setShowNotifications] = useState(true);
+
+    // State untuk daftar notifikasi dan status dibaca
+    const [notifications, setNotifications] = useState([
+        {
+            id: 1,
+            title: "Waktunya Makan Siang!",
+            description: "Jangan lupa catat dan scan menu makan siangmu hari ini agar target gizi tercapai.",
+            time: "Baru saja",
+            unread: true,
+            dotColor: "bg-emerald-500"
+        },
+        {
+            id: 2,
+            title: "Target Kalori Terpenuhi",
+            description: "Hebat! Target nutrisi mingguanmu menunjukkan tren positif yang konsisten.",
+            time: "Kemarin",
+            unread: true,
+            dotColor: "bg-emerald-500"
+        },
+        {
+            id: 3,
+            title: "Pengingat Minum Air",
+            description: "Jangan biarkan tubuhmu dehidrasi. Yuk, minum satu gelas air sekarang!",
+            time: "2 jam lalu",
+            unread: true,
+            dotColor: "bg-emerald-500"
+        },
+        {
+            id: 4,
+            title: "Mingguan Evaluasi Gizi",
+            description: "Laporan mingguanmu sudah siap dilihat. Cek perkembangan kalorimu minggu ini.",
+            time: "3 hari lalu",
+            unread: false,
+            dotColor: "bg-red-500"
+        },
+        {
+            id: 5,
+            title: "Tips Kesehatan Baru",
+            description: "Pelajari cara menjaga berat badan ideal tanpa harus menyiksa diri dengan diet ekstrem.",
+            time: "4 hari lalu",
+            unread: false,
+            dotColor: "bg-red-500"
+        }
+    ]);
+
+    // Fungsi untuk menandai semua notifikasi telah dibaca
+    const markAllAsRead = () => {
+        setNotifications(prev => prev.map(notif => ({ ...notif, unread: false })));
+    };
+
+    // Hitung jumlah notifikasi yang belum dibaca
+    const unreadCount = notifications.filter(n => n.unread).length;
+
     // Stat cards values
     const stats = [
         {
@@ -90,18 +145,92 @@ export default function Dashboard({ auth }) {
 
     // Weekly Calorie Bar data
     const weeklyData = [
-        { day: "Sen", calories: 1600, target: 2000 },
-        { day: "Sel", calories: 1900, target: 2000 },
+        { day: "Sen", calories: 1850, target: 2000 },
+        { day: "Sel", calories: 2100, target: 2000 },
         { day: "Rab", calories: 1720, target: 2000 },
-        { day: "Kam", calories: 1960, target: 2000 },
-        { day: "Jum", calories: 2100, target: 2000 },
-        { day: "Sab", calories: 1400, target: 2000 },
-        { day: "Min", calories: 1200, target: 2000 },
+        { day: "Kam", calories: 1950, target: 2000 },
+        { day: "Jum", calories: 2250, target: 2000 },
+        { day: "Sab", calories: 1248, target: 2000 },
+        { day: "Min", calories: 1248, target: 2000 },
     ];
+
+    const MAX_VAL = 2400;
 
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard - siGizi" />
+
+            {/* Tombol lonceng notifikasi */}
+            <div className="fixed top-4 right-20 z-40 flex items-center h-10">
+                <button
+                    onClick={() => setShowNotifications(prev => !prev)}
+                    className="relative p-2 text-gray-600 dark:text-emerald-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer flex items-center justify-center focus:outline-none"
+                    title="Buka/Tutup Notifikasi"
+                >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    {unreadCount > 0 && (
+                        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#122017]"></span>
+                    )}
+                </button>
+            </div>
+
+            {/* Bagian Panel Pop-up Notifikasi */}
+            {showNotifications && (
+                <div className="fixed top-20 right-8 z-50 w-80 bg-white dark:bg-[#122017] rounded-3xl shadow-xl border border-gray-100 dark:border-[#1a2e22] p-4 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="flex justify-between items-center mb-3 px-1">
+                        <div className="flex items-center space-x-2">
+                            <span className="text-xs font-extrabold text-gray-900 dark:text-white">Notifikasi</span>
+                            {unreadCount > 0 && (
+                                <span className="text-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 px-2 py-0.5 rounded-full font-bold">
+                                    {unreadCount} Baru
+                                </span>
+                            )}
+                        </div>
+                        <button
+                            onClick={markAllAsRead}
+                            className="text-[10px] font-bold text-[#1F7A54] dark:text-emerald-400 hover:underline cursor-pointer"
+                        >
+                            Tandai semua dibaca
+                        </button>
+                    </div>
+
+                    {/* Kontainer Daftar Notifikasi yang Bisa Di-scroll */}
+                    <div className="max-h-72 overflow-y-auto space-y-3 pr-1">
+                        {notifications.map((notif) => (
+                            <div key={notif.id} className="flex items-start justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#182b1f] rounded-2xl transition-all duration-200">
+                                <div className="flex items-start space-x-2.5">
+                                    <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center shrink-0 mt-0.5">
+                                        <svg className="w-4 h-4 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xs font-bold text-gray-900 dark:text-white">{notif.title}</h4>
+                                        <p className="text-[11px] text-gray-500 dark:text-emerald-100/60 mt-0.5 leading-relaxed">{notif.description}</p>
+                                        <span className="text-[9px] text-gray-400 dark:text-emerald-100/40 block mt-1">{notif.time}</span>
+                                    </div>
+                                </div>
+
+                                {notif.unread && (
+                                    <div className={`w-2 h-2 rounded-full ${notif.dotColor} shrink-0 mt-1.5`}></div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Tombol Tutup Interaktif */}
+                    <div className="mt-3 pt-2 border-t border-gray-100 dark:border-[#1a2e22] text-center">
+                        <button
+                            onClick={() => setShowNotifications(false)}
+                            className="w-full py-2 bg-gray-50 hover:bg-gray-100 dark:bg-[#182b1f] dark:hover:bg-[#1e3626] text-gray-600 dark:text-emerald-200 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                        >
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div className="space-y-8">
 
@@ -112,7 +241,7 @@ export default function Dashboard({ auth }) {
                             DASHBOARD
                         </span>
                         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                            Selamat pagi, {user?.name ?? 'Budi'} 👏
+                            Selamat pagi, {user?.name ?? 'Nadin Aulia Putri'} 👏
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-1">
                             Rabu, 22 Juli 2026
@@ -214,9 +343,9 @@ export default function Dashboard({ auth }) {
 
                 </div>
 
-                {/* Bottom Bar Chart: Kalori Minggu Ini (Tanpa Angka Sumbu Y & Label Aktual Diganti Kalori) */}
+                {/* Bottom Bar Chart: Kalori Minggu Ini */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
-                    <div className="flex justify-between items-center mb-8">
+                    <div className="flex justify-between items-center mb-6">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
                         <Link href={route('laporan.mingguan')} prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
                             <span>Lihat laporan</span>
@@ -224,14 +353,27 @@ export default function Dashboard({ auth }) {
                         </Link>
                     </div>
 
-                    {/* Chart Wrapper */}
-                    <div className="flex items-end pt-6 pb-2 px-2 sm:px-4">
+                    <div className="flex items-end pt-2 pb-1 px-1 sm:px-2">
+                        <div className="flex flex-col justify-between h-48 text-[10px] font-bold text-gray-400 dark:text-emerald-100/50 pr-3 text-right select-none shrink-0 translate-y-2">
+                            <span className="leading-none">2400</span>
+                            <span className="leading-none">1800</span>
+                            <span className="leading-none">1200</span>
+                            <span className="leading-none">600</span>
+                            <span className="leading-none">0</span>
+                        </div>
 
-                        {/* Bar Chart Container (Tanpa Sumbu Y di Kiri) */}
-                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-44 w-full relative border-b border-gray-100 dark:border-[#1a2e22] px-2">
+                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-48 w-full relative border-b border-gray-200 dark:border-[#1a2e22] px-2">
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full border-t border-dashed border-gray-200 dark:border-[#1a2e22]/80"></div>
+                                <div className="w-full"></div>
+                            </div>
+
                             {weeklyData.map((data, idx) => {
-                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
-                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
+                                const currentHeight = (data.calories / MAX_VAL) * 100;
+                                const targetHeight = (data.target / MAX_VAL) * 100;
                                 const isHovered = hoveredDay === data.day;
 
                                 return (
@@ -239,16 +381,15 @@ export default function Dashboard({ auth }) {
                                         key={idx}
                                         onMouseEnter={() => setHoveredDay(data.day)}
                                         onMouseLeave={() => setHoveredDay(null)}
-                                        className="flex flex-col items-center group relative w-full pt-4 rounded-2xl px-1 pb-1 cursor-pointer"
+                                        className="flex flex-col items-center group relative w-full pt-2 rounded-2xl px-1 pb-1 cursor-pointer z-10"
                                     >
-                                        {/* Kotak Tooltip Interaktif */}
                                         {isHovered && (
                                             <div className="absolute -top-20 bg-gray-900 text-white text-[11px] font-medium py-2 px-3 rounded-2xl shadow-xl z-30 pointer-events-none transition-all flex flex-col space-y-0.5 min-w-[95px] border border-gray-800">
                                                 <span className="font-extrabold text-emerald-400 mb-0.5 border-b border-gray-800 pb-0.5">
                                                     {data.day}
                                                 </span>
                                                 <div className="flex justify-between items-center text-[10px]">
-                                                    <span className="text-gray-400">Kalori :</span>
+                                                    <span className="text-gray-400">Aktual :</span>
                                                     <span className="font-bold text-white ml-2">{data.calories}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center text-[10px]">
@@ -258,22 +399,19 @@ export default function Dashboard({ auth }) {
                                             </div>
                                         )}
 
-                                        {/* Graph Columns adjacent */}
-                                        <div className="flex space-x-1 items-end justify-center w-full h-36">
-                                            {/* Batang Kalori (Hijau Terang) */}
+                                        <div className="flex space-x-1 items-end justify-center w-full h-48">
                                             <div
                                                 style={{ height: `${currentHeight}%` }}
                                                 className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered
-                                                        ? 'bg-emerald-400 dark:bg-emerald-300 shadow-md'
-                                                        : 'bg-[#22c55e]/90 dark:bg-emerald-500/80'
+                                                    ? 'bg-emerald-400 dark:bg-emerald-300 shadow-md'
+                                                    : 'bg-[#22c55e]/90 dark:bg-emerald-500/80'
                                                     }`}
                                             ></div>
-                                            {/* Batang Target (Hitam/Gelap) */}
                                             <div
                                                 style={{ height: `${targetHeight}%` }}
                                                 className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered
-                                                        ? 'bg-gray-700 dark:bg-gray-600'
-                                                        : 'bg-gray-900 dark:bg-gray-800'
+                                                    ? 'bg-gray-700 dark:bg-gray-600'
+                                                    : 'bg-gray-900 dark:bg-gray-800'
                                                     }`}
                                             ></div>
                                         </div>
@@ -287,11 +425,10 @@ export default function Dashboard({ auth }) {
                         </div>
                     </div>
 
-                    {/* Legenda Indikator Diagram (Kalori vs Target) */}
                     <div className="flex items-center justify-center space-x-6 mt-6 pt-4 border-t border-gray-100 dark:border-[#1a2e22]">
                         <div className="flex items-center space-x-2">
                             <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
-                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Kalori</span>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-emerald-100/70">Aktual</span>
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="w-3 h-3 rounded-full bg-gray-900 dark:bg-gray-700"></div>
