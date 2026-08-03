@@ -214,8 +214,8 @@ export default function AuthenticatedLayout({ children }) {
                                     href={item.route !== '#' ? route(item.route) : '#'}
                                     prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
                                     className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                            ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
-                                            : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
+                                        ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-emerald-950 font-bold shadow-md shadow-[#1F7A54]/15'
+                                        : 'text-gray-500 hover:text-[#1F7A54] hover:bg-emerald-50/55 dark:text-emerald-300/70 dark:hover:text-emerald-200 dark:hover:bg-emerald-950/30'
                                         }`}
                                 >
                                     {item.icon}
@@ -451,11 +451,10 @@ export default function AuthenticatedLayout({ children }) {
                                     key={idx}
                                     href={item.route !== '#' ? route(item.route) : '#'}
                                     prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
-                                    className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all duration-200 ${
-                                        isCurrent
+                                    className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all duration-200 ${isCurrent
                                             ? 'text-[#1F7A54] dark:text-emerald-400 font-bold'
                                             : 'text-gray-400 hover:text-gray-600 dark:text-emerald-300/40 dark:hover:text-emerald-300'
-                                    }`}
+                                        }`}
                                 >
                                     <div className={`p-1 rounded-lg transition-colors ${isCurrent ? 'bg-emerald-50 dark:bg-emerald-950/30' : ''}`}>
                                         {item.icon}
