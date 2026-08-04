@@ -11,6 +11,12 @@ export default function ScanPage() {
     const [scanStatus, setScanStatus] = useState('');
     const [scanError, setScanError] = useState(null);
 
+    // State untuk Form Detail Makanan Tambahan
+    const [foodName, setFoodName] = useState('');
+    const [cookingMethod, setCookingMethod] = useState('');
+    const [customCookingMethod, setCustomCookingMethod] = useState('');
+    const [portion, setPortion] = useState('1 Porsi Normal');
+
     // State untuk Modal Kamera Webcam
     const [isWebcamOpen, setIsWebcamOpen] = useState(false);
     const videoRef = useRef(null);
@@ -23,9 +29,9 @@ export default function ScanPage() {
         if (!isScanning) return;
 
         if (scanProgress < 25) {
-            setScanStatus('Mengunggah foto ke server siGizi...');
+            setScanStatus('Mengunggah foto & data ke server siGizi...');
         } else if (scanProgress < 55) {
-            setScanStatus('AI sedang mengidentifikasi jenis makanan...');
+            setScanStatus('AI sedang mencocokkan input & jenis makanan...');
         } else if (scanProgress < 85) {
             setScanStatus('Menganalisis kandungan nutrisi & kalori...');
         } else {
@@ -68,7 +74,7 @@ export default function ScanPage() {
         }
     };
 
-    // Buka Webcam (Digunakan untuk Desktop maupun Mobile agar seragam)
+    // Buka Webcam
     const openWebcam = async () => {
         setIsWebcamOpen(true);
         setScanError(null);
@@ -115,13 +121,19 @@ export default function ScanPage() {
         }, 'image/jpeg', 0.9);
     };
 
-    // Simulate AI Scan and POST to ScanController
+    // Simulate AI Scan and POST to ScanController with additional fields
     const startAnalysis = () => {
         if (!imagePreview || !imageFile) return;
+        if (!foodName.trim()) {
+            setScanError('Nama makanan wajib diisi untuk melanjutkan analisis.');
+            return;
+        }
 
         setIsScanning(true);
         setScanProgress(0);
         setScanError(null);
+
+        const finalCookingMethod = cookingMethod === 'Lainnya' ? customCookingMethod : cookingMethod;
 
         const interval = setInterval(() => {
             setScanProgress((prev) => {
@@ -129,7 +141,10 @@ export default function ScanPage() {
                     clearInterval(interval);
                     setTimeout(() => {
                         router.post(route('scan.store'), {
-                            image: imageFile
+                            image: imageFile,
+                            food_name: foodName,
+                            cooking_method: finalCookingMethod,
+                            portion: portion
                         }, {
                             forceFormData: true,
                             onError: (errors) => {
@@ -149,6 +164,10 @@ export default function ScanPage() {
         setImagePreview(null);
         setImageFile(null);
         setScanError(null);
+        setFoodName('');
+        setCookingMethod('');
+        setCustomCookingMethod('');
+        setPortion('1 Porsi Normal');
     };
 
     return (
@@ -174,7 +193,7 @@ export default function ScanPage() {
                     {/* Stepper Indicator */}
                     <div className="flex items-center space-x-2 bg-gray-100 dark:bg-[#122017] p-1.5 rounded-2xl border border-gray-200 dark:border-[#1a2e22]">
                         <span className="px-3 py-1.5 bg-[#1F7A54] dark:bg-emerald-500 text-white dark:text-black text-xs font-bold rounded-xl shadow-sm">
-                            1. Upload
+                            1. Upload & Detail
                         </span>
                         <span className="text-gray-400 dark:text-emerald-100/30 text-xs">›</span>
                         <span className="px-3 py-1.5 text-gray-400 dark:text-emerald-100/40 text-xs font-medium">
@@ -258,7 +277,7 @@ export default function ScanPage() {
                             <span>Unggah Foto</span>
                         </button>
 
-                        {/* Camera Button (Selalu Membuka Modal Webcam di Semua Perangkat) */}
+                        {/* Camera Button */}
                         <button
                             type="button"
                             onClick={openWebcam}
@@ -271,6 +290,82 @@ export default function ScanPage() {
                             <span>Buka Kamera</span>
                         </button>
                     </div>
+
+                    {/* Form Detail Makanan Tambahan (Hanya muncul jika foto sudah diunggah/dipilih) */}
+                    {imagePreview && (
+                        <div className="pt-6 border-t border-gray-100 dark:border-[#1a2e22] space-y-5 animate-fade-in">
+                            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                                💡 Detail Makanan :
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                {/* Nama Makanan */}
+                                <div className="space-y-1.5 md:col-span-2">
+                                    <label className="text-xs font-bold text-gray-700 dark:text-emerald-100/80 flex justify-between">
+                                        <span>Nama Makanan</span>
+                                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(wajib diisi)</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={foodName}
+                                        onChange={(e) => setFoodName(e.target.value)}
+                                        placeholder="Contoh: Tahu Kupat Magelang"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0b140e] border border-gray-200 dark:border-[#244230] rounded-xl text-sm text-gray-800 dark:text-white focus:ring-2 focus:ring-[#1F7A54] focus:outline-none"
+                                    />
+                                </div>
+
+                                {/* Metode Memasak */}
+                                <div className="space-y-1.5 md:col-span-2">
+                                    <label className="text-xs font-bold text-gray-700 dark:text-emerald-100/80 flex justify-between">
+                                        <span>Metode Memasak</span>
+                                        <span className="text-gray-400 font-normal">(opsional)</span>
+                                    </label>
+                                    <div className="flex flex-wrap gap-3 pt-1">
+                                        {['Digoreng', 'Direbus', 'Dikukus', 'Lainnya'].map((method) => (
+                                            <label key={method} className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 cursor-pointer bg-gray-50 dark:bg-[#0b140e] px-3.5 py-2 rounded-xl border border-gray-200 dark:border-[#244230]">
+                                                <input
+                                                    type="radio"
+                                                    name="cookingMethod"
+                                                    value={method}
+                                                    checked={cookingMethod === method}
+                                                    onChange={(e) => setCookingMethod(e.target.value)}
+                                                    className="text-[#1F7A54] focus:ring-[#1F7A54]"
+                                                />
+                                                <span>{method}{method === 'Lainnya' ? '...' : ''}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    {cookingMethod === 'Lainnya' && (
+                                        <input
+                                            type="text"
+                                            value={customCookingMethod}
+                                            onChange={(e) => setCustomCookingMethod(e.target.value)}
+                                            placeholder="Ketik metode memasak..."
+                                            className="w-full mt-2 px-4 py-2.5 bg-gray-50 dark:bg-[#0b140e] border border-gray-200 dark:border-[#244230] rounded-xl text-xs text-gray-800 dark:text-white focus:ring-2 focus:ring-[#1F7A54] focus:outline-none"
+                                        />
+                                    )}
+                                </div>
+
+                                {/* Porsi */}
+                                <div className="space-y-1.5 md:col-span-2">
+                                    <label className="text-xs font-bold text-gray-700 dark:text-emerald-100/80 flex justify-between">
+                                        <span>Porsi</span>
+                                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(wajib diisi)</span>
+                                    </label>
+                                    <select
+                                        value={portion}
+                                        onChange={(e) => setPortion(e.target.value)}
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0b140e] border border-gray-200 dark:border-[#244230] rounded-xl text-sm text-gray-800 dark:text-white focus:ring-2 focus:ring-[#1F7A54] focus:outline-none"
+                                    >
+                                        <option value="1/2 Porsi (Kecil)">1/2 Porsi (Kecil)</option>
+                                        <option value="1 Porsi Normal">1 Porsi Normal</option>
+                                        <option value="1.5 Porsi">1.5 Porsi</option>
+                                        <option value="Porsi Jumbo / Besar">Porsi Jumbo / Besar</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Bottom Trigger Action */}
                     {imagePreview && (

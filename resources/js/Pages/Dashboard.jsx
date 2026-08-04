@@ -7,12 +7,12 @@ export default function Dashboard({
     stats: initialStats,
     progressNutrients: initialProgress,
     recentHistory: initialHistory,
-    weeklyData: initialWeekly
+    weeklyData: initialWeekly,
+    totalDays = 30
 }) {
     const user = auth.user;
     const [activeDay, setActiveDay] = useState(null);
 
-    // Fallback default stat card icons
     const defaultIcons = [
         <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.317.766-.599 1.619-.874 2.417-.293.854-.538 1.482-.773 1.968a3.993 3.993 0 01-.58-1.72 1 1 0 00-1.477-.73c-.385.247-.69.595-.919.964-.226.362-.397.77-.524 1.166-.233.729-.33 1.432-.33 1.968 0 3.207 2.5 5.8 5.684 5.8 3.184 0 5.685-2.6 5.685-5.8 0-1.04-.325-1.99-.877-2.777a1 1 0 00-1.428-.15c-.345.257-.665.558-.934.88-.27.323-.497.669-.675 1.01-.229.439-.427.917-.613 1.348-.184.428-.354.767-.525.996a1.996 1.996 0 01-.577-1.417c0-.295.037-.588.11-.874.14-.523.354-1.087.595-1.637.243-.556.518-1.127.795-1.637.279-.516.559-.92.812-1.206a3.99 3.99 0 011.666-1.16z" clipRule="evenodd" />
@@ -28,21 +28,56 @@ export default function Dashboard({
         </svg>
     ];
 
-    const stats = (initialStats || [
-        { title: "Kalori Hari Ini", value: "1,248", unit: "kkal", target: "Target: 2,000 kkal", color: "bg-orange-500 text-white" },
-        { title: "Protein", value: "68g", target: "Target: 90g", color: "bg-blue-500 text-white" },
-        { title: "Lemak", value: "42g", target: "Target: 65g", color: "bg-amber-400 text-black" },
-        { title: "Karbohidrat", value: "156g", target: "Target: 250g", color: "bg-emerald-500 text-white" }
-    ]).map((s, idx) => ({
+    const targets = {
+        calories: user?.daily_calorie_goal ?? 1650,
+        protein: user?.protein_goal ?? 90,
+        fat: user?.fat_goal ?? 46,
+        carbs: user?.carbs_goal ?? 248,
+    };
+
+    const stats = [
+        {
+            title: "Kalori Hari Ini",
+            value: "3,120",
+            unit: "kkal",
+            dailyTarget: `${targets.calories.toLocaleString()} kkal`,
+            totalTarget: `${(targets.calories * totalDays).toLocaleString()} kkal`,
+            color: "bg-orange-500 text-white"
+        },
+        {
+            title: "Protein",
+            value: "123",
+            unit: "g",
+            dailyTarget: `${targets.protein} g`,
+            totalTarget: `${(targets.protein * totalDays).toLocaleString()} g`,
+            color: "bg-blue-500 text-white"
+        },
+        {
+            title: "Lemak",
+            value: "155",
+            unit: "g",
+            dailyTarget: `${targets.fat} g`,
+            totalTarget: `${(targets.fat * totalDays).toLocaleString()} g`,
+            color: "bg-amber-400 text-black"
+        },
+        {
+            title: "Karbohidrat",
+            value: "306",
+            unit: "g",
+            dailyTarget: `${targets.carbs} g`,
+            totalTarget: `${(targets.carbs * totalDays).toLocaleString()} g`,
+            color: "bg-emerald-500 text-white"
+        }
+    ].map((s, idx) => ({
         ...s,
         icon: defaultIcons[idx % defaultIcons.length]
     }));
 
     const progressNutrients = initialProgress || [
-        { name: "Kalori", current: "1248", target: "2000", unit: "kkal", pct: 62, barColor: "bg-orange-500" },
-        { name: "Protein", current: "68", target: "90", unit: "g", pct: 76, barColor: "bg-blue-500" },
-        { name: "Lemak", current: "42", target: "65", unit: "g", pct: 65, barColor: "bg-amber-500" },
-        { name: "Karbohidrat", current: "156", target: "250", unit: "g", pct: 62, barColor: "bg-emerald-500" },
+        { name: "Kalori", current: "3120", target: targets.calories, unit: "kkal", pct: 100, barColor: "bg-orange-500" },
+        { name: "Protein", current: "123", target: targets.protein, unit: "g", pct: 100, barColor: "bg-blue-500" },
+        { name: "Lemak", current: "155", target: targets.fat, unit: "g", pct: 100, barColor: "bg-amber-500" },
+        { name: "Karbohidrat", current: "306", target: targets.carbs, unit: "g", pct: 100, barColor: "bg-emerald-500" },
     ];
 
     const recentHistory = initialHistory || [
@@ -52,13 +87,13 @@ export default function Dashboard({
     ];
 
     const weeklyData = initialWeekly || [
-        { day: "Sen", calories: 1850, target: 2000 },
-        { day: "Sel", calories: 2100, target: 2000 },
-        { day: "Rab", calories: 1720, target: 2000 },
-        { day: "Kam", calories: 1950, target: 2000 },
-        { day: "Jum", calories: 2250, target: 2000 },
-        { day: "Sab", calories: 1640, target: 2000 },
-        { day: "Min", calories: 1248, target: 2000 },
+        { day: "Sen", calories: 1450, target: targets.calories },
+        { day: "Sel", calories: 1600, target: targets.calories },
+        { day: "Rab", calories: 1520, target: targets.calories },
+        { day: "Kam", calories: 1650, target: targets.calories },
+        { day: "Jum", calories: 1700, target: targets.calories },
+        { day: "Sab", calories: 1400, target: targets.calories },
+        { day: "Min", calories: 3120, target: targets.calories },
     ];
 
     return (
@@ -67,14 +102,14 @@ export default function Dashboard({
 
             <div className="space-y-6">
 
-                {/* Greeting & Action Row (Tombol Scan Makanan di Kanan Sejajar) */}
+                {/* Greeting & Action Row */}
                 <div className="flex justify-between items-center gap-4">
                     <div>
                         <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-0.5">
                             DASHBOARD
                         </span>
                         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                            Selamat pagi, {user?.name ?? 'Budi'} 👏
+                            Selamat pagi, {user?.name ?? 'Nadin Aulia Putri'} 👏
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-0.5">
                             Minggu, 18 Juni 2025
@@ -93,30 +128,38 @@ export default function Dashboard({
                     </Link>
                 </div>
 
-                {/* 4 Stat Cards Grid 2 Kolom (2x2) */}
+                {/* 4 Stat Cards Grid 2 Kolom (2x2) dengan Target Harian & Target Program */}
                 <div className="grid grid-cols-2 gap-4">
                     {stats.map((stat, idx) => (
                         <div key={idx} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-3">
                             <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
                                 {stat.icon}
                             </div>
-                            <div className="space-y-0.5">
+                            <div className="space-y-1">
                                 <p className="text-[10px] sm:text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
                                 <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">
                                     {stat.value}
                                     {stat.unit && <span className="text-xs font-medium text-gray-400 dark:text-emerald-100/60 ml-1">{stat.unit}</span>}
                                 </h3>
-                                <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
+
+                                <div className="pt-2 mt-2 border-t border-gray-100 dark:border-[#1a2e22] space-y-0.5">
+                                    <p className="text-[11px] sm:text-xs text-gray-600 dark:text-emerald-300 font-semibold">
+                                        Target Harian: <span className="font-bold">{stat.dailyTarget}</span>
+                                    </p>
+                                    <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-emerald-100/60 font-medium">
+                                        Target Program: <span className="font-semibold">{stat.totalTarget}</span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
 
                 {/* Two Column Layout Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-                    {/* Left Column: Progress Bars */}
-                    <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
+                    {/* Left Column: Progress Bars (Ubah dari justify-between menjadi flex-col biasa agar ukurannya pas mengikuti isi) */}
+                    <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Nutrisi Hari Ini</h2>
                             <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 tracking-wider">18 JUN 2025</span>
@@ -176,7 +219,7 @@ export default function Dashboard({
 
                 </div>
 
-                {/* Bottom Bar Chart: Kalori Minggu Ini (Support Hover & Tap Mobile) */}
+                {/* Bottom Bar Chart: Kalori Minggu Ini */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
@@ -190,8 +233,8 @@ export default function Dashboard({
                     <div className="flex items-end pt-12 pb-2 px-2 sm:px-4">
                         <div className="grid grid-cols-7 gap-1 sm:gap-6 items-end h-44 w-full relative border-b border-gray-100 dark:border-[#1a2e22] px-2">
                             {weeklyData.map((data, idx) => {
-                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
-                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
+                                const currentHeight = Math.min((data.calories / 3500) * 100, 100);
+                                const targetHeight = Math.min((data.target / 3500) * 100, 100);
                                 const isActive = activeDay === data.day;
 
                                 return (

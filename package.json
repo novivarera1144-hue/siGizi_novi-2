@@ -24,6 +24,8 @@
     "dependencies": {
         "lucide-react": "^1.25.0",
         "react-is": "^19.2.7",
-        "recharts": "^3.10.0"
+        "recharts": "^3.10.0",
+        "sweetalert2": "^11.26.25",
+        "sweetalert2-react-content": "^5.1.2"
     }
 }

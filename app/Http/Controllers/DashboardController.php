@@ -39,43 +39,69 @@ class DashboardController extends Controller
         $totalLemak = array_sum(array_column($relevantScans, 'lemak'));
         $totalKarbo = array_sum(array_column($relevantScans, 'karbohidrat'));
 
+        // Gunakan target nutrisi tersimpan dari database, fallback ke kalkulasi dinamis
+        if ($user && $user->target_calories) {
+            $targetCalories = $user->target_calories;
+            $targetProtein = $user->target_protein ?? round($user->weight * 1.5);
+            $targetFat = $user->target_fat ?? round(($targetCalories * 0.25) / 9);
+            $targetCarbs = $user->target_carbs ?? round(($targetCalories * 0.60) / 4);
+        } else {
+            // Fallback: Hitung Target Kesehatan Dinamis via Mifflin-St Jeor
+            $targetCalories = 2000;
+            if ($user && $user->height && $user->weight) {
+                $bmr = (10 * $user->weight) + (6.25 * $user->height) - 120; // Default age 25
+                $tdee = $bmr * 1.375;
+                if ($user->weight_goal === 'Menurunkan Berat Badan') {
+                    $targetCalories = $tdee - 400;
+                } elseif ($user->weight_goal === 'Menaikkan Berat Badan') {
+                    $targetCalories = $tdee + 400;
+                } else {
+                    $targetCalories = $tdee;
+                }
+                $targetCalories = max(1200, min(4000, round($targetCalories / 50) * 50));
+            }
+            $targetProtein = $user && $user->weight ? round($user->weight * 1.5) : 90;
+            $targetFat = round(($targetCalories * 0.25) / 9);
+            $targetCarbs = round(($targetCalories * 0.60) / 4);
+        }
+
         $stats = [
             [
                 'title' => 'Kalori Hari Ini',
                 'value' => number_format($totalKalori),
                 'unit' => 'kkal',
-                'target' => 'Target: 2,000 kkal',
+                'target' => 'Target: ' . number_format($targetCalories) . ' kkal',
                 'color' => 'bg-orange-500 text-white',
                 'icon' => 'cal'
             ],
             [
                 'title' => 'Protein',
                 'value' => $totalProtein . 'g',
-                'target' => 'Target: 90g',
+                'target' => 'Target: ' . $targetProtein . 'g',
                 'color' => 'bg-blue-500 text-white',
                 'icon' => 'prot'
             ],
             [
                 'title' => 'Lemak',
                 'value' => $totalLemak . 'g',
-                'target' => 'Target: 65g',
+                'target' => 'Target: ' . $targetFat . 'g',
                 'color' => 'bg-amber-400 text-black',
                 'icon' => 'fat'
             ],
             [
                 'title' => 'Karbohidrat',
                 'value' => $totalKarbo . 'g',
-                'target' => 'Target: 250g',
+                'target' => 'Target: ' . $targetCarbs . 'g',
                 'color' => 'bg-emerald-500 text-white',
                 'icon' => 'carbs'
             ]
         ];
 
         $progressNutrients = [
-            ['name' => 'Kalori', 'current' => (string)$totalKalori, 'target' => '2000', 'unit' => 'kkal', 'pct' => min(100, round(($totalKalori / 2000) * 100)), 'barColor' => 'bg-orange-500'],
-            ['name' => 'Protein', 'current' => (string)$totalProtein, 'target' => '90', 'unit' => 'g', 'pct' => min(100, round(($totalProtein / 90) * 100)), 'barColor' => 'bg-blue-500'],
-            ['name' => 'Lemak', 'current' => (string)$totalLemak, 'target' => '65', 'unit' => 'g', 'pct' => min(100, round(($totalLemak / 65) * 100)), 'barColor' => 'bg-amber-500'],
-            ['name' => 'Karbohidrat', 'current' => (string)$totalKarbo, 'target' => '250', 'unit' => 'g', 'pct' => min(100, round(($totalKarbo / 250) * 100)), 'barColor' => 'bg-emerald-500'],
+            ['name' => 'Kalori', 'current' => (string)$totalKalori, 'target' => (string)$targetCalories, 'unit' => 'kkal', 'pct' => min(100, round(($totalKalori / $targetCalories) * 100)), 'barColor' => 'bg-orange-500'],
+            ['name' => 'Protein', 'current' => (string)$totalProtein, 'target' => (string)$targetProtein, 'unit' => 'g', 'pct' => min(100, round(($totalProtein / $targetProtein) * 100)), 'barColor' => 'bg-blue-500'],
+            ['name' => 'Lemak', 'current' => (string)$totalLemak, 'target' => (string)$targetFat, 'unit' => 'g', 'pct' => min(100, round(($totalLemak / $targetFat) * 100)), 'barColor' => 'bg-amber-500'],
+            ['name' => 'Karbohidrat', 'current' => (string)$totalKarbo, 'target' => (string)$targetCarbs, 'unit' => 'g', 'pct' => min(100, round(($totalKarbo / $targetCarbs) * 100)), 'barColor' => 'bg-emerald-500'],
         ];
 
         // Format recent scans
@@ -100,7 +126,6 @@ class DashboardController extends Controller
         $days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
         $weeklyData = [];
         foreach ($days as $idx => $d) {
-            // Estimate or map per day
             $dayScans = array_filter($scans, function ($s) use ($idx) {
                 if (!isset($s['created_at'])) return false;
                 $w = date('N', strtotime($s['created_at'])); // 1=Mon, 7=Sun
@@ -110,7 +135,7 @@ class DashboardController extends Controller
             $weeklyData[] = [
                 'day' => $d,
                 'calories' => $cals > 0 ? $cals : rand(1200, 1900),
-                'target' => 2000
+                'target' => $targetCalories
             ];
         }
 
