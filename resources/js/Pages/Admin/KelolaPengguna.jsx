@@ -2,11 +2,11 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function KelolaPengguna() {
+export default function KelolaPengguna({ initialUsers }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [roleFilter, setRoleFilter] = useState('Semua');
 
-    const [users, setUsers] = useState([
+    const [users, setUsers] = useState(initialUsers || [
         { id: 1, name: "Budi Raharjo", email: "budi@gmail.com", role: "Pengguna", status: "Aktif", statusColor: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400" },
         { id: 2, name: "Siti Aminah", email: "siti@gmail.com", role: "Pengguna", status: "Aktif", statusColor: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400" },
         { id: 3, name: "Administrator Utama", email: "admin@sigizi.com", role: "Admin", status: "Aktif", statusColor: "text-[#1F7A54] bg-emerald-100 dark:bg-[#34D399]/20 dark:text-[#34D399]" },

@@ -2,94 +2,56 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({
+    auth,
+    stats: initialStats,
+    progressNutrients: initialProgress,
+    recentHistory: initialHistory,
+    weeklyData: initialWeekly
+}) {
     const user = auth.user;
     const [activeDay, setActiveDay] = useState(null);
 
-    // Stat cards values
-    const stats = [
-        {
-            title: "Kalori Hari Ini",
-            value: "1,248",
-            unit: "kkal",
-            target: "Target: 2,000 kkal",
-            color: "bg-orange-500 text-white",
-            icon: (
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.317.766-.599 1.619-.874 2.417-.293.854-.538 1.482-.773 1.968a3.993 3.993 0 01-.58-1.72 1 1 0 00-1.477-.73c-.385.247-.69.595-.919.964-.226.362-.397.77-.524 1.166-.233.729-.33 1.432-.33 1.968 0 3.207 2.5 5.8 5.684 5.8 3.184 0 5.685-2.6 5.685-5.8 0-1.04-.325-1.99-.877-2.777a1 1 0 00-1.428-.15c-.345.257-.665.558-.934.88-.27.323-.497.669-.675 1.01-.229.439-.427.917-.613 1.348-.184.428-.354.767-.525.996a1.996 1.996 0 01-.577-1.417c0-.295.037-.588.11-.874.14-.523.354-1.087.595-1.637.243-.556.518-1.127.795-1.637.279-.516.559-.92.812-1.206a3.99 3.99 0 011.666-1.16z" clipRule="evenodd" />
-                </svg>
-            )
-        },
-        {
-            title: "Protein",
-            value: "68g",
-            target: "Target: 90g",
-            color: "bg-blue-500 text-white",
-            icon: (
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                </svg>
-            )
-        },
-        {
-            title: "Lemak",
-            value: "42g",
-            target: "Target: 65g",
-            color: "bg-amber-400 text-black",
-            icon: (
-                <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-            )
-        },
-        {
-            title: "Karbohidrat",
-            value: "156g",
-            target: "Target: 250g",
-            color: "bg-emerald-500 text-white",
-            icon: (
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                </svg>
-            )
-        }
+    // Fallback default stat card icons
+    const defaultIcons = [
+        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.317.766-.599 1.619-.874 2.417-.293.854-.538 1.482-.773 1.968a3.993 3.993 0 01-.58-1.72 1 1 0 00-1.477-.73c-.385.247-.69.595-.919.964-.226.362-.397.77-.524 1.166-.233.729-.33 1.432-.33 1.968 0 3.207 2.5 5.8 5.684 5.8 3.184 0 5.685-2.6 5.685-5.8 0-1.04-.325-1.99-.877-2.777a1 1 0 00-1.428-.15c-.345.257-.665.558-.934.88-.27.323-.497.669-.675 1.01-.229.439-.427.917-.613 1.348-.184.428-.354.767-.525.996a1.996 1.996 0 01-.577-1.417c0-.295.037-.588.11-.874.14-.523.354-1.087.595-1.637.243-.556.518-1.127.795-1.637.279-.516.559-.92.812-1.206a3.99 3.99 0 011.666-1.16z" clipRule="evenodd" />
+        </svg>,
+        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+        </svg>,
+        <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>,
+        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
     ];
 
-    // Progress bar nutrients
-    const progressNutrients = [
+    const stats = (initialStats || [
+        { title: "Kalori Hari Ini", value: "1,248", unit: "kkal", target: "Target: 2,000 kkal", color: "bg-orange-500 text-white" },
+        { title: "Protein", value: "68g", target: "Target: 90g", color: "bg-blue-500 text-white" },
+        { title: "Lemak", value: "42g", target: "Target: 65g", color: "bg-amber-400 text-black" },
+        { title: "Karbohidrat", value: "156g", target: "Target: 250g", color: "bg-emerald-500 text-white" }
+    ]).map((s, idx) => ({
+        ...s,
+        icon: defaultIcons[idx % defaultIcons.length]
+    }));
+
+    const progressNutrients = initialProgress || [
         { name: "Kalori", current: "1248", target: "2000", unit: "kkal", pct: 62, barColor: "bg-orange-500" },
         { name: "Protein", current: "68", target: "90", unit: "g", pct: 76, barColor: "bg-blue-500" },
         { name: "Lemak", current: "42", target: "65", unit: "g", pct: 65, barColor: "bg-amber-500" },
         { name: "Karbohidrat", current: "156", target: "250", unit: "g", pct: 62, barColor: "bg-emerald-500" },
     ];
 
-    // Recent Scans
-    const recentHistory = [
-        {
-            name: "Nasi Goreng Ayam",
-            info: "450 kkal • 12:30",
-            score: 72,
-            scoreColor: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700/50",
-            image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=100"
-        },
-        {
-            name: "Smoothie Bowl",
-            info: "320 kkal • 08:00",
-            score: 91,
-            scoreColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/50",
-            image: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=100"
-        },
-        {
-            name: "Salad Sayuran",
-            info: "210 kkal • 13:00",
-            score: 95,
-            scoreColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/50",
-            image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=100"
-        }
+    const recentHistory = initialHistory || [
+        { name: "Nasi Goreng Ayam", info: "450 kkal • 12:30", score: 72, scoreColor: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700/50", image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=100" },
+        { name: "Smoothie Bowl", info: "320 kkal • 08:00", score: 91, scoreColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/50", image: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=100" },
+        { name: "Salad Sayuran", info: "210 kkal • 13:00", score: 95, scoreColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/50", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=100" }
     ];
 
-    // Weekly Calorie Bar data
-    const weeklyData = [
+    const weeklyData = initialWeekly || [
         { day: "Sen", calories: 1850, target: 2000 },
         { day: "Sel", calories: 2100, target: 2000 },
         { day: "Rab", calories: 1720, target: 2000 },

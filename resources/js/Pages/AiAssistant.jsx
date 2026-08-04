@@ -83,14 +83,37 @@ function QuickPrompts({ onSelect, disabled }) {
 }
 
 // ─── Main AiAssistant Page ─────────────────────────────────────────────────────
-export default function AiAssistant() {
-    const [messages, setMessages] = useState([
-        {
+export default function AiAssistant({ initialHistory = [] }) {
+    const [messages, setMessages] = useState(() => {
+        const welcomeMsg = {
             id: 'welcome',
             role: 'ai',
             text: 'Halo! 👋 Saya siGizi AI. Tanya saya seputar nutrisi, kalori, atau pola makan sehat!',
-        },
-    ]);
+        };
+
+        if (initialHistory && initialHistory.length > 0) {
+            const historyMsgs = [];
+            initialHistory.forEach((item, index) => {
+                if (item.pesan_user) {
+                    historyMsgs.push({
+                        id: `hist-user-${item.id || index}`,
+                        role: 'user',
+                        text: item.pesan_user,
+                    });
+                }
+                if (item.respon_ai) {
+                    historyMsgs.push({
+                        id: `hist-ai-${item.id || index}`,
+                        role: 'ai',
+                        text: item.respon_ai,
+                    });
+                }
+            });
+            return [welcomeMsg, ...historyMsgs];
+        }
+
+        return [welcomeMsg];
+    });
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 

@@ -1,8 +1,14 @@
 <?php
 
 use App\Http\Controllers\AiChatController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\ScanController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\KelolaPenggunaController;
+use App\Http\Controllers\Admin\LaporanGlobalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -26,38 +32,35 @@ Route::get('/tentang-kami', function () {
     ]);
 })->name('tentang-kami');
 
-// API Endpoint untuk Scan History
+// API Endpoint untuk Scan History (dari Supabase)
 Route::get('/api/user/scan-history', function () {
-    $data = DB::table('scan_histories')->get();
+    $supabase = app(\App\Services\SupabaseService::class);
+    $data = $supabase->get('riwayat_scan_makanans', [
+        'order' => 'id.desc',
+        'limit' => 100
+    ]);
     return response()->json($data);
 });
 
 // Semua Rute yang Membutuhkan Login (Auth)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        if (auth()->user()->email === 'admin@sigizi.com') {
-            return redirect()->route('admin.dashboard');
-        }
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    // Dashboard (Supabase-backed)
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Admin Routes
     Route::middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->prefix('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return Inertia::render('Admin/Dashboard');
-        })->name('admin.dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
-        Route::get('/kelola-pengguna', function () {
-            return Inertia::render('Admin/KelolaPengguna');
-        })->name('admin.kelola-pengguna');
+        Route::get('/kelola-pengguna', [KelolaPenggunaController::class, 'index'])->name('admin.kelola-pengguna');
+        Route::post('/kelola-pengguna', [KelolaPenggunaController::class, 'store'])->name('admin.kelola-pengguna.store');
+        Route::put('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'update'])->name('admin.kelola-pengguna.update');
+        Route::delete('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'destroy'])->name('admin.kelola-pengguna.destroy');
 
         Route::get('/kelola-tampilan', function () {
             return Inertia::render('Admin/KelolaTampilan');
         })->name('admin.kelola-tampilan');
 
-        Route::get('/laporan-global', function () {
-            return Inertia::render('Admin/LaporanGlobal');
-        })->name('admin.laporan-global');
+        Route::get('/laporan-global', [LaporanGlobalController::class, 'index'])->name('admin.laporan-global');
 
         Route::get('/pengaturan-sistem', function () {
             return Inertia::render('Admin/PengaturanSistem');
@@ -107,15 +110,11 @@ Route::middleware(['auth'])->group(function () {
         return Inertia::render('ResultPage');
     })->name('result');
 
-    // Rute Riwayat Scan
-    Route::get('/riwayat', function () {
-        return Inertia::render('RiwayatScanPage');
-    })->name('riwayat');
+    // Rute Riwayat Scan (Supabase-backed)
+    Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
 
-    // Rute Laporan Mingguan
-    Route::get('/laporan-mingguan', function () {
-        return Inertia::render('LaporanMingguan');
-    })->name('laporan.mingguan');
+    // Rute Laporan Mingguan (Supabase-backed)
+    Route::get('/laporan-mingguan', [LaporanController::class, 'index'])->name('laporan.mingguan');
 
     // Rute AI Assistant
     Route::get('/ai-assistant', [AiChatController::class, 'index'])->name('ai.assistant');
