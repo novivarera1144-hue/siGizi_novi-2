@@ -236,9 +236,8 @@ export default function AuthenticatedLayout({ children }) {
     const currentPageTitle = activeMenuItem ? activeMenuItem.name : 'Dashboard';
 
     return (
-
         <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-[#05100B] dark:text-emerald-50 flex transition-colors duration-300">
-            {/* Sidebar Navigation */}
+            {/* Sidebar Navigation (Desktop) */}
             <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between shadow-sm ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
                 }`}>
                 <div>
@@ -270,8 +269,8 @@ export default function AuthenticatedLayout({ children }) {
                                     href={item.route !== '#' ? route(item.route) : '#'}
                                     prefetch={item.route !== '#' ? ["hover", "mount"] : undefined}
                                     className={`relative w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                        ? 'bg-[#1F7A54] text-white dark:bg-emerald-500/20 dark:text-emerald-300 font-bold shadow-md shadow-[#1F7A54]/20'
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/70 dark:text-emerald-300/80 dark:hover:text-emerald-100 dark:hover:bg-emerald-900/20'
+                                            ? 'bg-[#1F7A54] text-white dark:bg-emerald-500/20 dark:text-emerald-300 font-bold shadow-md shadow-[#1F7A54]/20'
+                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/70 dark:text-emerald-300/80 dark:hover:text-emerald-100 dark:hover:bg-emerald-900/20'
                                         }`}
                                 >
                                     {item.icon}
@@ -305,16 +304,17 @@ export default function AuthenticatedLayout({ children }) {
                     <div className="flex items-center space-x-4">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-2 rounded-lg bg-gray-50/50 dark:bg-emerald-950/40 lg:hidden text-gray-700 dark:text-emerald-300 hover:bg-gray-100"
+                            className="p-2 rounded-lg bg-gray-50/50 dark:bg-emerald-950/40 lg:hidden text-gray-700 dark:text-emerald-300 hover:bg-gray-100 flex items-center space-x-2"
                         >
                             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-                        <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-500">
-                            <span>siGizi</span>
-                            <span>&gt;</span>
-                            <span className="text-gray-700 dark:text-emerald-400 font-bold">{currentPageTitle}</span>
+                        {/* Judul Halaman Aktif di sebelah tombol menu mobile / bagian atas */}
+                        <div className="flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-500">
+                            <span className="hidden sm:inline">siGizi</span>
+                            <span className="hidden sm:inline">&gt;</span>
+                            <span className="text-gray-700 dark:text-emerald-400 font-bold text-sm sm:text-xs">{currentPageTitle}</span>
                         </div>
                     </div>
 
@@ -379,7 +379,6 @@ export default function AuthenticatedLayout({ children }) {
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
-                                {/* Titik merah indikator di ikon lonceng hanya muncul jika ada yang belum dibaca */}
                                 {unreadCount > 0 && (
                                     <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-[#08160E]"></span>
                                 )}
@@ -404,7 +403,6 @@ export default function AuthenticatedLayout({ children }) {
                                         </button>
                                     </div>
 
-                                    {/* LIST NOTIFIKASI DENGAN SCROLL (max-h-72 & overflow-y-auto memastikan scrollbar aktif) */}
                                     <div className="divide-y divide-gray-50 dark:divide-emerald-900/20 max-h-[280px] overflow-y-auto custom-scrollbar">
                                         {notifications.length > 0 ? (
                                             notifications.map((item) => (
@@ -412,15 +410,13 @@ export default function AuthenticatedLayout({ children }) {
                                                     key={item.id}
                                                     onClick={() => handleNotificationClick(item.id)}
                                                     className={`px-4 py-3 transition-colors cursor-pointer flex gap-3 items-start relative ${item.isRead
-                                                        ? 'opacity-60 bg-transparent hover:bg-gray-50/50'
-                                                        : 'hover:bg-gray-50 dark:hover:bg-emerald-900/20'
+                                                            ? 'opacity-60 bg-transparent hover:bg-gray-50/50'
+                                                            : 'hover:bg-gray-50 dark:hover:bg-emerald-900/20'
                                                         }`}
                                                 >
-                                                    {/* Titik penanda unread. Jika isRead true (sudah dibaca), titik hijaunya hilang */}
                                                     {!item.isRead && (
                                                         <span className="absolute top-4 right-4 w-2 h-2 bg-gray-400 dark:bg-emerald-400 rounded-full"></span>
                                                     )}
-
                                                     <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-emerald-900/60 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
                                                         {item.icon}
                                                     </div>
@@ -438,7 +434,6 @@ export default function AuthenticatedLayout({ children }) {
                                         )}
                                     </div>
 
-                                    {/* Tombol Tutup */}
                                     <div className="px-4 pt-2 mt-1 border-t border-gray-50 dark:border-emerald-900/35">
                                         <button
                                             onClick={() => setNotificationOpen(false)}
@@ -466,6 +461,28 @@ export default function AuthenticatedLayout({ children }) {
                 <main className="flex-1 p-4 sm:p-8 pb-24 lg:pb-8">
                     {children}
                 </main>
+
+                {/* Bottom Navigation Bar (Khusus Tampilan Mobile - Menampilkan Seluruh 6 Menu) */}
+                <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 px-2 py-2 flex items-center justify-around shadow-lg">
+                    {menuItems.map((item, idx) => {
+                        const isCurrent = checkIsActive(item.route);
+                        return (
+                            <Link
+                                key={idx}
+                                href={item.route !== '#' ? route(item.route) : '#'}
+                                className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${isCurrent
+                                        ? 'text-[#1F7A54] dark:text-emerald-400 font-bold'
+                                        : 'text-gray-400 dark:text-emerald-300/60 hover:text-gray-600 dark:hover:text-emerald-200'
+                                    }`}
+                            >
+                                <div className="w-5 h-5 mb-1 flex items-center justify-center">
+                                    {item.icon}
+                                </div>
+                                <span className="text-[10px] leading-none">{item.name}</span>
+                            </Link>
+                        );
+                    })}
+                </nav>
             </div>
         </div>
     );
