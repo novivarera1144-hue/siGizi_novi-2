@@ -19,6 +19,11 @@ class RiwayatController extends Controller
             'limit'   => 100
         ]);
 
+        // Pengamanan: Jika data dari Supabase bukan array (kosong/error), set jadi array kosong
+        if (!is_array($scans)) {
+            $scans = [];
+        }
+
         $formattedHistory = array_map(function ($item) {
             $cals = intval($item['kalori_terdeteksi'] ?? 0);
             $prot = intval($item['protein'] ?? 0);

@@ -118,9 +118,11 @@ class ScanController extends Controller
             
             // Gunakan fallback ID 1 jika pengguna tidak sedang terautentikasi (guest)
             $userId = auth()->id() ?? 1;
-            $now = now()->toIso8601String();
+            
+            // Format string waktu lokal (Asia/Jakarta)
+            $now = now()->format('Y-m-d H:i:s');
 
-            // Sync ke Supabase via SupabaseService
+            // Sync ke Supabase via SupabaseService (Cukup simpan di sini saja)
             $supabase = app(\App\Services\SupabaseService::class);
             
             $supabase->insert('riwayat_scan_makanans', [
@@ -146,30 +148,6 @@ class ScanController extends Controller
                 'created_at'   => $now,
                 'updated_at'   => $now,
             ]);
-
-            try {
-                ScanHistory::create([
-                    'user_id' => $userId,
-                    'nama_makanan' => $foodName,
-                    'foto_scan' => $imageUrl,
-                    'kalori_terdeteksi' => $calories,
-                    'protein' => $protG,
-                    'karbohidrat' => $karboG,
-                    'lemak' => $lemakG,
-                ]);
-
-                DataNutrisi::create([
-                    'user_id'      => $userId,
-                    'nama_makanan' => $foodName,
-                    'gambar_makanan' => $imageUrl,
-                    'kalori'       => $calories,
-                    'protein'      => $protG,
-                    'karbohidrat'  => $karboG,
-                    'lemak'        => $lemakG,
-                ]);
-            } catch (\Exception $e) {
-                Log::info('Local DB save skipped/failed: ' . $e->getMessage());
-            }
 
             // 5. Render ResultPage via Inertia
             return Inertia::render('ResultPage', [
