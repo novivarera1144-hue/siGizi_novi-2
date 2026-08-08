@@ -32,7 +32,7 @@ export default function Login({ status, canResetPassword }) {
     return (
         <GuestLayout
             title="Masuk ke siGizi"
-            subtitle="Admin & pengguna masuk melalui halaman yang sama"
+            subtitle="Seluruh pengguna menggunakan satu halaman akses masuk yang sama."
         >
             <Head title="Masuk ke siGizi" />
 
@@ -116,9 +116,8 @@ export default function Login({ status, canResetPassword }) {
                 <div className="pt-2">
                     <PrimaryButton
                         disabled={processing}
-                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-200 ${
-                            processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
-                        }`}
+                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-200 ${processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+                            }`}
                     >
                         {processing ? (
                             <>
