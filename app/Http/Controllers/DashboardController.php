@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\SupabaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -31,11 +32,17 @@ class DashboardController extends Controller
             $scans = [];
         }
 
-        $todayStr = now()->format('Y-m-d');
+        // 1. Ambil Tanggal Hari Ini (Y-m-d)
+        $todayStr = Carbon::today()->toDateString();
+
+        // 2. Filter Scan Khusus Hari Ini (Parsing ISO Date dari Supabase)
         $todayScans = array_filter($scans, function ($scan) use ($todayStr) {
-            return isset($scan['created_at']) && str_starts_with($scan['created_at'], $todayStr);
+            if (!isset($scan['created_at'])) return false;
+            $scanDate = Carbon::parse($scan['created_at'])->toDateString();
+            return $scanDate === $todayStr;
         });
 
+        // 3. Hitung Total Sementara Nutrisi Hari Ini
         $totalKalori = array_sum(array_column($todayScans, 'kalori_terdeteksi'));
         $totalProtein = array_sum(array_column($todayScans, 'protein'));
         $totalLemak = array_sum(array_column($todayScans, 'lemak'));
