@@ -1,5 +1,12 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
+import {
+    LayoutDashboard,
+    Users,
+    FileText,
+    BarChart3,
+    Settings
+} from 'lucide-react';
 
 export default function AdminLayout({ children, activePage = 'dashboard', title, subtitle }) {
     const user = usePage().props.auth?.user || { name: 'Administrator', email: 'admin@sigizi.com' };
@@ -16,7 +23,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const searchRef = useRef(null);
 
-    // State untuk Fitur Notifikasi Interaktif & Scrollable (Dummy data ditambah agar langsung bisa scroll)
+    // State untuk Fitur Notifikasi Interaktif & Scrollable
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [notifications, setNotifications] = useState([
         {
@@ -167,7 +174,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
         { name: 'Pengaturan Sistem & Konfigurasi', category: 'Sistem', route: 'admin.pengaturan-sistem' },
     ];
 
-    // Logika ketika mengetik di input pencarian
     const handleSearchChange = (e) => {
         const query = e.target.value;
         setSearchQuery(query);
@@ -197,7 +203,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
         }
     };
 
-    // Handler Notifikasi
     const markAllAsRead = () => {
         setNotifications(notifications.map(n => ({ ...n, read: true })));
     };
@@ -208,7 +213,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
     const unreadCount = notifications.filter(n => !n.read).length;
 
-    // Tutup dropdown jika klik di luar area search atau notification
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -226,7 +230,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
         if (e.key === 'Enter') {
             e.preventDefault();
             if (searchResults.length > 0) {
-                // Memastikan pemanggilan route aman menggunakan penanganan route helper ziggy
                 const targetRoute = typeof route === 'function' ? route(searchResults[0].route) : searchResults[0].route;
                 router.visit(targetRoute);
                 setIsSearchFocused(false);
@@ -237,7 +240,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     const currentPageInfo = menuItems.find(item => item.key === activePage) || menuItems[0];
 
     return (
-        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300">
+        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300 pb-20 lg:pb-0">
             {/* Sidebar Navigation - Left Panel */}
             <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
                 }`}>
@@ -251,7 +254,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 className="h-15 w-auto object-contain"
                             />
                         </Link>
-                        {/* Close button for mobile sidebar drawer */}
                         <button
                             onClick={() => setSidebarOpen(false)}
                             className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:text-emerald-500 dark:hover:text-emerald-300 hover:bg-gray-100 dark:hover:bg-emerald-950/40 focus:outline-none transition-colors"
@@ -285,7 +287,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 </Link>
                             );
                         })}
-                        {/* Logout button in the same vertical flow, spaced below main admin items */}
+
                         <div className="pt-4 border-t border-gray-100 dark:border-emerald-950/40 mt-4">
                             <button
                                 onClick={handleLogout}
@@ -313,7 +315,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
                 {/* Header Navbar - Top Area */}
                 <header className="h-20 bg-white border-b border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
-                    {/* Left: Breadcrumbs / Sidebar toggle */}
                     <div className="flex items-center space-x-4">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -323,22 +324,16 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-                        <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-600">
-                            <span className="hover:text-gray-600 dark:hover:text-emerald-400 cursor-pointer">siGizi</span>
-                            <span>&gt;</span>
-                            <span className="text-[#1F7A54] dark:text-emerald-400 font-bold">Admin Panel</span>
-                            {activePage !== 'dashboard' && (
-                                <>
-                                    <span>&gt;</span>
-                                    <span className="text-[#1F7A54] dark:text-emerald-400 font-bold">{currentPageInfo.name}</span>
-                                </>
-                            )}
+                        <div className="flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-600">
+                            {/* Penanda halaman netral di sebelah tombol menu */}
+                            <span className="text-xs font-bold px-3 py-1 bg-gray-100 dark:bg-[#122017] text-gray-700 dark:text-emerald-400 rounded-full border border-gray-200 dark:border-[#1a2e22]">
+                                {currentPageInfo.name}
+                            </span>
                         </div>
                     </div>
 
-                    {/* Right Navbar Controls */}
                     <div className="flex items-center space-x-4">
-                        {/* Search Input Interaktif dengan Dropdown */}
+                        {/* Search Input Interaktif */}
                         <div className="relative hidden md:block" ref={searchRef}>
                             <div className="relative flex items-center">
                                 <input
@@ -363,7 +358,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 )}
                             </div>
 
-                            {/* Dropdown Hasil Pencarian Interaktif */}
                             {isSearchFocused && searchResults.length > 0 && (
                                 <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/80 rounded-2xl shadow-2xl py-3 z-50">
                                     <div className="px-4 pb-2 text-[10px] font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-wider border-b border-gray-100 dark:border-emerald-900/40">
@@ -418,7 +412,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                 )}
                             </button>
 
-                            {/* Dropdown Notifikasi dengan Scroll */}
                             {isNotificationOpen && (
                                 <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/85 rounded-2xl shadow-2xl py-3 z-50">
                                     <div className="flex items-center justify-between px-4 pb-2 border-b border-gray-100 dark:border-emerald-900/40">
@@ -440,7 +433,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                         )}
                                     </div>
 
-                                    {/* Daftar Notifikasi dengan Scroll (max-h-80 & overflow-y-auto) */}
                                     <div className="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-emerald-950/40">
                                         {notifications.length > 0 ? (
                                             notifications.map((item) => (
@@ -486,11 +478,10 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
                 {/* Main Content Body Wrapper */}
                 <main className="flex-1 p-4 sm:p-8">
-                    {/* Greeting & Roles Row */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                         <div>
                             <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
-                                ADMIN PANEL
+                                PANEL KONTROL
                             </span>
                             <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
                                 {title}
@@ -501,15 +492,13 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                         </div>
 
                         <div className="flex items-center space-x-3">
-                            {/* Admin badge */}
                             <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
-                                <span>Admin</span>
+                                <span>Terverifikasi</span>
                             </div>
 
-                            {/* Logout button */}
                             <button
                                 onClick={handleLogout}
                                 className="inline-flex items-center px-3 py-1 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-full transition duration-150 cursor-pointer"
@@ -522,6 +511,43 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                     {/* Page specific children content */}
                     {children}
                 </main>
+            </div>
+
+            {/* --- BOTTOM NAVIGATION BAR (Khusus Mobile/Tablet di bagian bawah layar) --- */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#07110B]/90 backdrop-blur-md border-t border-gray-200 dark:border-[#1a2e22] py-2 px-4 lg:hidden">
+                <div className="max-w-md mx-auto flex items-center justify-between">
+
+                    {/* Menu 1: Dashboard */}
+                    <Link href={route('admin.dashboard')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'dashboard' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                        <LayoutDashboard className="w-5 h-5" />
+                        <span className="text-[10px]">Dashboard</span>
+                    </Link>
+
+                    {/* Menu 2: Pengguna */}
+                    <Link href={route('admin.kelola-pengguna')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-pengguna' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                        <Users className="w-5 h-5" />
+                        <span className="text-[10px]">Pengguna</span>
+                    </Link>
+
+                    {/* Menu 3: Tampilan */}
+                    <Link href={route('admin.kelola-tampilan')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-tampilan' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                        <FileText className="w-5 h-5" />
+                        <span className="text-[10px]">Tampilan</span>
+                    </Link>
+
+                    {/* Menu 4: Laporan */}
+                    <Link href={route('admin.laporan-global')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'laporan-global' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                        <BarChart3 className="w-5 h-5" />
+                        <span className="text-[10px]">Laporan</span>
+                    </Link>
+
+                    {/* Menu 5: Pengaturan */}
+                    <Link href={route('admin.pengaturan-sistem')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'pengaturan-sistem' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                        <Settings className="w-5 h-5" />
+                        <span className="text-[10px]">Pengaturan</span>
+                    </Link>
+
+                </div>
             </div>
         </div>
     );
