@@ -30,16 +30,18 @@ class RiwayatController extends Controller
             $lemak = intval($item['lemak'] ?? 0);
             $score = min(99, max(40, round(85 - ($lemak * 0.5) + ($prot * 0.4))));
 
-            $timestamp = isset($item['created_at']) ? strtotime($item['created_at']) : time();
+            $rawCreatedAt = $item['created_at'] ?? null;
+            $timestamp = $rawCreatedAt ? strtotime($rawCreatedAt) : time();
 
             return [
-                'id' => $item['id'],
-                'food_name' => $item['nama_makanan'] ?? 'Makanan',
-                'calories' => $cals,
-                'date' => date('d M', $timestamp),
-                'time' => date('H:i', $timestamp),
-                'score' => $score,
-                'image' => $item['foto_scan'] ?? null,
+                'id'         => $item['id'],
+                'food_name'  => $item['nama_makanan'] ?? 'Makanan',
+                'calories'   => $cals,
+                'date'       => date('d M', $timestamp),
+                'time'       => date('H:i', $timestamp),
+                'created_at' => $rawCreatedAt ?? date('Y-m-d H:i:s', $timestamp), // 👈 KUNCI PERBAIKAN: Mengirim tanggal ISO mentah ke React
+                'score'      => $score,
+                'image'      => $item['foto_scan'] ?? null,
             ];
         }, $scans);
 

@@ -28,25 +28,49 @@ export default function RiwayatScanPage({ scanHistory }) {
         return 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400';
     };
 
+    // --- LOGIKA FILTER REALTIME BERBASIS TANGGAL ---
     const filteredHistory = history.filter(item => {
-        const matchSearch = item.food_name.toLowerCase().includes(searchQuery.toLowerCase());
+        // 1. Pencarian Nama Makanan
+        const foodName = item.food_name || '';
+        const matchSearch = searchQuery.trim() === '' ||
+            foodName.toLowerCase().includes(searchQuery.toLowerCase());
 
-        let matchTab = true;
+        if (!matchSearch) return false;
+        if (activeTab === 'Semua') return true;
+
+        // 2. Parsing Tanggal Realtime dari created_at
+        const itemDate = item.created_at ? new Date(item.created_at) : new Date();
+        const now = new Date();
+
         if (activeTab === 'Hari Ini') {
-            matchTab = item.date === '18 Jun';
-        } else if (activeTab === 'Minggu Ini') {
-            matchTab = true;
-        } else if (activeTab === 'Bulan Ini') {
-            matchTab = true;
+            return (
+                itemDate.getDate() === now.getDate() &&
+                itemDate.getMonth() === now.getMonth() &&
+                itemDate.getFullYear() === now.getFullYear()
+            );
         }
 
-        return matchSearch && matchTab;
+        if (activeTab === 'Minggu Ini') {
+            // Selisih dalam satuan hari
+            const startOfNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfItem = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
+            const diffDays = (startOfNow - startOfItem) / (1000 * 60 * 60 * 24);
+            return diffDays >= 0 && diffDays <= 7;
+        }
+
+        if (activeTab === 'Bulan Ini') {
+            return (
+                itemDate.getMonth() === now.getMonth() &&
+                itemDate.getFullYear() === now.getFullYear()
+            );
+        }
+
+        return true;
     });
 
     return (
         <AuthenticatedLayout>
             <Head title="Riwayat Scan" />
-            {/* Menggunakan min-h-screen dengan background yang konsisten (Putih untuk Light Mode, #07110B untuk Dark Mode) agar tidak belang */}
             <div className="min-h-screen -m-4 md:-m-8 p-4 md:p-8 bg-white dark:bg-[#07110B] text-gray-900 dark:text-white transition-colors">
                 <div className="max-w-5xl mx-auto space-y-8 pb-20">
 
@@ -81,8 +105,8 @@ export default function RiwayatScanPage({ scanHistory }) {
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
                                     className={`px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${activeTab === tab
-                                            ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/20 dark:bg-emerald-500 dark:text-slate-950 dark:shadow-none'
-                                            : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 shadow-sm dark:bg-[#122017] dark:text-emerald-100/70 dark:border-[#1a2e22] dark:hover:bg-[#182b1f]'
+                                        ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/20 dark:bg-emerald-500 dark:text-slate-950 dark:shadow-none'
+                                        : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 shadow-sm dark:bg-[#122017] dark:text-emerald-100/70 dark:border-[#1a2e22] dark:hover:bg-[#182b1f]'
                                         }`}
                                 >
                                     {tab}
@@ -98,9 +122,9 @@ export default function RiwayatScanPage({ scanHistory }) {
                         </div>
                     ) : filteredHistory.length > 0 ? (
                         <div className="space-y-4">
-                            {filteredHistory.map((item) => (
+                            {filteredHistory.map((item, index) => (
                                 <div
-                                    key={item.id}
+                                    key={item.id || index}
                                     className="group flex items-center justify-between p-4 bg-white dark:bg-[#122017] rounded-2xl shadow-sm border border-gray-200 dark:border-[#1a2e22] hover:border-[#1F7A54]/30 dark:hover:border-emerald-800/60 hover:shadow-md transition-all cursor-pointer"
                                 >
                                     <div className="flex items-center gap-4">
@@ -120,7 +144,9 @@ export default function RiwayatScanPage({ scanHistory }) {
                                                 <svg className="w-3.5 h-3.5 text-gray-400 dark:text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                <span>{item.date}, {item.time}</span>
+                                                <span>
+                                                    {item.date}, {item.time}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -130,18 +156,22 @@ export default function RiwayatScanPage({ scanHistory }) {
                                             <p className="text-sm font-bold text-gray-700 dark:text-emerald-200">
                                                 {item.calories} <span className="text-xs font-medium text-gray-400 dark:text-emerald-500/60">kkal</span>
                                             </p>
-                                            <div className={`inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold mt-1 ${getScoreStyle(item.score)}`}>
-                                                {item.score}
-                                            </div>
+                                            {item.score !== null && (
+                                                <div className={`inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold mt-1 ${getScoreStyle(item.score)}`}>
+                                                    {item.score}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="text-right sm:hidden">
                                             <p className="text-xs font-bold text-gray-700 dark:text-emerald-200 mb-1">
                                                 {item.calories} <span className="text-[10px] text-gray-400 dark:text-emerald-500/60">kkal</span>
                                             </p>
-                                            <div className={`inline-flex px-2 py-0.5 rounded-md text-[11px] font-bold ${getScoreStyle(item.score)}`}>
-                                                {item.score}
-                                            </div>
+                                            {item.score !== null && (
+                                                <div className={`inline-flex px-2 py-0.5 rounded-md text-[11px] font-bold ${getScoreStyle(item.score)}`}>
+                                                    {item.score}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <ChevronRight className="w-5 h-5 text-gray-300 dark:text-emerald-800 group-hover:text-[#1F7A54] dark:group-hover:text-emerald-400 transition-colors" />
@@ -154,9 +184,11 @@ export default function RiwayatScanPage({ scanHistory }) {
                             <div className="w-16 h-16 bg-gray-50 dark:bg-[#0b140e] rounded-2xl flex items-center justify-center mb-4 border border-gray-200 dark:border-[#1a2e22]">
                                 <AlertCircle className="w-8 h-8 text-gray-400 dark:text-emerald-500" />
                             </div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Belum Ada Riwayat Scan</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                Belum Ada Riwayat Scan ({activeTab})
+                            </h3>
                             <p className="text-sm text-gray-500 dark:text-emerald-100/60 max-w-sm">
-                                Kamu belum melakukan scan makanan apa pun. Yuk, mulai scan makanan pertamamu sekarang!
+                                Belum ada makanan yang di-scan untuk periode ini.
                             </p>
                         </div>
                     )}
