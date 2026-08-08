@@ -49,14 +49,10 @@ export default function RiwayatScanPage({ scanHistory }) {
     return (
         <AuthenticatedLayout>
             <Head title="Riwayat Scan" />
-<<<<<<< HEAD
             {/* Memastikan background root menutupi seluruh layar dan menyatu sempurna dengan layout bawah */}
             <div className="-m-4 md:-m-8 min-h-[calc(100vh+4rem)] bg-slate-50 dark:bg-[#07110B] text-gray-900 dark:text-white transition-colors pb-32">
                 <div className="p-4 md:p-8 max-w-5xl mx-auto animate-in fade-in duration-500">
-=======
-            <div className="-m-4 md:-m-8 min-h-screen bg-slate-50 dark:bg-[#07110B] transition-colors">
-                <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-500">
->>>>>>> 32c8e2e9d5a6e8e4f54b8c72687a695c5d472674
+
                     {/* --- HEADER --- */}
                     <div className="mb-8">
                         <p className="text-xs font-bold tracking-wider text-gray-400 dark:text-emerald-500/80 uppercase mb-1">
