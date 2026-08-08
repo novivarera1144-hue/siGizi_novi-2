@@ -16,40 +16,40 @@ class DashboardController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
 
-        // Fetch user scans from Supabase
-        $scans = $supabase->get('riwayat_scan_makanans', [
-            'user_id' => 'eq.' . $userId,
-            'order'   => 'created_at.desc',
-            'limit'   => 100
-        ]);
+        $scans = [];
+        if ($userId) {
+            $scans = $supabase->get('riwayat_scan_makanans', [
+                'user_id' => 'eq.' . $userId,
+                'order'   => 'created_at.desc',
+                'limit'   => 100
+            ]);
+        }
 
-        // Calculate Today's Stats
+        if (!is_array($scans)) {
+            $scans = [];
+        }
+
         $todayStr = now()->format('Y-m-d');
         $todayScans = array_filter($scans, function ($scan) use ($todayStr) {
             return isset($scan['created_at']) && str_starts_with($scan['created_at'], $todayStr);
         });
 
-        // If no scans today, fallback to all scans or empty sum
-        $relevantScans = count($todayScans) > 0 ? $todayScans : $scans;
+        $totalKalori = array_sum(array_column($todayScans, 'kalori_terdeteksi'));
+        $totalProtein = array_sum(array_column($todayScans, 'protein'));
+        $totalLemak = array_sum(array_column($todayScans, 'lemak'));
+        $totalKarbo = array_sum(array_column($todayScans, 'karbohidrat'));
 
-        $totalKalori = array_sum(array_column($relevantScans, 'kalori_terdeteksi'));
-        $totalProtein = array_sum(array_column($relevantScans, 'protein'));
-        $totalLemak = array_sum(array_column($relevantScans, 'lemak'));
-        $totalKarbo = array_sum(array_column($relevantScans, 'karbohidrat'));
-
-        // Gunakan target nutrisi tersimpan dari database, fallback ke kalkulasi dinamis
         if ($user && $user->target_calories) {
             $targetCalories = $user->target_calories;
             $targetProtein = $user->target_protein ?? round($user->weight * 1.5);
             $targetFat = $user->target_fat ?? round(($targetCalories * 0.25) / 9);
             $targetCarbs = $user->target_carbs ?? round(($targetCalories * 0.60) / 4);
         } else {
-            // Fallback: Hitung Target Kesehatan Dinamis via Mifflin-St Jeor
             $targetCalories = 2000;
             if ($user && $user->height && $user->weight) {
-                $bmr = (10 * $user->weight) + (6.25 * $user->height) - 120; // Default age 25
+                $bmr = (10 * $user->weight) + (6.25 * $user->height) - 120;
                 $tdee = $bmr * 1.375;
                 if ($user->weight_goal === 'Menurunkan Berat Badan') {
                     $targetCalories = $tdee - 400;
@@ -98,13 +98,22 @@ class DashboardController extends Controller
         ];
 
         $progressNutrients = [
-            ['name' => 'Kalori', 'current' => (string)$totalKalori, 'target' => (string)$targetCalories, 'unit' => 'kkal', 'pct' => min(100, round(($totalKalori / $targetCalories) * 100)), 'barColor' => 'bg-orange-500'],
-            ['name' => 'Protein', 'current' => (string)$totalProtein, 'target' => (string)$targetProtein, 'unit' => 'g', 'pct' => min(100, round(($totalProtein / $targetProtein) * 100)), 'barColor' => 'bg-blue-500'],
-            ['name' => 'Lemak', 'current' => (string)$totalLemak, 'target' => (string)$targetFat, 'unit' => 'g', 'pct' => min(100, round(($totalLemak / $targetFat) * 100)), 'barColor' => 'bg-amber-500'],
-            ['name' => 'Karbohidrat', 'current' => (string)$totalKarbo, 'target' => (string)$targetCarbs, 'unit' => 'g', 'pct' => min(100, round(($totalKarbo / $targetCarbs) * 100)), 'barColor' => 'bg-emerald-500'],
+            ['name' => 'Kalori', 'current' => (string)$totalKalori, 'target' => (string)$targetCalories, 'unit' => 'kkal', 'pct' => $targetCalories > 0 ? min(100, round(($totalKalori / $targetCalories) * 100)) : 0, 'barColor' => 'bg-orange-500'],
+            ['name' => 'Protein', 'current' => (string)$totalProtein, 'target' => (string)$targetProtein, 'unit' => 'g', 'pct' => $targetProtein > 0 ? min(100, round(($totalProtein / $targetProtein) * 100)) : 0, 'barColor' => 'bg-blue-500'],
+            ['name' => 'Lemak', 'current' => (string)$totalLemak, 'target' => (string)$targetFat, 'unit' => 'g', 'pct' => $targetFat > 0 ? min(100, round(($totalLemak / $targetFat) * 100)) : 0, 'barColor' => 'bg-amber-500'],
+            ['name' => 'Karbohidrat', 'current' => (string)$totalKarbo, 'target' => (string)$targetCarbs, 'unit' => 'g', 'pct' => $targetCarbs > 0 ? min(100, round(($totalKarbo / $targetCarbs) * 100)) : 0, 'barColor' => 'bg-emerald-500'],
         ];
 
-        // Format recent scans
+        $uniqueScans = [];
+        $seenIds = [];
+        foreach ($scans as $s) {
+            $id = $s['id'] ?? null;
+            if ($id && !in_array($id, $seenIds)) {
+                $uniqueScans[] = $s;
+                $seenIds[] = $id;
+            }
+        }
+
         $recentHistory = array_slice(array_map(function ($s) {
             $calories = intval($s['kalori_terdeteksi'] ?? 0);
             $prot = intval($s['protein'] ?? 0);
@@ -120,21 +129,20 @@ class DashboardController extends Controller
                 'scoreColor' => $score >= 80 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/50' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700/50',
                 'image' => $s['foto_scan'] ?? 'https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=100'
             ];
-        }, $scans), 0, 5);
+        }, $uniqueScans), 0, 5);
 
-        // Compute Weekly Calorie Bar Chart (Sen - Min)
         $days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
         $weeklyData = [];
         foreach ($days as $idx => $d) {
             $dayScans = array_filter($scans, function ($s) use ($idx) {
                 if (!isset($s['created_at'])) return false;
-                $w = date('N', strtotime($s['created_at'])); // 1=Mon, 7=Sun
+                $w = date('N', strtotime($s['created_at'])); 
                 return $w == ($idx + 1);
             });
             $cals = array_sum(array_column($dayScans, 'kalori_terdeteksi'));
             $weeklyData[] = [
                 'day' => $d,
-                'calories' => $cals > 0 ? $cals : rand(1200, 1900),
+                'calories' => $cals,
                 'target' => $targetCalories
             ];
         }

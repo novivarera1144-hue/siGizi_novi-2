@@ -3,63 +3,6 @@ import { Search, ChevronRight, AlertCircle, ImageIcon } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-const MOCK_DATA = [
-    {
-        id: 1,
-        food_name: 'Nasi Goreng Ayam',
-        calories: 450,
-        date: '18 Jun',
-        time: '12:30',
-        score: 72,
-        image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=200&q=80'
-    },
-    {
-        id: 2,
-        food_name: 'Smoothie Bowl',
-        calories: 320,
-        date: '18 Jun',
-        time: '08:00',
-        score: 91,
-        image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=200&q=80'
-    },
-    {
-        id: 3,
-        food_name: 'Salad Sayuran',
-        calories: 210,
-        date: '17 Jun',
-        time: '13:00',
-        score: 95,
-        image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80'
-    },
-    {
-        id: 4,
-        food_name: 'Ikan Panggang',
-        calories: 380,
-        date: '16 Jun',
-        time: '19:00',
-        score: 88,
-        image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=200&q=80'
-    },
-    {
-        id: 5,
-        food_name: 'Avocado Toast',
-        calories: 290,
-        date: '16 Jun',
-        time: '07:30',
-        score: 85,
-        image: 'https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?auto=format&fit=crop&w=200&q=80'
-    },
-    {
-        id: 6,
-        food_name: 'Fruit Bowl',
-        calories: 185,
-        date: '15 Jun',
-        time: '10:30',
-        score: 97,
-        image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80'
-    },
-];
-
 export default function RiwayatScanPage({ scanHistory }) {
     const [history, setHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -71,10 +14,11 @@ export default function RiwayatScanPage({ scanHistory }) {
     const tabs = ['Semua', 'Hari Ini', 'Minggu Ini', 'Bulan Ini'];
 
     useEffect(() => {
-        if (scanHistory && scanHistory.length > 0) {
+        // Murni mengambil data dari backend Laravel (Supabase) tanpa fallback ke MOCK_DATA
+        if (scanHistory && Array.isArray(scanHistory)) {
             setHistory(scanHistory);
         } else {
-            setHistory(MOCK_DATA);
+            setHistory([]);
         }
         setIsLoading(false);
     }, [scanHistory]);
@@ -92,9 +36,9 @@ export default function RiwayatScanPage({ scanHistory }) {
 
         let matchTab = true;
         if (activeTab === 'Hari Ini') {
-            matchTab = item.date === '18 Jun';
+            matchTab = item.date === '18 Jun'; // Sesuaikan logika filter tanggal jika diperlukan
         } else if (activeTab === 'Minggu Ini') {
-            matchTab = ['18 Jun', '17 Jun', '16 Jun'].includes(item.date);
+            matchTab = true; // Bisa disesuaikan dengan range tanggal asli
         } else if (activeTab === 'Bulan Ini') {
             matchTab = true;
         }
@@ -105,9 +49,14 @@ export default function RiwayatScanPage({ scanHistory }) {
     return (
         <AuthenticatedLayout>
             <Head title="Riwayat Scan" />
+<<<<<<< HEAD
             {/* Memastikan background root menutupi seluruh layar dan menyatu sempurna dengan layout bawah */}
             <div className="-m-4 md:-m-8 min-h-[calc(100vh+4rem)] bg-slate-50 dark:bg-[#07110B] text-gray-900 dark:text-white transition-colors pb-32">
                 <div className="p-4 md:p-8 max-w-5xl mx-auto animate-in fade-in duration-500">
+=======
+            <div className="-m-4 md:-m-8 min-h-screen bg-slate-50 dark:bg-[#07110B] transition-colors">
+                <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-500">
+>>>>>>> 32c8e2e9d5a6e8e4f54b8c72687a695c5d472674
                     {/* --- HEADER --- */}
                     <div className="mb-8">
                         <p className="text-xs font-bold tracking-wider text-gray-400 dark:text-emerald-500/80 uppercase mb-1">
@@ -120,7 +69,6 @@ export default function RiwayatScanPage({ scanHistory }) {
 
                     {/* --- FILTER & PENCARIAN --- */}
                     <div className="space-y-6 mb-8">
-                        {/* Search Bar */}
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <Search className="h-5 w-5 text-gray-400 dark:text-emerald-600/70" />
@@ -134,7 +82,6 @@ export default function RiwayatScanPage({ scanHistory }) {
                             />
                         </div>
 
-                        {/* Filter Tabs */}
                         <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
                             {tabs.map((tab) => (
                                 <button
@@ -164,7 +111,6 @@ export default function RiwayatScanPage({ scanHistory }) {
                                     className="group flex items-center justify-between p-4 bg-white dark:bg-[#09170F] rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-950/80 hover:border-[#1F7A54]/30 dark:hover:border-emerald-800/60 hover:shadow-md transition-all cursor-pointer"
                                 >
                                     <div className="flex items-center gap-4">
-                                        {/* Gambar Foto Asli */}
                                         <div className="w-16 h-16 rounded-xl bg-gray-50 dark:bg-emerald-950/40 flex items-center justify-center shrink-0 overflow-hidden border border-gray-100 dark:border-emerald-900/30">
                                             {item.image ? (
                                                 <img src={item.image} alt={item.food_name} className="w-full h-full object-cover" />
@@ -173,7 +119,6 @@ export default function RiwayatScanPage({ scanHistory }) {
                                             )}
                                         </div>
 
-                                        {/* Info Makanan & Waktu */}
                                         <div>
                                             <h3 className="text-base font-bold text-gray-900 dark:text-white mb-0.5 group-hover:text-[#1F7A54] dark:group-hover:text-emerald-400 transition-colors">
                                                 {item.food_name}
@@ -187,7 +132,6 @@ export default function RiwayatScanPage({ scanHistory }) {
                                         </div>
                                     </div>
 
-                                    {/* Nutrisi & Skor */}
                                     <div className="flex items-center gap-4 sm:gap-6">
                                         <div className="text-right hidden sm:block">
                                             <p className="text-sm font-bold text-gray-700 dark:text-emerald-400">
@@ -198,7 +142,6 @@ export default function RiwayatScanPage({ scanHistory }) {
                                             </div>
                                         </div>
 
-                                        {/* Mobile View untuk Skor Saja */}
                                         <div className="text-right sm:hidden">
                                             <p className="text-xs font-bold text-gray-700 dark:text-emerald-400 mb-1">
                                                 {item.calories} <span className="text-[10px] text-gray-400 dark:text-emerald-600">kkal</span>
@@ -218,9 +161,9 @@ export default function RiwayatScanPage({ scanHistory }) {
                             <div className="w-16 h-16 bg-gray-50 dark:bg-emerald-950/40 rounded-full flex items-center justify-center mb-4">
                                 <AlertCircle className="w-8 h-8 text-gray-400 dark:text-emerald-600" />
                             </div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Riwayat Tidak Ditemukan</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Belum Ada Riwayat Scan</h3>
                             <p className="text-sm text-gray-500 dark:text-emerald-500/80 max-w-sm">
-                                Kami tidak dapat menemukan riwayat scan yang cocok dengan filter "{activeTab}" atau pencarian "{searchQuery}".
+                                Kamu belum melakukan scan makanan apa pun. Yuk, mulai scan makanan pertamamu sekarang!
                             </p>
                         </div>
                     )}

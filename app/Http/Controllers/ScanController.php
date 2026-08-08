@@ -2,25 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataNutrisi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Exceptions\GeminiApiException;
-use App\Models\ScanHistory;
 use App\Services\GeminiService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ScanController extends Controller
 {
-    /**
-     * Handle the incoming food scan upload request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Services\GeminiService  $geminiService
-     * @return \Inertia\Response|\Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request, GeminiService $geminiService)
     {
         // 1. Validasi input gambar (jpeg/jpg/png, max 10MB)
@@ -56,7 +47,6 @@ class ScanController extends Controller
 
             $recommendations = [];
             foreach ($rawRecs as $index => $text) {
-                // Alternating color styles matching theme designs
                 $color = ($index === 1) 
                     ? 'bg-amber-50/40 border-amber-100/50 text-amber-700' 
                     : 'bg-emerald-50/40 border-emerald-100/50 text-[#1F7A54]';
@@ -66,7 +56,6 @@ class ScanController extends Controller
                 ];
             }
 
-            // Target split ratios: Protein (90g), Lemak (65g), Karbohidrat (250g)
             $nutrients = [
                 [
                     'name' => 'Protein', 
@@ -94,7 +83,6 @@ class ScanController extends Controller
                 ],
             ];
 
-            // Dynamic health score calculation based on balance
             $score = min(99, max(40, round(85 - ($lemakG * 0.5) + ($protG * 0.4))));
 
             if ($calories < 300) {
@@ -116,11 +104,10 @@ class ScanController extends Controller
                 'badge' => $badge,
             ];
             
-            // Gunakan fallback ID 1 jika pengguna tidak sedang terautentikasi (guest)
             $userId = auth()->id() ?? 1;
-            $now = now()->toIso8601String();
+            $now = now()->format('Y-m-d H:i:s');
 
-            // Sync ke Supabase via SupabaseService
+            // HANYA SIMPAN SEKALI KE SUPABASE (Hapus duplikasi ke Model Lokal)
             $supabase = app(\App\Services\SupabaseService::class);
             
             $supabase->insert('riwayat_scan_makanans', [
@@ -146,30 +133,6 @@ class ScanController extends Controller
                 'created_at'   => $now,
                 'updated_at'   => $now,
             ]);
-
-            try {
-                ScanHistory::create([
-                    'user_id' => $userId,
-                    'nama_makanan' => $foodName,
-                    'foto_scan' => $imageUrl,
-                    'kalori_terdeteksi' => $calories,
-                    'protein' => $protG,
-                    'karbohidrat' => $karboG,
-                    'lemak' => $lemakG,
-                ]);
-
-                DataNutrisi::create([
-                    'user_id'      => $userId,
-                    'nama_makanan' => $foodName,
-                    'gambar_makanan' => $imageUrl,
-                    'kalori'       => $calories,
-                    'protein'      => $protG,
-                    'karbohidrat'  => $karboG,
-                    'lemak'        => $lemakG,
-                ]);
-            } catch (\Exception $e) {
-                Log::info('Local DB save skipped/failed: ' . $e->getMessage());
-            }
 
             // 5. Render ResultPage via Inertia
             return Inertia::render('ResultPage', [
