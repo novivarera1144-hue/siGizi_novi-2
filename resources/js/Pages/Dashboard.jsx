@@ -33,7 +33,7 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                             DASHBOARD
                         </span>
                         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                            Selamat pagi, {user?.name ?? 'Budi'} 👏
+                            Selamat pagi, {user?.name ?? 'nadin'} 👏
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-1">
                             Rabu, 22 Juli 2026
@@ -54,29 +54,57 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
 
                 {/* 4 Stat Cards Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {defaultStats.map((stat, idx) => (
-                        <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
-                            <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
-                                {/* Render Icon Aman */}
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                                </svg>
+                    {defaultStats.map((stat, idx) => {
+                        // Mengambil angka target harian mentah untuk dikali 7 (program 1 minggu)
+                        // Contoh: "1,650 kkal" -> 1650
+                        const rawDailyTarget = parseInt(String(stat.dailyTarget || stat.target).replace(/[^0-9]/g, '')) || 0;
+                        const totalProgramTarget = (rawDailyTarget * 7).toLocaleString('id-ID') + (stat.unit ? ` ${stat.unit}` : (stat.target?.includes('kkall') || stat.target?.includes('kcal') ? ' kkal' : 'g'));
+
+                        return (
+                            <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-400/80 uppercase tracking-wider">
+                                        {stat.title}
+                                    </span>
+                                </div>
+
+                                <div className="space-y-3 pt-1">
+                                    {/* 1. Target Harian */}
+                                    <div className="flex justify-between items-center text-xs pb-2 border-b border-gray-100 dark:border-[#1a2e22]">
+                                        <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Target per hari:</span>
+                                        <span className="font-bold text-gray-700 dark:text-emerald-200">
+                                            {stat.dailyTarget || stat.target}
+                                        </span>
+                                    </div>
+
+                                    {/* 2. Total Sementara (Aktual dari riwayat scan) */}
+                                    <div className="flex justify-between items-center text-xs pb-2 border-b border-gray-100 dark:border-[#1a2e22]">
+                                        <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total sementara:</span>
+                                        <span className="font-extrabold text-[#1F7A54] dark:text-emerald-400">
+                                            {stat.currentValue || '0'} {stat.unit || (stat.target?.includes('kkall') ? 'kkall' : 'g')}
+                                        </span>
+                                    </div>
+
+                                    {/* 3. Total Target Program (Dikalikan 7 hari sesuai profil) */}
+                                    <div className="flex justify-between items-center text-xs">
+                                        <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total target:</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">
+                                            {stat.totalTargetProgram || totalProgramTarget}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="space-y-1">
-                                <p className="text-[11px] font-extrabold text-gray-400 dark:text-emerald-100/50 uppercase tracking-wider">{stat.title}</p>
-                                <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">
-                                    {stat.value}
-                                    {stat.unit && <span className="text-xs font-medium text-gray-400 dark:text-emerald-100/60 ml-1">{stat.unit}</span>}
-                                </h3>
-                                <p className="text-[11px] text-gray-400 dark:text-emerald-100/40 font-medium">{stat.target}</p>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Two Column Layout Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
                     {/* Left Column: Progress Bars */}
                     <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
                         <div className="flex justify-between items-center mb-6">
@@ -139,7 +167,6 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                             )}
                         </div>
                     </div>
-
                 </div>
 
                 {/* Bottom Bar Chart: Kalori Minggu Ini */}
@@ -185,13 +212,11 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                         <div className="flex space-x-1 items-end justify-center w-full h-36">
                                             <div
                                                 style={{ height: `${currentHeight}%` }}
-                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered ? 'bg-emerald-400' : 'bg-[#22c55e]/90'
-                                                    }`}
+                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered ? 'bg-emerald-400' : 'bg-[#22c55e]/90'}`}
                                             ></div>
                                             <div
                                                 style={{ height: `${targetHeight}%` }}
-                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered ? 'bg-gray-700' : 'bg-gray-900 dark:bg-gray-800'
-                                                    }`}
+                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered ? 'bg-gray-700' : 'bg-gray-900 dark:bg-gray-800'}`}
                                             ></div>
                                         </div>
 
