@@ -630,8 +630,8 @@ export default function Edit({ auth }) {
                                                 type="button"
                                                 onClick={handleToggleGoal}
                                                 className={`flex items-start gap-3 p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${isSelected
-                                                        ? 'bg-emerald-500/10 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-500 text-gray-900 dark:text-white shadow-sm'
-                                                        : 'bg-gray-50 dark:bg-[#0C1E14] border-transparent dark:border-emerald-900/40 text-gray-600 dark:text-emerald-400/70 hover:border-emerald-300 dark:hover:border-emerald-800'
+                                                    ? 'bg-emerald-500/10 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-500 text-gray-900 dark:text-white shadow-sm'
+                                                    : 'bg-gray-50 dark:bg-[#0C1E14] border-transparent dark:border-emerald-900/40 text-gray-600 dark:text-emerald-400/70 hover:border-emerald-300 dark:hover:border-emerald-800'
                                                     }`}
                                             >
                                                 <div className={`p-2 rounded-xl mt-0.5 shrink-0 ${isSelected ? 'bg-emerald-500 text-white dark:bg-emerald-400 dark:text-slate-950' : 'bg-gray-200/60 dark:bg-emerald-900/50 text-gray-500 dark:text-emerald-400'}`}>
