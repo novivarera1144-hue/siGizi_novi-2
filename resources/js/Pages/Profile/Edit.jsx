@@ -20,12 +20,12 @@ export default function Edit({ auth }) {
     const [profileData, setProfileData] = useState({
         name: user?.name || 'Nadin Aulia Putri',
         email: user?.email || 'nadinaulia261@gmail.com',
-        phone: '+62 812-3456-7890',
+        phone: user?.phone || '+62 812-3456-7890',
     });
 
     // Photo states
     const [photoFile, setPhotoFile] = useState(null);
-    const [photoPreview, setPhotoPreview] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(user?.photo ? `/storage/${user.photo}` : null);
     const fileInputRef = useRef(null);
 
     // Temporary states for editing profile in modal
@@ -36,6 +36,42 @@ export default function Edit({ auth }) {
     });
     const [tempPhotoFile, setTempPhotoFile] = useState(null);
     const [tempPhotoPreview, setTempPhotoPreview] = useState(null);
+
+    // Form untuk Edit Profil via Inertia
+    const profileForm = useForm({
+        name: user?.name || '',
+        email: user?.email || '',
+        phone: user?.phone || '',
+        photo: null,
+        delete_photo: false,
+        _method: 'PATCH',
+    });
+
+    // Sinkronisasi data ketika user prop berubah
+    useEffect(() => {
+        if (user) {
+            setProfileData({
+                name: user.name || '',
+                email: user.email || '',
+                phone: user.phone || '',
+            });
+            setPhotoPreview(user.photo ? `/storage/${user.photo}` : null);
+        }
+    }, [user]);
+
+    // Sinkronisasi data form profil dengan state modal temporary
+    useEffect(() => {
+        if (showEditProfileModal) {
+            profileForm.setData({
+                name: tempProfileData.name,
+                email: tempProfileData.email,
+                phone: tempProfileData.phone,
+                photo: tempPhotoFile,
+                delete_photo: tempPhotoFile === null && tempPhotoPreview === null,
+                _method: 'PATCH',
+            });
+        }
+    }, [tempProfileData, tempPhotoFile, tempPhotoPreview, showEditProfileModal]);
 
     // Form untuk Goal Setting
     const goalsForm = useForm({
@@ -155,6 +191,7 @@ export default function Edit({ auth }) {
 
     // Handlers
     const openEditProfileModal = () => {
+        profileForm.clearErrors();
         setTempProfileData({
             name: profileData.name,
             email: profileData.email,
@@ -165,15 +202,29 @@ export default function Edit({ auth }) {
         setShowEditProfileModal(true);
     };
 
+    const handleCloseEditModal = () => {
+        if (tempPhotoPreview && tempPhotoPreview.startsWith('blob:') && tempPhotoPreview !== photoPreview) {
+            URL.revokeObjectURL(tempPhotoPreview);
+        }
+        profileForm.clearErrors();
+        setShowEditProfileModal(false);
+    };
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (tempPhotoPreview && tempPhotoPreview.startsWith('blob:') && tempPhotoPreview !== photoPreview) {
+                URL.revokeObjectURL(tempPhotoPreview);
+            }
             setTempPhotoFile(file);
             setTempPhotoPreview(URL.createObjectURL(file));
         }
     };
 
     const handleDeletePhoto = () => {
+        if (tempPhotoPreview && tempPhotoPreview.startsWith('blob:') && tempPhotoPreview !== photoPreview) {
+            URL.revokeObjectURL(tempPhotoPreview);
+        }
         setTempPhotoFile(null);
         setTempPhotoPreview(null);
         if (fileInputRef.current) {
@@ -182,36 +233,13 @@ export default function Edit({ auth }) {
     };
 
     const handleSaveProfile = () => {
-        // Create FormData for simulation/API request preparation
-        const formData = new FormData();
-        formData.append('name', tempProfileData.name);
-        formData.append('email', tempProfileData.email);
-        formData.append('phone', tempProfileData.phone);
-        if (tempPhotoFile) {
-            formData.append('photo', tempPhotoFile);
-        } else {
-            formData.append('delete_photo', 'true');
-        }
-
-        // Log simulated request content
-        console.log('--- Preparing Profile Save Request ---');
-        console.log('Name:', formData.get('name'));
-        console.log('Email:', formData.get('email'));
-        console.log('Phone:', formData.get('phone'));
-        console.log('Photo File:', formData.get('photo'));
-        console.log('Delete Photo:', formData.get('delete_photo'));
-        console.log('--------------------------------------');
-
-        // Commit temporary state to main states
-        setProfileData({
-            name: tempProfileData.name,
-            email: tempProfileData.email,
-            phone: tempProfileData.phone,
+        profileForm.post(route('profile.update'), {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                setShowEditProfileModal(false);
+            },
         });
-        setPhotoFile(tempPhotoFile);
-        setPhotoPreview(tempPhotoPreview);
-
-        setShowEditProfileModal(false);
     };
 
     const handleSaveGoal = (e) => {
@@ -468,7 +496,7 @@ export default function Edit({ auth }) {
             {showEditProfileModal && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
                     <div className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
-                        <button onClick={() => setShowEditProfileModal(false)} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition">
+                        <button onClick={handleCloseEditModal} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition">
                             <X size={20} />
                         </button>
                         <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Edit Profil</h3>
@@ -481,7 +509,7 @@ export default function Edit({ auth }) {
                                     tempProfileData.name ? tempProfileData.name.charAt(0).toUpperCase() : 'N'
                                 )}
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 mb-2">
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current.click()}
@@ -499,6 +527,7 @@ export default function Edit({ auth }) {
                                     </button>
                                 )}
                             </div>
+                            {profileForm.errors.photo && <p className="text-rose-500 text-xs mt-1 text-center">{profileForm.errors.photo}</p>}
                             <input
                                 type="file"
                                 ref={fileInputRef}
@@ -517,6 +546,7 @@ export default function Edit({ auth }) {
                                     onChange={(e) => setTempProfileData({ ...tempProfileData, name: e.target.value })}
                                     className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none"
                                 />
+                                {profileForm.errors.name && <p className="text-rose-500 text-xs mt-1">{profileForm.errors.name}</p>}
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Email</label>
@@ -526,6 +556,7 @@ export default function Edit({ auth }) {
                                     onChange={(e) => setTempProfileData({ ...tempProfileData, email: e.target.value })}
                                     className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none"
                                 />
+                                {profileForm.errors.email && <p className="text-rose-500 text-xs mt-1">{profileForm.errors.email}</p>}
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Nomor Telepon</label>
@@ -535,6 +566,7 @@ export default function Edit({ auth }) {
                                     onChange={(e) => setTempProfileData({ ...tempProfileData, phone: e.target.value })}
                                     className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white rounded-xl text-sm font-medium outline-none"
                                 />
+                                {profileForm.errors.phone && <p className="text-rose-500 text-xs mt-1">{profileForm.errors.phone}</p>}
                             </div>
                         </div>
 
@@ -543,11 +575,11 @@ export default function Edit({ auth }) {
                         </button>
 
                         <div className="flex items-center gap-3">
-                            <button onClick={() => setShowEditProfileModal(false)} className="flex-1 py-3.5 bg-white dark:bg-transparent border border-gray-200 dark:border-emerald-900/60 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-emerald-950/40 transition">
+                            <button onClick={handleCloseEditModal} className="flex-1 py-3.5 bg-white dark:bg-transparent border border-gray-200 dark:border-emerald-900/60 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-emerald-950/40 transition">
                                 Batal
                             </button>
-                            <button onClick={handleSaveProfile} className="flex-1 py-3.5 bg-emerald-600 dark:bg-[#20D080] text-white dark:text-slate-950 font-bold rounded-xl hover:bg-emerald-700 dark:hover:bg-emerald-400 transition shadow-sm">
-                                Simpan Perubahan
+                            <button onClick={handleSaveProfile} disabled={profileForm.processing} className="flex-1 py-3.5 bg-emerald-600 dark:bg-[#20D080] text-white dark:text-slate-950 font-bold rounded-xl hover:bg-emerald-700 dark:hover:bg-emerald-400 transition shadow-sm disabled:opacity-50">
+                                {profileForm.processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                             </button>
                         </div>
                     </div>
