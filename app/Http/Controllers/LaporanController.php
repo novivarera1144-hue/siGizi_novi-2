@@ -10,9 +10,14 @@ use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
-    public function index(SupabaseService $supabase)
+    public function index(Request $request, SupabaseService $supabase)
     {
-        $userId = Auth::id() ?? 1;
+        $user = Auth::user();
+        $userId = $user->id ?? 1;
+
+        // Ambil target kalori dinamis dari user login (Ganti 'target_kalori' sesuai nama kolom di DB kamu)
+        // Jika tidak ada/null, fallback ke 1550
+        $dailyCalorieTarget = $user->target_kalori ?? $user->target_calories ?? 1550;
 
         // 1. Ambil data scan dari Supabase
         $scans = $supabase->get('riwayat_scan_makanans', [
@@ -47,9 +52,6 @@ class LaporanController extends Controller
         $scores = [];
         $targetMetDays = 0;
 
-        // Target harian standar
-        $dailyCalorieTarget = 2000;
-
         // 4. Looping untuk setiap hari dari Senin (index 0) sampai Minggu (index 6)
         foreach ($days as $idx => $d) {
             // Ambil tanggal spesifik untuk hari tersebut di minggu ini
@@ -66,8 +68,10 @@ class LaporanController extends Controller
             $lemak = array_sum(array_column($dayScans, 'lemak'));
             $karbo = array_sum(array_column($dayScans, 'karbohidrat'));
 
-            // Cek apakah kalori hari ini memenuhi target
-            if ($cals >= 1600 && $cals <= 2400) {
+            // Cek apakah kalori hari ini mendekati/memenuhi target user (toleransi +/- 10%)
+            $minTarget = $dailyCalorieTarget * 0.9;
+            $maxTarget = $dailyCalorieTarget * 1.1;
+            if ($cals >= $minTarget && $cals <= $maxTarget) {
                 $targetMetDays++;
             }
 
@@ -85,11 +89,11 @@ class LaporanController extends Controller
                 $scores[] = $score;
             }
 
-            // Data Bar Chart (Kalori Harian vs Target)
+            // Data Bar Chart (Kalori Harian vs Target Dinamis User)
             $barData[] = [
                 'name'   => $d,
                 'Aktual' => $cals,
-                'Target' => $dailyCalorieTarget
+                'Target' => (int) $dailyCalorieTarget
             ];
 
             // Data Line Chart (Tren Nutrisi)
@@ -108,7 +112,7 @@ class LaporanController extends Controller
 
         // 6. Data Radar Chart
         $radarData = [
-            ['subject' => 'Kalori',     'A' => min(100, round(($avgCalories / $dailyCalorieTarget) * 100)), 'fullMark' => 100],
+            ['subject' => 'Kalori',     'A' => min(100, round(($avgCalories / max(1, $dailyCalorieTarget)) * 100)), 'fullMark' => 100],
             ['subject' => 'Protein',    'A' => min(100, round(($avgProtein / 60) * 100)),                   'fullMark' => 100],
             ['subject' => 'Lemak',      'A' => min(100, round((($totalLemakAll / 7) / 65) * 100)),          'fullMark' => 100],
             ['subject' => 'Karbohidrat','A' => min(100, round((($totalKarboAll / 7) / 300) * 100)),         'fullMark' => 100],
@@ -127,7 +131,6 @@ class LaporanController extends Controller
                 'avgScore'      => $avgScore,
                 'totalCalories' => $totalCaloriesAll,
                 'totalScans'    => count($weeklyScans),
-                // Menggunakan translatedFormat agar bulan tampil dalam Bahasa Indonesia
                 'dateRange'     => $startOfWeek->translatedFormat('d M') . ' - ' . $endOfWeek->translatedFormat('d M Y')
             ]
         ]);

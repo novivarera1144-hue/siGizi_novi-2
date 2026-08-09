@@ -118,7 +118,7 @@ export default function LaporanMingguan({
                             >
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} ticks={[0, 600, 1200, 1800, 2400]} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} />
                                 <Tooltip
                                     cursor={{ fill: 'rgba(255, 255, 255, 0.03)' }}
                                     contentStyle={{ borderRadius: '16px', border: '1px solid #1a2e22', backgroundColor: '#0b140e', color: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
