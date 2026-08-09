@@ -35,18 +35,24 @@ class DashboardController extends Controller
         // 1. Ambil Tanggal Hari Ini (Y-m-d)
         $todayStr = Carbon::today()->toDateString();
 
-        // 2. Filter Scan Khusus Hari Ini (Parsing ISO Date dari Supabase)
+        // 2. Filter Scan Khusus Hari Ini (Untuk Angka Utama di Kotak Atas)
         $todayScans = array_filter($scans, function ($scan) use ($todayStr) {
             if (!isset($scan['created_at'])) return false;
             $scanDate = Carbon::parse($scan['created_at'])->toDateString();
             return $scanDate === $todayStr;
         });
 
-        // 3. Hitung Total Sementara Nutrisi Hari Ini
-        $totalKalori = array_sum(array_column($todayScans, 'kalori_terdeteksi'));
-        $totalProtein = array_sum(array_column($todayScans, 'protein'));
-        $totalLemak = array_sum(array_column($todayScans, 'lemak'));
-        $totalKarbo = array_sum(array_column($todayScans, 'karbohidrat'));
+        // Hitung nutrisi khusus HARI INI
+        $todayKalori = array_sum(array_column($todayScans, 'kalori_terdeteksi'));
+        $todayProtein = array_sum(array_column($todayScans, 'protein'));
+        $todayLemak = array_sum(array_column($todayScans, 'lemak'));
+        $todayKarbo = array_sum(array_column($todayScans, 'karbohidrat'));
+
+        // 3. Hitung Total Keseluruhan (All-Time) untuk "Total Sementara"
+        $totalKaloriAll = array_sum(array_column($scans, 'kalori_terdeteksi'));
+        $totalProteinAll = array_sum(array_column($scans, 'protein'));
+        $totalLemakAll = array_sum(array_column($scans, 'lemak'));
+        $totalKarboAll = array_sum(array_column($scans, 'karbohidrat'));
 
         if ($user && $user->target_calories) {
             $targetCalories = $user->target_calories;
@@ -72,10 +78,13 @@ class DashboardController extends Controller
             $targetCarbs = round(($targetCalories * 0.60) / 4);
         }
 
+        // --- PERUBAHAN: 'value' pakai data hari ini, 'total_sementara' (atau sesuaikan dengan props di frontend) pakai data all-time ---
+        // Jika di Frontend Anda menggunakan properti terpisah, sesuaikan kuncinya di bawah ini:
         $stats = [
             [
                 'title' => 'Kalori Hari Ini',
-                'value' => number_format($totalKalori),
+                'value' => number_format($todayKalori),
+                'total_sementara' => number_format($totalKaloriAll) . ' kkal',
                 'unit' => 'kkal',
                 'target' => 'Target: ' . number_format($targetCalories) . ' kkal',
                 'color' => 'bg-orange-500 text-white',
@@ -83,32 +92,39 @@ class DashboardController extends Controller
             ],
             [
                 'title' => 'Protein',
-                'value' => $totalProtein . 'g',
+                'value' => $todayProtein . 'g',
+                'total_sementara' => $totalProteinAll . 'g',
+                'unit' => 'g',
                 'target' => 'Target: ' . $targetProtein . 'g',
                 'color' => 'bg-blue-500 text-white',
                 'icon' => 'prot'
             ],
             [
                 'title' => 'Lemak',
-                'value' => $totalLemak . 'g',
+                'value' => $todayLemak . 'g',
+                'total_sementara' => $totalLemakAll . 'g',
+                'unit' => 'g',
                 'target' => 'Target: ' . $targetFat . 'g',
                 'color' => 'bg-amber-400 text-black',
                 'icon' => 'fat'
             ],
             [
                 'title' => 'Karbohidrat',
-                'value' => $totalKarbo . 'g',
+                'value' => $todayKarbo . 'g',
+                'total_sementara' => $totalKarboAll . 'g',
+                'unit' => 'g',
                 'target' => 'Target: ' . $targetCarbs . 'g',
                 'color' => 'bg-emerald-500 text-white',
                 'icon' => 'carbs'
             ]
         ];
 
+        // Untuk progress bar tetap menggunakan data hari ini agar akurat dengan target harian
         $progressNutrients = [
-            ['name' => 'Kalori', 'current' => (string)$totalKalori, 'target' => (string)$targetCalories, 'unit' => 'kkal', 'pct' => $targetCalories > 0 ? min(100, round(($totalKalori / $targetCalories) * 100)) : 0, 'barColor' => 'bg-orange-500'],
-            ['name' => 'Protein', 'current' => (string)$totalProtein, 'target' => (string)$targetProtein, 'unit' => 'g', 'pct' => $targetProtein > 0 ? min(100, round(($totalProtein / $targetProtein) * 100)) : 0, 'barColor' => 'bg-blue-500'],
-            ['name' => 'Lemak', 'current' => (string)$totalLemak, 'target' => (string)$targetFat, 'unit' => 'g', 'pct' => $targetFat > 0 ? min(100, round(($totalLemak / $targetFat) * 100)) : 0, 'barColor' => 'bg-amber-500'],
-            ['name' => 'Karbohidrat', 'current' => (string)$totalKarbo, 'target' => (string)$targetCarbs, 'unit' => 'g', 'pct' => $targetCarbs > 0 ? min(100, round(($totalKarbo / $targetCarbs) * 100)) : 0, 'barColor' => 'bg-emerald-500'],
+            ['name' => 'Kalori', 'current' => (string)$todayKalori, 'target' => (string)$targetCalories, 'unit' => 'kkal', 'pct' => $targetCalories > 0 ? min(100, round(($todayKalori / $targetCalories) * 100)) : 0, 'barColor' => 'bg-orange-500'],
+            ['name' => 'Protein', 'current' => (string)$todayProtein, 'target' => (string)$targetProtein, 'unit' => 'g', 'pct' => $targetProtein > 0 ? min(100, round(($todayProtein / $targetProtein) * 100)) : 0, 'barColor' => 'bg-blue-500'],
+            ['name' => 'Lemak', 'current' => (string)$todayLemak, 'target' => (string)$targetFat, 'unit' => 'g', 'pct' => $targetFat > 0 ? min(100, round(($todayLemak / $targetFat) * 100)) : 0, 'barColor' => 'bg-amber-500'],
+            ['name' => 'Karbohidrat', 'current' => (string)$todayKarbo, 'target' => (string)$targetCarbs, 'unit' => 'g', 'pct' => $targetCarbs > 0 ? min(100, round(($todayKarbo / $targetCarbs) * 100)) : 0, 'barColor' => 'bg-emerald-500'],
         ];
 
         $uniqueScans = [];

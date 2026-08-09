@@ -145,7 +145,6 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                         const theme = getNutriTheme(stat.title);
                         const isCalorie = (stat.title || '').toLowerCase().includes('kalori');
 
-                        // Pembersihan string angka agar tidak double "gg" / "kkal kkal"
                         const rawValue = String(stat.value ?? stat.currentValue ?? '0').replace(/[^0-9]/g, '');
                         const displayUnit = isCalorie ? 'kkal' : 'g';
                         const currentValueDisplay = `${rawValue || '0'} ${displayUnit}`;
@@ -183,7 +182,7 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                     <div className="flex justify-between items-center text-xs">
                                         <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total sementara:</span>
                                         <span className="font-extrabold text-[#1F7A54] dark:text-emerald-400">
-                                            {currentValueDisplay}
+                                            {stat.total_sementara}
                                         </span>
                                     </div>
 
