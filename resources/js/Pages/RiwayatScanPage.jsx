@@ -71,8 +71,8 @@ export default function RiwayatScanPage({ scanHistory }) {
     return (
         <AuthenticatedLayout>
             <Head title="Riwayat Scan" />
-            <div className="min-h-screen -m-4 md:-m-8 p-4 md:p-8 bg-white dark:bg-[#07110B] text-gray-900 dark:text-white transition-colors">
-                <div className="max-w-5xl mx-auto space-y-8 pb-20">
+            <div className="min-h-screen -m-4 md:-m-8 p-4 md:p-8 bg-white dark:bg-[#07110B] text-gray-900 dark:text-white transition-colors pb-40">
+                <div className="max-w-5xl mx-auto space-y-8">
 
                     {/* --- HEADER --- */}
                     <div>
