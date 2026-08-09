@@ -289,6 +289,7 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                         key={idx}
                                         onMouseEnter={() => setHoveredDay(data.day)}
                                         onMouseLeave={() => setHoveredDay(null)}
+                                        onClick={() => setHoveredDay(hoveredDay === data.day ? null : data.day)}
                                         className="flex flex-col items-center group relative w-full pt-4 rounded-2xl px-1 pb-1 cursor-pointer"
                                     >
                                         {isHovered && (
