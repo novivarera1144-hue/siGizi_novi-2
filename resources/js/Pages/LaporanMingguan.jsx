@@ -13,7 +13,6 @@ export default function LaporanMingguan({
     radarData: initialRadar,
     summaryStats: initialSummary
 }) {
-    // Data untuk Kalori Harian vs Target
     const barData = initialBar || [
         { name: 'Sen', Aktual: 1850, Target: 2000 },
         { name: 'Sel', Aktual: 2100, Target: 2000 },
@@ -24,7 +23,6 @@ export default function LaporanMingguan({
         { name: 'Min', Aktual: 1248, Target: 2000 },
     ];
 
-    // Data untuk Tren Nutrisi Minggu Ini
     const lineData = initialLine || [
         { name: 'Sen', Protein: 70, Lemak: 65, Karbo: 230 },
         { name: 'Sel', Protein: 85, Lemak: 70, Karbo: 270 },
@@ -35,7 +33,6 @@ export default function LaporanMingguan({
         { name: 'Min', Protein: 68, Lemak: 42, Karbo: 156 },
     ];
 
-    // Data untuk Keseimbangan Nutrisi (Radar)
     const radarData = initialRadar || [
         { subject: 'Kalori', A: 85, fullMark: 100 },
         { subject: 'Protein', A: 76, fullMark: 100 },
@@ -54,9 +51,27 @@ export default function LaporanMingguan({
         totalScans: 14
     };
 
+    const handleBarClick = (data) => {
+        if (data && data.activePayload) {
+            console.log("Data spesifik yang diklik:", data.activePayload[0].payload);
+        }
+    };
+
     return (
         <AuthenticatedLayout user={auth?.user}>
             <Head title="Laporan Mingguan" />
+
+            {/* CSS Override untuk membuang garis hitam fokus/outline pada Recharts */}
+            <style>{`
+                .recharts-wrapper *:focus,
+                .recharts-surface:focus,
+                .recharts-layer:focus,
+                .recharts-rectangle:focus {
+                    outline: none !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                }
+            `}</style>
 
             <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
                 {/* Header */}
@@ -74,7 +89,6 @@ export default function LaporanMingguan({
 
                 {/* Grid 4 Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    {/* Rata-rata Kalori */}
                     <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
                         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-500 flex items-center justify-center shrink-0">
                             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>
@@ -85,7 +99,6 @@ export default function LaporanMingguan({
                         </div>
                     </div>
 
-                    {/* Avg Protein */}
                     <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
                         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-500 dark:text-blue-400 flex items-center justify-center shrink-0">
                             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -96,7 +109,6 @@ export default function LaporanMingguan({
                         </div>
                     </div>
 
-                    {/* Hari Terpenuhi */}
                     <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
                         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-green-50 dark:bg-[#182b1f] text-green-500 dark:text-emerald-400 flex items-center justify-center shrink-0">
                             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
@@ -107,7 +119,6 @@ export default function LaporanMingguan({
                         </div>
                     </div>
 
-                    {/* Skor Rata-rata */}
                     <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col justify-between hover:shadow-md transition space-y-3 sm:space-y-4">
                         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-yellow-50 dark:bg-amber-950/40 text-yellow-500 dark:text-amber-400 flex items-center justify-center shrink-0">
                             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
@@ -126,7 +137,12 @@ export default function LaporanMingguan({
                     </div>
                     <div className="w-full h-[250px] sm:h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <BarChart
+                                data={barData}
+                                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                                onClick={handleBarClick}
+                                style={{ outline: 'none', cursor: 'pointer' }}
+                            >
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} ticks={[0, 600, 1200, 1800, 2400]} />
@@ -137,8 +153,8 @@ export default function LaporanMingguan({
                                     labelStyle={{ color: '#34d399', fontWeight: 'bold', marginBottom: '4px' }}
                                 />
                                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }} />
-                                <Bar dataKey="Aktual" fill="#22c55e" radius={[4, 4, 0, 0]} barSize={32} />
-                                <Bar dataKey="Target" fill="#1e293b" radius={[4, 4, 0, 0]} barSize={32} />
+                                <Bar dataKey="Aktual" fill="#22c55e" radius={[4, 4, 0, 0]} barSize={32} style={{ outline: 'none' }} />
+                                <Bar dataKey="Target" fill="#1e293b" radius={[4, 4, 0, 0]} barSize={32} style={{ outline: 'none' }} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -171,10 +187,8 @@ export default function LaporanMingguan({
 
                 {/* Keseimbangan Nutrisi & Ringkasan */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Keseimbangan Nutrisi */}
                     <div className="bg-white dark:bg-[#122017] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col hover:shadow-md transition">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Keseimbangan Nutrisi</h2>
-                        {/* Diperbaiki tinggi kontainer di mobile menjadi h-[280px] agar grafik tampil sempurna */}
                         <div className="w-full h-[280px] sm:h-[320px] flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
@@ -196,7 +210,6 @@ export default function LaporanMingguan({
                         </div>
                     </div>
 
-                    {/* Ringkasan Minggu Ini */}
                     <div className="bg-white dark:bg-[#122017] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col hover:shadow-md transition">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Ringkasan Minggu Ini</h2>
                         <div className="flex-1 flex flex-col justify-center space-y-6">
