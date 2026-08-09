@@ -165,11 +165,12 @@ export default function LaporanMingguan({
                         <div className="w-full h-[280px] sm:h-[320px] flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                                    <PolarGrid stroke="currentColor" className="text-gray-200 dark:text-emerald-950" />
+                                    {/* Warna garis jaring diperjelas menggunakan putih transparan saat dark mode */}
+                                    <PolarGrid stroke="currentColor" className="text-gray-200 dark:text-white/30" />
                                     <PolarAngleAxis
                                         dataKey="subject"
                                         tick={{ fill: 'currentColor', fontSize: 11, fontWeight: 500 }}
-                                        className="text-gray-700 dark:text-emerald-400"
+                                        className="text-gray-700 dark:text-white"
                                     />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                     <Radar name="Skor Nutrisi" dataKey="A" stroke="#22c55e" strokeWidth={2} fill="#22c55e" fillOpacity={0.25} />
