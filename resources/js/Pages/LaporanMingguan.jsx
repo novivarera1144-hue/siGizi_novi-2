@@ -8,47 +8,20 @@ import {
 
 export default function LaporanMingguan({
     auth,
-    barData: initialBar,
-    lineData: initialLine,
-    radarData: initialRadar,
-    summaryStats: initialSummary
+    barData = [],
+    lineData = [],
+    radarData = [],
+    summaryStats = {}
 }) {
-    const barData = initialBar || [
-        { name: 'Sen', Aktual: 1850, Target: 2000 },
-        { name: 'Sel', Aktual: 2100, Target: 2000 },
-        { name: 'Rab', Aktual: 1720, Target: 2000 },
-        { name: 'Kam', Aktual: 1950, Target: 2000 },
-        { name: 'Jum', Aktual: 2250, Target: 2000 },
-        { name: 'Sab', Aktual: 1640, Target: 2000 },
-        { name: 'Min', Aktual: 1248, Target: 2000 },
-    ];
-
-    const lineData = initialLine || [
-        { name: 'Sen', Protein: 70, Lemak: 65, Karbo: 230 },
-        { name: 'Sel', Protein: 85, Lemak: 70, Karbo: 270 },
-        { name: 'Rab', Protein: 65, Lemak: 50, Karbo: 210 },
-        { name: 'Kam', Protein: 78, Lemak: 60, Karbo: 250 },
-        { name: 'Jum', Protein: 90, Lemak: 75, Karbo: 280 },
-        { name: 'Sab', Protein: 60, Lemak: 45, Karbo: 200 },
-        { name: 'Min', Protein: 68, Lemak: 42, Karbo: 156 },
-    ];
-
-    const radarData = initialRadar || [
-        { subject: 'Kalori', A: 85, fullMark: 100 },
-        { subject: 'Protein', A: 76, fullMark: 100 },
-        { subject: 'Lemak', A: 65, fullMark: 100 },
-        { subject: 'Karbohidrat', A: 90, fullMark: 100 },
-        { subject: 'Serat', A: 60, fullMark: 100 },
-        { subject: 'Vitamin', A: 70, fullMark: 100 },
-    ];
-
-    const summary = initialSummary || {
-        avgCalories: 1824,
-        avgProtein: 76,
-        targetMetDays: 5,
-        avgScore: 83,
-        totalCalories: 12768,
-        totalScans: 14
+    // Nilai default aman untuk statistik ringkasan
+    const summary = {
+        avgCalories: summaryStats?.avgCalories ?? 0,
+        avgProtein: summaryStats?.avgProtein ?? 0,
+        targetMetDays: summaryStats?.targetMetDays ?? 0,
+        avgScore: summaryStats?.avgScore ?? 0,
+        totalCalories: summaryStats?.totalCalories ?? 0,
+        totalScans: summaryStats?.totalScans ?? 0,
+        dateRange: summaryStats?.dateRange ?? 'Minggu Ini'
     };
 
     const handleBarClick = (data) => {
@@ -61,7 +34,7 @@ export default function LaporanMingguan({
         <AuthenticatedLayout user={auth?.user}>
             <Head title="Laporan Mingguan" />
 
-            {/* CSS Override untuk membuang garis hitam fokus/outline pada Recharts */}
+            {/* CSS Override untuk menghilangkan outline atau garis hitam fokus pada Recharts */}
             <style>{`
                 .recharts-wrapper *:focus,
                 .recharts-surface:focus,
@@ -74,7 +47,7 @@ export default function LaporanMingguan({
             `}</style>
 
             <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
-                {/* Header */}
+                {/* Header Dinamis */}
                 <div>
                     <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
                         LAPORAN MINGGUAN
@@ -82,8 +55,8 @@ export default function LaporanMingguan({
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                         Statistik Nutrisi Minggu Ini
                     </h1>
-                    <p className="text-gray-500 dark:text-emerald-500/80 mt-1 text-sm">
-                        12 Jun - 18 Jun 2025
+                    <p className="text-gray-500 dark:text-emerald-500/80 mt-1 text-sm font-medium">
+                        {summary.dateRange}
                     </p>
                 </div>
 
@@ -170,7 +143,7 @@ export default function LaporanMingguan({
                             <LineChart data={lineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} ticks={[0, 70, 140, 210, 280]} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} />
                                 <Tooltip
                                     contentStyle={{ borderRadius: '16px', border: '1px solid #1a2e22', backgroundColor: '#0b140e', color: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
                                     itemStyle={{ color: '#fff', fontSize: '12px' }}
@@ -185,7 +158,7 @@ export default function LaporanMingguan({
                     </div>
                 </div>
 
-                {/* Keseimbangan Nutrisi & Ringkasan */}
+                {/* Keseimbangan Nutrisi & Ringkasan Minggu Ini */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="bg-white dark:bg-[#122017] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#1a2e22] flex flex-col hover:shadow-md transition">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Keseimbangan Nutrisi</h2>
@@ -228,7 +201,7 @@ export default function LaporanMingguan({
                                 </span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-[#1a2e22]">
-                                <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Hari kelebihan kalori</span>
+                                <span className="text-sm font-medium text-gray-500 dark:text-emerald-100/70">Hari tidak capai/melebihi target</span>
                                 <span className="text-sm font-bold text-amber-500 dark:text-amber-400 flex items-center gap-1.5">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                     {7 - summary.targetMetDays} hari
