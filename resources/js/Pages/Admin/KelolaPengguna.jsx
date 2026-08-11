@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function KelolaPengguna({ initialUsers }) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -70,12 +70,27 @@ export default function KelolaPengguna({ initialUsers }) {
         setIsAddModalOpen(false);
     };
 
+    // Pagination State & Logic
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    // Reset page to 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, roleFilter]);
+
     const filteredUsers = users.filter(u => {
         const matchesSearch = u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             u.email.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesRole = roleFilter === 'Semua' || u.role === roleFilter;
         return matchesSearch && matchesRole;
     });
+
+    const totalItems = filteredUsers.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+    const safeCurrentPage = Math.min(currentPage, totalPages);
+    const startIndex = (safeCurrentPage - 1) * itemsPerPage;
+    const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
 
     return (
         <AdminLayout
@@ -85,7 +100,7 @@ export default function KelolaPengguna({ initialUsers }) {
         >
             <Head title="Kelola Pengguna - Admin" />
 
-            <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
+            <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
                 {/* Control bar */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
                     <div className="flex flex-1 flex-col sm:flex-row gap-3">
@@ -128,40 +143,47 @@ export default function KelolaPengguna({ initialUsers }) {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead>
-                            <tr className="border-b border-gray-100 dark:border-emerald-950/40 text-[11px] text-gray-400 uppercase font-extrabold">
-                                <th className="py-3 px-4">Nama</th>
-                                <th className="py-3 px-4">Email</th>
-                                <th className="py-3 px-4">Peran</th>
-                                <th className="py-3 px-4">Status</th>
-                                <th className="py-3 px-4 text-right">Aksi</th>
+                            <tr className="border-b border-gray-100 dark:border-emerald-950/40 text-[10px] sm:text-[11px] text-gray-400 uppercase font-extrabold">
+                                <th className="py-3 px-2 sm:px-4">Nama</th>
+                                <th className="py-3 px-4 hidden md:table-cell">Email</th>
+                                <th className="py-3 px-2 sm:px-4">Peran</th>
+                                <th className="py-3 px-2 sm:px-4">Status</th>
+                                <th className="py-3 px-2 sm:px-4 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-emerald-950/20">
-                            {filteredUsers.length > 0 ? (
-                                filteredUsers.map((u) => (
-                                    <tr key={u.id} className="hover:bg-gray-50/50 dark:hover:bg-[#182b1f]/20 transition-colors">
-                                        <td className="py-3.5 px-4 font-bold text-gray-900 dark:text-white">{u.name}</td>
-                                        <td className="py-3.5 px-4 text-gray-500 dark:text-emerald-100/60 font-medium">{u.email}</td>
-                                        <td className="py-3.5 px-4 font-bold">{u.role}</td>
-                                        <td className="py-3.5 px-4">
-                                            <span className={`px-2.5 py-1 text-[10px] font-extrabold rounded-full ${u.statusColor}`}>
+                            {paginatedUsers.length > 0 ? (
+                                paginatedUsers.map((u) => (
+                                    <tr key={u.id} className="hover:bg-gray-50/50 dark:hover:bg-[#182b1f]/20 transition-colors text-xs sm:text-sm">
+                                        <td className="py-3.5 px-2 sm:px-4 font-bold text-gray-900 dark:text-white">
+                                            <div className="flex flex-col">
+                                                <span className="font-semibold text-gray-900 dark:text-white">{u.name}</span>
+                                                <span className="text-[10px] text-slate-400 dark:text-emerald-100/40 font-normal md:hidden mt-0.5 break-all">{u.email}</span>
+                                            </div>
+                                        </td>
+                                        <td className="py-3.5 px-4 text-gray-500 dark:text-emerald-100/60 font-medium hidden md:table-cell">{u.email}</td>
+                                        <td className="py-3.5 px-2 sm:px-4 font-semibold text-gray-700 dark:text-emerald-100/80">{u.role}</td>
+                                        <td className="py-3.5 px-2 sm:px-4">
+                                            <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-extrabold rounded-full ${u.statusColor}`}>
                                                 {u.status}
                                             </span>
                                         </td>
-                                        <td className="py-3.5 px-4 text-right space-x-3">
-                                            <button
-                                                onClick={() => handleOpenEdit(u)}
-                                                className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 hover:underline cursor-pointer"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleToggleStatus(u.id)}
-                                                className={`text-xs font-bold hover:underline cursor-pointer ${u.status === 'Aktif' ? 'text-red-500' : 'text-[#1F7A54] dark:text-emerald-400'
-                                                    }`}
-                                            >
-                                                {u.status === 'Aktif' ? 'Tangguhkan' : 'Aktifkan'}
-                                            </button>
+                                        <td className="py-3.5 px-2 sm:px-4 text-right">
+                                            <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-1.5 sm:gap-3">
+                                                <button
+                                                    onClick={() => handleOpenEdit(u)}
+                                                    className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 hover:underline cursor-pointer"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleToggleStatus(u.id)}
+                                                    className={`text-xs font-bold hover:underline cursor-pointer ${u.status === 'Aktif' ? 'text-red-500' : 'text-[#1F7A54] dark:text-emerald-400'
+                                                        }`}
+                                                >
+                                                    {u.status === 'Aktif' ? 'Tangguhkan' : 'Aktifkan'}
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -175,6 +197,59 @@ export default function KelolaPengguna({ initialUsers }) {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-100 dark:border-[#1a2e22]/50">
+                        <div className="text-[11px] sm:text-xs text-gray-500 dark:text-emerald-100/50 font-medium">
+                            Menampilkan <span className="font-semibold text-gray-800 dark:text-emerald-300">{startIndex + 1}</span>-
+                            <span className="font-semibold text-gray-800 dark:text-emerald-300">{startIndex + paginatedUsers.length}</span> dari{" "}
+                            <span className="font-semibold text-gray-800 dark:text-emerald-300">{totalItems}</span> pengguna
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            {/* Previous Button */}
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={safeCurrentPage === 1}
+                                className={`w-8 h-8 text-sm font-extrabold transition flex items-center justify-center ${
+                                    safeCurrentPage === 1
+                                        ? 'text-gray-300 dark:text-emerald-950/40 cursor-not-allowed'
+                                        : 'text-[#1F7A54] dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 cursor-pointer'
+                                }`}
+                            >
+                                ←
+                            </button>
+
+                            {/* Page Numbers */}
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => setCurrentPage(page)}
+                                    className={`w-8 h-8 rounded-full text-xs font-bold transition flex items-center justify-center cursor-pointer ${
+                                        page === safeCurrentPage
+                                            ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07]'
+                                            : 'text-slate-600 dark:text-emerald-200 hover:bg-gray-100 dark:hover:bg-emerald-950/30'
+                                    }`}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+
+                            {/* Next Button */}
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={safeCurrentPage === totalPages}
+                                className={`w-8 h-8 text-sm font-extrabold transition flex items-center justify-center ${
+                                    safeCurrentPage === totalPages
+                                        ? 'text-gray-300 dark:text-emerald-950/40 cursor-not-allowed'
+                                        : 'text-[#1F7A54] dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 cursor-pointer'
+                                }`}
+                            >
+                                →
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* MODAL TAMBAH PENGGUNA */}
