@@ -38,4 +38,9 @@ class User extends Authenticatable
             'target_carbs' => 'double',
         ];
     }
+
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class);
+    }
 }

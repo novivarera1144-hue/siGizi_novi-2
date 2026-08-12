@@ -8,6 +8,7 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\Admin\KelolaPenggunaController;
 use App\Http\Controllers\Admin\LaporanGlobalController;
 use Illuminate\Foundation\Application;
@@ -16,11 +17,17 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    $testimonials = \App\Models\Testimonial::with('user:id,name,photo')
+        ->where('is_approved', true)
+        ->latest()
+        ->get();
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'testimonials' => $testimonials,
     ]);
 });
 
@@ -67,8 +74,14 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'destroy'])->name('admin.kelola-pengguna.destroy');
 
             Route::get('/kelola-tampilan', function () {
-                return Inertia::render('Admin/KelolaTampilan');
+                $testimonials = \App\Models\Testimonial::with('user:id,name,photo')->latest()->get();
+                return Inertia::render('Admin/KelolaTampilan', [
+                    'testimonials' => $testimonials
+                ]);
             })->name('admin.kelola-tampilan');
+
+            Route::patch('/testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])
+                ->name('admin.testimonials.update-status');
 
             Route::get('/laporan-global', [LaporanGlobalController::class, 'index'])->name('admin.laporan-global');
 
@@ -109,6 +122,7 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         Route::post('/profile/goals', [ProfileController::class, 'updateGoals'])->name('profile.goals.update');
+        Route::post('/profile/testimonial', [TestimonialController::class, 'store'])->name('profile.testimonial.store');
 
         // Scan Routes
         Route::get('/scan', function () {

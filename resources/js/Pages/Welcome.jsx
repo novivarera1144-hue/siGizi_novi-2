@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ auth, laravelVersion, phpVersion, testimonials: dbTestimonials = [] }) {
     const [darkMode, setDarkMode] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -127,33 +127,16 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         }
     ];
 
-    // Testimonials (Apa kata mereka)
-    const testimonials = [
-        {
-            name: "Rizki Pratama",
-            role: "Mahasiswa",
-            initial: "R",
-            stars: 5,
-            quote: "“siGizi bantu aku ngerti kandungan nasi kos harianku. Sekarang lebih terkontrol makannya!”",
-            color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
-        },
-        {
-            name: "Sari Dewi",
-            role: "Ibu rumah tangga",
-            initial: "S",
-            stars: 5,
-            quote: "“Fitur scan-nya sangat praktis! Tinggal foto, langsung tahu kalori dan nutrisinya.”",
-            color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
-        },
-        {
-            name: "Budi Setiawan",
-            role: "Pekerja kantoran",
-            initial: "B",
-            stars: 4,
-            quote: "“AI Assistant-nya helpful banget. Jawab pertanyaan nutrisi dengan jelas dan mudah dipahami.”",
-            color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
-        }
-    ];
+    // Testimonials (Apa kata mereka) — dari database
+    const testimonials = dbTestimonials.map((t) => ({
+        name: t.user?.name || 'Anonim',
+        role: t.occupation,
+        initial: (t.user?.name || 'A').charAt(0).toUpperCase(),
+        stars: t.rating,
+        quote: `\u201C${t.comment}\u201D`,
+        photo: t.user?.photo ? `/storage/${t.user.photo}` : null,
+        color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
+    }));
 
     return (
         <>
@@ -616,6 +599,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         </div>
 
                         {/* Testimonial Cards Grid */}
+                        {testimonials.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {testimonials.map((testi, index) => (
                                 <div
@@ -645,9 +629,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                                     {/* Author Profile */}
                                     <div className="flex items-center space-x-3 pt-6 mt-6 border-t border-gray-100 dark:border-zinc-800">
-                                        <div className={`w-10 h-10 rounded-full ${testi.color} flex items-center justify-center font-bold text-sm shadow-sm`}>
-                                            {testi.initial}
-                                        </div>
+                                        {testi.photo ? (
+                                            <img src={testi.photo} alt={testi.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
+                                        ) : (
+                                            <div className={`w-10 h-10 rounded-full ${testi.color} flex items-center justify-center font-bold text-sm shadow-sm`}>
+                                                {testi.initial}
+                                            </div>
+                                        )}
                                         <div>
                                             <h4 className="font-bold text-gray-900 dark:text-white text-sm">{testi.name}</h4>
                                             <p className="text-gray-500 dark:text-gray-400 text-xs">{testi.role}</p>
@@ -656,6 +644,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </div>
                             ))}
                         </div>
+                        ) : (
+                            <div className="text-center py-12">
+                                <p className="text-gray-400 dark:text-gray-500 text-sm font-medium">Belum ada testimoni yang ditampilkan.</p>
+                            </div>
+                        )}
 
                     </div>
                 </section>

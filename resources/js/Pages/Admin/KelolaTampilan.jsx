@@ -1,8 +1,8 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function KelolaTampilan() {
+export default function KelolaTampilan({ testimonials: initialTestimonials = [] }) {
     // 1. Headline & Hero Image state
     const [headline, setHeadline] = useState('Kenali Gizi Makananmu');
     const [heroImage, setHeroImage] = useState('/images/smoothie.jpg');
@@ -22,56 +22,23 @@ export default function KelolaTampilan() {
         'Memantau asupan nutrisi harian dengan mudah'
     ]);
 
-    // 3. Testimoni/Rating Moderasi state
-    const [reviews, setReviews] = useState([
-        {
-            id: 1,
-            name: 'Rizki Pratama',
-            status: 'Mahasiswa',
-            rating: 5,
-            content: 'siGizi bantu aku ngerti kandungan nasi kos harianku. Sekarang lebih terkontrol makannya!',
-            visible: true
-        },
-        {
-            id: 2,
-            name: 'Sari Dewi',
-            status: 'Ibu Rumah Tangga',
-            rating: 5,
-            content: 'Fitur scan-nya sangat praktis! Tinggal foto, langsung tahu kalori dan nutrisinya.',
-            visible: true
-        },
-        {
-            id: 3,
-            name: 'Ahmad Fauzi',
-            status: 'Karyawan Swasta',
-            rating: 4,
-            content: 'Rekomendasi menunya cukup bervariasi. Sangat membantu menjaga pola makan sehat saya.',
-            visible: true
-        },
-        {
-            id: 4,
-            name: 'Ahsan Kamil',
-            status: 'Pekerja Kreatif',
-            rating: 5,
-            content: 'AI Assistant-nya responsif sekali saat ditanya soal alternatif menu diet.',
-            visible: true
-        },
-        {
-            id: 5,
-            name: 'Budi Santoso',
-            status: 'PNS',
-            rating: 4,
-            content: 'UI-nya bersih dan ramah untuk pemula. Scan makanan tergolong cepat.',
-            visible: false
-        }
-    ]);
+    // 3. Testimoni/Rating Moderasi — data dari database
+    const reviews = initialTestimonials.map((t) => ({
+        id: t.id,
+        name: t.user?.name || 'Anonim',
+        status: t.occupation,
+        rating: t.rating,
+        content: t.comment,
+        visible: t.is_approved,
+        created_at: t.created_at,
+    }));
 
     const totalReviews = reviews.length;
     const displayedReviewsCount = reviews.filter((r) => r.visible).length;
     const hiddenReviewsCount = totalReviews - displayedReviewsCount;
-    const averageRating = (
-        reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length
-    ).toFixed(1);
+    const averageRating = reviews.length > 0
+        ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
+        : '0.0';
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -101,9 +68,11 @@ export default function KelolaTampilan() {
     };
 
     const handleSetReviewVisibility = (id, visible) => {
-        setReviews(
-            reviews.map((r) => (r.id === id ? { ...r, visible } : r))
-        );
+        router.patch(route('admin.testimonials.update-status', id), {
+            is_approved: visible,
+        }, {
+            preserveScroll: true,
+        });
     };
 
     const renderStars = (rating) => {

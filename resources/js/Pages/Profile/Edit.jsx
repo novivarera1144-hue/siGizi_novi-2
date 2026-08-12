@@ -188,6 +188,11 @@ export default function Edit({ auth, flash }) {
 
     // Review states
     const [rating, setRating] = useState(0);
+    const testimonialForm = useForm({
+        rating: 0,
+        occupation: '',
+        comment: '',
+    });
 
     // Handlers
     const openEditProfileModal = () => {
@@ -277,7 +282,23 @@ export default function Edit({ auth, flash }) {
         });
     };
 
-    const handleSaveReview = () => setShowReviewModal(false);
+    const handleSaveReview = (e) => {
+        if (e) e.preventDefault();
+        testimonialForm.post(route('profile.testimonial.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setShowReviewModal(false);
+                testimonialForm.reset();
+                setRating(0);
+            }
+        });
+    };
+
+    const handleCloseReviewModal = () => {
+        testimonialForm.reset();
+        setRating(0);
+        setShowReviewModal(false);
+    };
 
     // Render Views
     const renderMainView = () => (
@@ -832,10 +853,10 @@ export default function Edit({ auth, flash }) {
             {/* --- MODAL ULASAN & RATING --- */}
             {showReviewModal && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-2xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
+                    <form onSubmit={handleSaveReview} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-2xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-emerald-950">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Bagikan Pengalamanmu</h3>
-                            <button onClick={() => setShowReviewModal(false)} className="text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 transition">
+                            <button type="button" onClick={handleCloseReviewModal} className="text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 transition">
                                 <X size={20} />
                             </button>
                         </div>
@@ -846,40 +867,69 @@ export default function Edit({ auth, flash }) {
                             <div className="flex items-center gap-1.5 mb-2">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
+                                        type="button"
                                         key={star}
-                                        onClick={() => setRating(star)}
-                                        className={`transition-transform hover:scale-110 ${rating >= star ? 'text-yellow-400' : 'text-gray-200 dark:text-emerald-950'}`}
+                                        onClick={() => {
+                                            setRating(star);
+                                            testimonialForm.setData('rating', star);
+                                        }}
+                                        className={`transition-transform hover:scale-110 ${testimonialForm.data.rating >= star ? 'text-yellow-400' : 'text-gray-200 dark:text-emerald-950'}`}
                                     >
-                                        <Star size={32} fill={rating >= star ? "currentColor" : "none"} strokeWidth={rating >= star ? 0 : 2} />
+                                        <Star size={32} fill={testimonialForm.data.rating >= star ? "currentColor" : "none"} strokeWidth={testimonialForm.data.rating >= star ? 0 : 2} />
                                     </button>
                                 ))}
                             </div>
                             <p className="text-xs font-medium text-gray-500 dark:text-emerald-500/80">
-                                {rating > 0 ? `${rating} dari 5 bintang` : 'Belum ada rating'}
+                                {testimonialForm.data.rating > 0 ? `${testimonialForm.data.rating} dari 5 bintang` : 'Belum ada rating'}
                             </p>
+                            {testimonialForm.errors.rating && (
+                                <p className="text-rose-500 text-xs mt-1 font-semibold">{testimonialForm.errors.rating}</p>
+                            )}
                         </div>
 
                         <div className="space-y-5 mb-8">
                             <div>
                                 <label className="block text-[11px] font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">PEKERJAAN / STATUS</label>
-                                <input type="text" className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 rounded-xl text-sm font-medium outline-none transition" placeholder="Contoh: Mahasiswa / Ibu Rumah Tangga" />
+                                <input
+                                    type="text"
+                                    value={testimonialForm.data.occupation}
+                                    onChange={(e) => testimonialForm.setData('occupation', e.target.value)}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 rounded-xl text-sm font-medium outline-none transition"
+                                    placeholder="Contoh: Mahasiswa / Ibu Rumah Tangga"
+                                />
+                                {testimonialForm.errors.occupation && (
+                                    <p className="text-rose-500 text-xs mt-1 font-semibold">{testimonialForm.errors.occupation}</p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-[11px] font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">TULIS ULASANMU</label>
-                                <textarea rows="3" className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 rounded-xl text-sm font-medium resize-none outline-none transition" placeholder="Tulis pendapatmu tentang fitur Scan siGizi di sini..."></textarea>
+                                <textarea
+                                    rows="3"
+                                    value={testimonialForm.data.comment}
+                                    onChange={(e) => testimonialForm.setData('comment', e.target.value)}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 rounded-xl text-sm font-medium resize-none outline-none transition"
+                                    placeholder="Tulis pendapatmu tentang fitur Scan siGizi di sini..."
+                                ></textarea>
+                                {testimonialForm.errors.comment && (
+                                    <p className="text-rose-500 text-xs mt-1 font-semibold">{testimonialForm.errors.comment}</p>
+                                )}
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button onClick={() => setShowReviewModal(false)} className="flex-1 py-3 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-50 dark:hover:bg-emerald-950/40 rounded-xl transition">
+                            <button type="button" onClick={handleCloseReviewModal} className="flex-1 py-3 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-50 dark:hover:bg-emerald-950/40 rounded-xl transition">
                                 Batal
                             </button>
-                            <button onClick={handleSaveReview} disabled={rating === 0} className="flex-1 py-3 bg-emerald-600 dark:bg-[#20D080] hover:bg-emerald-700 dark:hover:bg-emerald-400 disabled:bg-emerald-300 dark:disabled:bg-emerald-950/60 text-white dark:text-slate-950 dark:disabled:text-emerald-800 font-bold rounded-xl transition shadow-sm flex items-center justify-center gap-2">
-                                <Send size={18} className={rating === 0 ? "opacity-50" : ""} />
-                                Kirim Ulasan
+                            <button
+                                type="submit"
+                                disabled={testimonialForm.data.rating === 0 || testimonialForm.processing}
+                                className="flex-1 py-3 bg-emerald-600 dark:bg-[#20D080] hover:bg-emerald-700 dark:hover:bg-emerald-400 disabled:bg-emerald-300 dark:disabled:bg-emerald-950/60 text-white dark:text-slate-950 dark:disabled:text-emerald-800 font-bold rounded-xl transition shadow-sm flex items-center justify-center gap-2"
+                            >
+                                <Send size={18} className={testimonialForm.data.rating === 0 ? "opacity-50" : ""} />
+                                {testimonialForm.processing ? 'Mengirim...' : 'Kirim Ulasan'}
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             )}
 
