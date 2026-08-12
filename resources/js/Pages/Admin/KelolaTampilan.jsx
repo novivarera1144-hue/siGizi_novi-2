@@ -103,11 +103,11 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
         >
             <Head title="Kelola Tampilan - Admin" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 pb-24">
                 {/* 1. STAT CARDS RINGKASAN */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Card 1 */}
-                    <div className="bg-white dark:bg-[#122017] p-5 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
                         <div className="space-y-1">
                             <p className="text-xs font-bold text-gray-400 dark:text-emerald-100/60">Total Ulasan</p>
                             <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mt-0.5">{totalReviews}</h3>
@@ -121,7 +121,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     </div>
 
                     {/* Card 2 */}
-                    <div className="bg-white dark:bg-[#122017] p-5 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
                         <div className="space-y-1">
                             <p className="text-xs font-bold text-gray-400 dark:text-emerald-100/60">Ditampilkan</p>
                             <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mt-0.5">{displayedReviewsCount}</h3>
@@ -135,7 +135,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     </div>
 
                     {/* Card 3 */}
-                    <div className="bg-white dark:bg-[#122017] p-5 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
                         <div className="space-y-1">
                             <p className="text-xs font-bold text-gray-400 dark:text-emerald-100/60">Disembunyikan</p>
                             <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mt-0.5">{hiddenReviewsCount}</h3>
@@ -149,7 +149,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     </div>
 
                     {/* Card 4 */}
-                    <div className="bg-white dark:bg-[#122017] p-5 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
+                    <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
                         <div className="space-y-1">
                             <p className="text-xs font-bold text-gray-400 dark:text-emerald-100/60">Rata-rata Rating</p>
                             <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mt-0.5">{averageRating}</h3>
@@ -164,7 +164,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                 </div>
 
                 {/* 2. CARD "Manajemen Beranda — Hero Section" */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
                     <div className="flex items-center space-x-2 text-gray-900 dark:text-white border-b border-gray-100 dark:border-emerald-950/40 pb-4">
                         <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -253,7 +253,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                 </div>
 
                 {/* 3. CARD "Pengaturan Halaman Tentang Kami" */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
                     <div className="flex items-center space-x-2 text-gray-900 dark:text-white border-b border-gray-100 dark:border-emerald-950/40 pb-4">
                         <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -274,7 +274,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-2">
                                     Latar Belakang
@@ -348,7 +348,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                 </div>
 
                 {/* 4. CARD "Moderasi Rating & Testimoni" (Dilengkapi overflow-x-auto untuk geser animasi/responsif) */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
                     <div className="flex items-center space-x-2 text-gray-900 dark:text-white border-b border-gray-100 dark:border-emerald-950/40 pb-4">
                         <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -357,13 +357,13 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse min-w-[650px]">
+                        <table className="w-full text-left border-collapse min-w-[850px]">
                             <thead>
                                 <tr className="border-b border-gray-100 dark:border-emerald-950/40 text-xs font-bold text-gray-400 dark:text-emerald-100/60 uppercase tracking-wider">
-                                    <th className="py-4 px-4">Nama & Status</th>
-                                    <th className="py-4 px-4">Rating</th>
-                                    <th className="py-4 px-4 w-1/2">Isi Ulasan</th>
-                                    <th className="py-4 px-4 text-right">Aksi</th>
+                                    <th className="py-4 px-4 min-w-[150px]">Nama & Status</th>
+                                    <th className="py-4 px-4 min-w-[100px]">Rating</th>
+                                    <th className="py-4 px-4 min-w-[350px]">Isi Ulasan</th>
+                                    <th className="py-4 px-4 min-w-[200px] text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -375,18 +375,18 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                             : 'bg-gray-50/30 dark:bg-emerald-950/30 opacity-70 hover:bg-gray-50/60 dark:hover:bg-emerald-950/20'
                                             }`}
                                     >
-                                        <td className="py-4 px-4 whitespace-nowrap">
+                                        <td className="py-4 px-4 min-w-[150px] whitespace-nowrap">
                                             <div className="font-bold text-gray-800 dark:text-white">{review.name}</div>
                                             <div className="text-xs text-gray-400 dark:text-emerald-100/50 mt-0.5 font-medium">{review.status}</div>
                                         </td>
-                                        <td className="py-4 px-4 whitespace-nowrap">
+                                        <td className="py-4 px-4 min-w-[100px] whitespace-nowrap">
                                             {renderStars(review.rating)}
                                         </td>
-                                        <td className="py-4 px-4 text-gray-600 dark:text-emerald-100/80 font-medium italic leading-relaxed">
+                                        <td className="py-4 px-4 min-w-[350px] text-gray-600 dark:text-emerald-100/80 font-medium italic leading-relaxed">
                                             "{review.content}"
                                         </td>
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <div className="inline-flex space-x-2">
+                                        <td className="py-4 px-4 min-w-[200px] text-right whitespace-nowrap">
+                                            <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => handleSetReviewVisibility(review.id, true)}
                                                     className={`rounded-full px-4 py-1.5 text-xs font-semibold cursor-pointer transition duration-150 shadow-sm ${review.visible

@@ -181,7 +181,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     return (
         <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300 pb-20 lg:pb-0">
             {/* Sidebar Navigation - Left Panel */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
+            <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
                 }`}>
                 <div>
                     {/* Header Logo */}
@@ -246,7 +246,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             {sidebarOpen && (
                 <div
                     onClick={() => setSidebarOpen(false)}
-                    className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
                 ></div>
             )}
 
@@ -349,7 +349,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                 </header>
 
                 {/* Main Content Body Wrapper */}
-                <main className="flex-1 p-4 sm:p-8">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                         <div>
                             <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
@@ -386,7 +386,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             </div>
 
             {/* --- BOTTOM NAVIGATION BAR (Khusus Mobile/Tablet di bagian bawah layar) --- */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#07110B]/90 backdrop-blur-md border-t border-gray-200 dark:border-[#1a2e22] py-2 px-4 lg:hidden">
+            <div className={`fixed bottom-0 left-0 right-0 z-30 bg-white/90 dark:bg-[#07110B]/90 backdrop-blur-md border-t border-gray-200 dark:border-[#1a2e22] py-2 px-4 lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
                 <div className="max-w-md mx-auto flex items-center justify-between">
                     <Link href={route('admin.dashboard')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'dashboard' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <LayoutDashboard className="w-5 h-5" />
