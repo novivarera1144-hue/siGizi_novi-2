@@ -8,8 +8,6 @@ export default function PengaturanSistem() {
         admin_email: 'noreply@sigizi.com',
         enable_2fa: true,
         maintenance_mode: false,
-        notify_new_user: true,
-        notify_weekly_report: true,
         session_timeout: 15,
     });
 
@@ -204,26 +202,7 @@ export default function PengaturanSistem() {
                     </div>
                 </div>
 
-                {/* CARD 3: NOTIFIKASI */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
-                    <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-6 uppercase tracking-wider">NOTIFIKASI</h2>
-                    <div className="space-y-6">
-                        <ToggleSwitch
-                            label="Notifikasi Pengguna Baru"
-                            description="Kirim email ke admin saat ada pendaftaran pengguna baru."
-                            checked={data.notify_new_user}
-                            onChange={() => handleToggle('notify_new_user')}
-                        />
-                        <ToggleSwitch
-                            label="Laporan Otomatis Mingguan"
-                            description="Kirim ringkasan statistik setiap Senin pukul 08:00 ke email admin."
-                            checked={data.notify_weekly_report}
-                            onChange={() => handleToggle('notify_weekly_report')}
-                        />
-                    </div>
-                </div>
-
-                {/* CARD 4: KELOLA AKUN ADMIN (INTERAKTIF) */}
+                {/* CARD 3: KELOLA AKUN ADMIN (INTERAKTIF) */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">KELOLA AKUN ADMIN</h2>

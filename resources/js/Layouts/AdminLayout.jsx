@@ -23,54 +23,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const searchRef = useRef(null);
 
-    // State untuk Fitur Notifikasi Interaktif & Scrollable
-    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-    const [notifications, setNotifications] = useState([
-        {
-            id: 1,
-            title: 'Pengguna Baru Terdaftar',
-            description: 'Budi Santoso mendaftarkan akun baru sebagai warga.',
-            time: '5 menit lalu',
-            read: false,
-        },
-        {
-            id: 2,
-            title: 'Laporan Sistem',
-            description: 'Backup basis data mingguan berhasil dijalankan otomatis.',
-            time: '1 jam lalu',
-            read: false,
-        },
-        {
-            id: 3,
-            title: 'Pembaruan Tampilan',
-            description: 'Konfigurasi halaman utama berhasil diperbarui.',
-            time: 'Kemarin',
-            read: true,
-        },
-        {
-            id: 4,
-            title: 'Peringatan Kapasitas Server',
-            description: 'Penggunaan penyimpanan database mencapai 80%.',
-            time: '2 hari lalu',
-            read: false,
-        },
-        {
-            id: 5,
-            title: 'Validasi Data Gizi',
-            description: 'Terdapat 15 data laporan posyandu baru yang perlu verifikasi.',
-            time: '3 hari lalu',
-            read: true,
-        },
-        {
-            id: 6,
-            title: 'Keamanan Akun',
-            description: 'Login terdeteksi dari perangkat baru di area Jakarta.',
-            time: '4 hari lalu',
-            read: true,
-        },
-    ]);
-    const notificationRef = useRef(null);
-
     const handleLogout = (e) => {
         e.preventDefault();
         router.post(route('logout'), {}, {
@@ -203,23 +155,10 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
         }
     };
 
-    const markAllAsRead = () => {
-        setNotifications(notifications.map(n => ({ ...n, read: true })));
-    };
-
-    const toggleNotificationRead = (id) => {
-        setNotifications(notifications.map(n => n.id === id ? { ...n, read: !n.read } : n));
-    };
-
-    const unreadCount = notifications.filter(n => !n.read).length;
-
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
                 setIsSearchFocused(false);
-            }
-            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
-                setIsNotificationOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -325,7 +264,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                             </svg>
                         </button>
                         <div className="flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-600">
-                            {/* Penanda halaman netral di sebelah tombol menu */}
                             <span className="text-xs font-bold px-3 py-1 bg-gray-100 dark:bg-[#122017] text-gray-700 dark:text-emerald-400 rounded-full border border-gray-200 dark:border-[#1a2e22]">
                                 {currentPageInfo.name}
                             </span>
@@ -398,72 +336,6 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                             )}
                         </button>
 
-                        {/* Notification Bell Interaktif */}
-                        <div className="relative" ref={notificationRef}>
-                            <button
-                                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                                className="relative p-2 rounded-full text-gray-400 dark:text-emerald-500 hover:text-gray-600 dark:hover:text-emerald-300 cursor-pointer focus:outline-none"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-                                {unreadCount > 0 && (
-                                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#09170F]"></span>
-                                )}
-                            </button>
-
-                            {isNotificationOpen && (
-                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/85 rounded-2xl shadow-2xl py-3 z-50">
-                                    <div className="flex items-center justify-between px-4 pb-2 border-b border-gray-100 dark:border-emerald-900/40">
-                                        <div className="flex items-center space-x-2">
-                                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200">Notifikasi</span>
-                                            {unreadCount > 0 && (
-                                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 font-bold">
-                                                    {unreadCount} baru
-                                                </span>
-                                            )}
-                                        </div>
-                                        {unreadCount > 0 && (
-                                            <button
-                                                onClick={markAllAsRead}
-                                                className="text-[10px] text-[#1F7A54] dark:text-emerald-400 font-bold hover:underline cursor-pointer"
-                                            >
-                                                Tandai semua dibaca
-                                            </button>
-                                        )}
-                                    </div>
-
-                                    <div className="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-emerald-950/40">
-                                        {notifications.length > 0 ? (
-                                            notifications.map((item) => (
-                                                <div
-                                                    key={item.id}
-                                                    onClick={() => toggleNotificationRead(item.id)}
-                                                    className={`p-4 cursor-pointer transition-colors flex items-start space-x-3 ${item.read
-                                                        ? 'bg-white dark:bg-[#0B1E13] opacity-75'
-                                                        : 'bg-emerald-50/50 dark:bg-emerald-950/20'
-                                                        } hover:bg-emerald-50 dark:hover:bg-emerald-900/30`}
-                                                >
-                                                    <span className={`w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ${item.read ? 'bg-gray-300 dark:bg-emerald-800' : 'bg-[#1F7A54] dark:bg-emerald-400'}`}></span>
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center justify-between">
-                                                            <h4 className="text-xs font-bold text-gray-900 dark:text-white">{item.title}</h4>
-                                                            <span className="text-[10px] text-gray-400 dark:text-emerald-500">{item.time}</span>
-                                                        </div>
-                                                        <p className="text-xs text-gray-600 dark:text-emerald-100/70 mt-0.5">{item.description}</p>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="p-6 text-center text-xs text-gray-400 dark:text-emerald-500">
-                                                Tidak ada notifikasi baru.
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
                         {/* User Profile Avatar */}
                         <Link
                             href={route('admin.profile.settings')}
@@ -516,37 +388,30 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             {/* --- BOTTOM NAVIGATION BAR (Khusus Mobile/Tablet di bagian bawah layar) --- */}
             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#07110B]/90 backdrop-blur-md border-t border-gray-200 dark:border-[#1a2e22] py-2 px-4 lg:hidden">
                 <div className="max-w-md mx-auto flex items-center justify-between">
-
-                    {/* Menu 1: Dashboard */}
                     <Link href={route('admin.dashboard')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'dashboard' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <LayoutDashboard className="w-5 h-5" />
                         <span className="text-[10px]">Dashboard</span>
                     </Link>
 
-                    {/* Menu 2: Pengguna */}
                     <Link href={route('admin.kelola-pengguna')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-pengguna' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <Users className="w-5 h-5" />
                         <span className="text-[10px]">Pengguna</span>
                     </Link>
 
-                    {/* Menu 3: Tampilan */}
                     <Link href={route('admin.kelola-tampilan')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-tampilan' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <FileText className="w-5 h-5" />
                         <span className="text-[10px]">Tampilan</span>
                     </Link>
 
-                    {/* Menu 4: Laporan */}
                     <Link href={route('admin.laporan-global')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'laporan-global' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <BarChart3 className="w-5 h-5" />
                         <span className="text-[10px]">Laporan</span>
                     </Link>
 
-                    {/* Menu 5: Pengaturan */}
                     <Link href={route('admin.pengaturan-sistem')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'pengaturan-sistem' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <Settings className="w-5 h-5" />
                         <span className="text-[10px]">Pengaturan</span>
                     </Link>
-
                 </div>
             </div>
         </div>
