@@ -484,17 +484,17 @@ export default function Edit({ auth, flash }) {
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Kata Sandi Saat Ini</label>
                             <div className="relative">
-                                <input 
-                                    type={showPassword ? "text" : "password"} 
+                                <input
+                                    type={showPassword ? "text" : "password"}
                                     value={passwordForm.data.current_password}
                                     onChange={(e) => passwordForm.setData('current_password', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none" 
-                                    placeholder="••••••••" 
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none"
+                                    placeholder="••••••••"
                                     required
                                 />
-                                <button 
-                                    type="button" 
-                                    onClick={() => setShowPassword(!showPassword)} 
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
                                     className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -506,12 +506,12 @@ export default function Edit({ auth, flash }) {
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Kata Sandi Baru</label>
-                            <input 
-                                type="password" 
+                            <input
+                                type="password"
                                 value={passwordForm.data.password}
                                 onChange={(e) => passwordForm.setData('password', e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none" 
-                                placeholder="••••••••" 
+                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none"
+                                placeholder="••••••••"
                                 required
                             />
                             {passwordForm.errors.password && (
@@ -520,12 +520,12 @@ export default function Edit({ auth, flash }) {
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Konfirmasi Kata Sandi Baru</label>
-                            <input 
-                                type="password" 
+                            <input
+                                type="password"
                                 value={passwordForm.data.password_confirmation}
                                 onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none" 
-                                placeholder="••••••••" 
+                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none"
+                                placeholder="••••••••"
                                 required
                             />
                             {passwordForm.errors.password_confirmation && (
@@ -545,9 +545,9 @@ export default function Edit({ auth, flash }) {
                     </button>
                 </div>
 
-                <button 
-                    type="submit" 
-                    disabled={passwordForm.processing} 
+                <button
+                    type="submit"
+                    disabled={passwordForm.processing}
                     className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold rounded-2xl transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                     {passwordForm.processing && (
