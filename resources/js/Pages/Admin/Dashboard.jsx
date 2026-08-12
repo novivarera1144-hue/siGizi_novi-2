@@ -107,35 +107,27 @@ export default function Dashboard({ stats, weeklyScanData, recentActivities }) {
                     </div>
                 </div>
 
-                {/* Bar Chart Section: Scan per Hari */}
+                {/* Bar Chart Section: Scan per Hari (Clean Tanpa Angka Sumbu Y) */}
                 <div className="bg-white dark:bg-[#122017] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-[#1a2e22]">
                     <h2 className="text-base font-extrabold text-gray-900 dark:text-white mb-6">Scan per Hari (7 Hari Terakhir)</h2>
 
                     <div className="relative pt-6 pb-2 px-2 sm:px-6">
-                        <div className="absolute inset-x-0 top-6 bottom-14 flex flex-col justify-between pointer-events-none px-6">
-                            {[260, 195, 130, 65, 0].map((val) => (
-                                <div key={val} className="w-full flex items-center relative h-0">
-                                    <span className="absolute -left-8 text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 w-6 text-right">
-                                        {val}
-                                    </span>
-                                    <div className="w-full border-b border-dashed border-gray-100 dark:border-[#1a2e22]"></div>
-                                </div>
-                            ))}
-                        </div>
-
                         <div className="relative z-10 grid grid-cols-7 gap-2 sm:gap-6 items-end h-56 pt-2">
                             {currentWeekly.map((data, idx) => (
                                 <div key={idx} className="flex flex-col items-center group relative w-full h-full justify-end cursor-pointer">
+                                    {/* Tooltip detail scan saat hover */}
                                     <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 z-30 bg-gray-900 dark:bg-[#07130C] p-2 rounded-xl border border-gray-700 dark:border-emerald-800/40 shadow-xl text-center min-w-[70px]">
                                         <p className="text-[10px] text-gray-400 font-bold uppercase">{data.day}</p>
                                         <p className="text-xs text-white font-bold mt-0.5">{data.scans} scan</p>
                                     </div>
 
+                                    {/* Batang Diagram */}
                                     <div
                                         style={{ height: `${data.heightPct}%` }}
                                         className="w-10 bg-[#15803d] dark:bg-[#34D399] rounded-t-lg group-hover:bg-[#1e7e34] dark:group-hover:bg-emerald-400 transition-all duration-300 shadow-sm"
                                     ></div>
 
+                                    {/* Label Hari */}
                                     <span className="text-xs font-bold text-gray-400 dark:text-emerald-100/60 mt-3 pt-1 block h-5">
                                         {data.day}
                                     </span>
