@@ -1,24 +1,39 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useEffect } from 'react';
 
-export default function Dashboard({ stats: initialStats, weeklyScanData: initialWeekly }) {
-    const stats = initialStats || {
-        totalUsers: 1248,
-        totalScans: 8742,
-        activeUsers: 342,
+export default function Dashboard({ stats, weeklyScanData, recentActivities }) {
+    // Fallback data kosong jika controller belum selesai memuat
+    const currentStats = stats || {
+        totalUsers: 0,
+        totalScans: 0,
+        activeUsers: 0,
         aiAccuracy: '94.2%'
     };
 
-    // Data for scan per day
-    const weeklyScanData = initialWeekly || [
-        { day: "Sen", scans: 110, heightPct: 42 },
-        { day: "Sel", scans: 170, heightPct: 65 },
-        { day: "Rab", scans: 135, heightPct: 52 },
-        { day: "Kam", scans: 180, heightPct: 69 },
-        { day: "Jum", scans: 220, heightPct: 85 },
-        { day: "Sab", scans: 150, heightPct: 58 },
-        { day: "Min", scans: 125, heightPct: 48 },
+    const currentWeekly = weeklyScanData || [
+        { day: "Sen", scans: 0, heightPct: 0 },
+        { day: "Sel", scans: 0, heightPct: 0 },
+        { day: "Rab", scans: 0, heightPct: 0 },
+        { day: "Kam", scans: 0, heightPct: 0 },
+        { day: "Jum", scans: 0, heightPct: 0 },
+        { day: "Sab", scans: 0, heightPct: 0 },
+        { day: "Min", scans: 0, heightPct: 0 },
     ];
+
+    const activities = recentActivities || [];
+
+    // AUTO REFRESH DENGAN INERTIA (REALTIME POLLING 10 DETIK)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({
+                only: ['stats', 'weeklyScanData', 'recentActivities'],
+                preserveScroll: true
+            });
+        }, 10000); // Refresh tiap 10 detik
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <AdminLayout
@@ -40,7 +55,9 @@ export default function Dashboard({ stats: initialStats, weeklyScanData: initial
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Pengguna</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{typeof stats.totalUsers === 'number' ? stats.totalUsers.toLocaleString() : stats.totalUsers}</h3>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                                {typeof currentStats.totalUsers === 'number' ? currentStats.totalUsers.toLocaleString() : currentStats.totalUsers}
+                            </h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Terdaftar di Supabase</p>
                         </div>
                     </div>
@@ -54,7 +71,9 @@ export default function Dashboard({ stats: initialStats, weeklyScanData: initial
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Total Scan</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{typeof stats.totalScans === 'number' ? stats.totalScans.toLocaleString() : stats.totalScans}</h3>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">
+                                {typeof currentStats.totalScans === 'number' ? currentStats.totalScans.toLocaleString() : currentStats.totalScans}
+                            </h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Tersimpan di Supabase</p>
                         </div>
                     </div>
@@ -68,7 +87,7 @@ export default function Dashboard({ stats: initialStats, weeklyScanData: initial
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Pengguna Aktif</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{stats.activeUsers}</h3>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{currentStats.activeUsers}</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Minggu ini</p>
                         </div>
                     </div>
@@ -82,7 +101,7 @@ export default function Dashboard({ stats: initialStats, weeklyScanData: initial
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-normal">Akurasi AI</p>
-                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{stats.aiAccuracy}</h3>
+                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white">{currentStats.aiAccuracy}</h3>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40">Rata-rata 7 hari</p>
                         </div>
                     </div>
@@ -105,7 +124,7 @@ export default function Dashboard({ stats: initialStats, weeklyScanData: initial
                         </div>
 
                         <div className="relative z-10 grid grid-cols-7 gap-2 sm:gap-6 items-end h-56 pt-2">
-                            {weeklyScanData.map((data, idx) => (
+                            {currentWeekly.map((data, idx) => (
                                 <div key={idx} className="flex flex-col items-center group relative w-full h-full justify-end cursor-pointer">
                                     <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 z-30 bg-gray-900 dark:bg-[#07130C] p-2 rounded-xl border border-gray-700 dark:border-emerald-800/40 shadow-xl text-center min-w-[70px]">
                                         <p className="text-[10px] text-gray-400 font-bold uppercase">{data.day}</p>
@@ -134,31 +153,28 @@ export default function Dashboard({ stats: initialStats, weeklyScanData: initial
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Aktivitas Terkini</h2>
                         </div>
 
-                        {/* Area list aktivitas yang bisa di-scroll */}
+                        {/* Area list aktivitas dinamis */}
                         <div className="max-h-[240px] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
-                            {[
-                                { name: "Budi Raharjo", action: "melakukan scan makanan Nasi Goreng", time: "5 menit yang lalu", avatar: "B" },
-                                { name: "Siti Aminah", action: "mendaftar sebagai pengguna baru", time: "1 jam yang lalu", avatar: "S" },
-                                { name: "Ahsan Kamil", action: "berkonsultasi dengan AI Assistant", time: "3 jam yang lalu", avatar: "A" },
-                                // Ditambahkan data dummy ekstra agar efek scroll langsung terlihat
-                                { name: "Dewi Lestari", action: "melakukan scan makanan Pecel Lele", time: "4 jam yang lalu", avatar: "D" },
-                                { name: "Rizky Fauzi", action: "memperbarui profil akun", time: "5 jam yang lalu", avatar: "R" },
-                            ].map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#16291e]/50 rounded-2xl transition-all duration-200">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-[#34D399] flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-100/50 dark:border-emerald-800/50">
-                                            {item.avatar}
+                            {activities.length > 0 ? (
+                                activities.map((item) => (
+                                    <div key={item.id} className="flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-[#16291e]/50 rounded-2xl transition-all duration-200">
+                                        <div className="flex items-center space-x-3">
+                                            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-[#34D399] flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-100/50 dark:border-emerald-800/50">
+                                                {item.initial}
+                                            </div>
+                                            <div>
+                                                <h4 className="text-sm font-bold text-gray-900 dark:text-white">{item.user_name}</h4>
+                                                <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-0.5">{item.action}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white">{item.name}</h4>
-                                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-0.5">{item.action}</p>
-                                        </div>
+                                        <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">
+                                            {item.time_ago}
+                                        </span>
                                     </div>
-                                    <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">
-                                        {item.time}
-                                    </span>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="text-xs text-gray-400 text-center py-6">Belum ada aktivitas scan terbaru.</p>
+                            )}
                         </div>
                     </div>
 
