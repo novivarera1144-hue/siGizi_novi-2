@@ -240,7 +240,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     const currentPageInfo = menuItems.find(item => item.key === activePage) || menuItems[0];
 
     return (
-        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300 lg:pb-0">
+        <div className="min-h-screen bg-[#F4F9F6] text-gray-800 dark:bg-[#07130C] dark:text-gray-100 flex transition-colors duration-300 pb-20 lg:pb-0">
             {/* Sidebar Navigation - Left Panel */}
             <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#09170F] dark:border-emerald-950/40 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between ${sidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'
                 }`}>
@@ -468,24 +468,16 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                         <Link
                             href={route('admin.profile.settings')}
                             prefetch={["hover", "mount"]}
-                            className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-sm shadow-sm transition duration-150 cursor-pointer overflow-hidden"
+                            className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-sm shadow-sm transition duration-150 cursor-pointer"
                             title="Pengaturan Profil"
                         >
-                            {user.avatar || user.photo ? (
-                                <img 
-                                    src={user.avatar || (user.photo.startsWith('http') ? user.photo : `/storage/${user.photo}`)} 
-                                    alt={user.name} 
-                                    className="w-full h-full object-cover rounded-full" 
-                                />
-                            ) : (
-                                user.name ? user.name.charAt(0).toUpperCase() : 'B'
-                            )}
+                            {user.name ? user.name.charAt(0).toUpperCase() : 'B'}
                         </Link>
                     </div>
                 </header>
 
                 {/* Main Content Body Wrapper */}
-                <main className="flex-1 p-4 sm:p-8 pb-28 lg:pb-8">
+                <main className="flex-1 p-4 sm:p-8">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                         <div>
                             <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
@@ -522,74 +514,37 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             </div>
 
             {/* --- BOTTOM NAVIGATION BAR (Khusus Mobile/Tablet di bagian bawah layar) --- */}
-            <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#09170F]/95 backdrop-blur-md border-t border-gray-100 dark:border-emerald-950/40 pb-5 pt-3 px-4 lg:hidden rounded-t-[2rem] shadow-[0_-10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 ${
-                sidebarOpen ? 'translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
-            }`}>
-                <div className="max-w-lg mx-auto flex items-center justify-around">
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#07110B]/90 backdrop-blur-md border-t border-gray-200 dark:border-[#1a2e22] py-2 px-4 lg:hidden">
+                <div className="max-w-md mx-auto flex items-center justify-between">
 
                     {/* Menu 1: Dashboard */}
-                    <Link
-                        href={route('admin.dashboard')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-3.5 rounded-2xl transition-all duration-200 ${
-                            activePage === 'dashboard'
-                                ? 'text-[#1F7A54] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 font-bold shadow-xs'
-                                : 'text-gray-400 dark:text-emerald-100/30 hover:text-[#1F7A54] dark:hover:text-emerald-400'
-                        }`}
-                    >
+                    <Link href={route('admin.dashboard')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'dashboard' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <LayoutDashboard className="w-5 h-5" />
-                        <span className="text-[10px] font-semibold">Dashboard</span>
+                        <span className="text-[10px]">Dashboard</span>
                     </Link>
 
                     {/* Menu 2: Pengguna */}
-                    <Link
-                        href={route('admin.kelola-pengguna')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-3.5 rounded-2xl transition-all duration-200 ${
-                            activePage === 'kelola-pengguna'
-                                ? 'text-[#1F7A54] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 font-bold shadow-xs'
-                                : 'text-gray-400 dark:text-emerald-100/30 hover:text-[#1F7A54] dark:hover:text-emerald-400'
-                        }`}
-                    >
+                    <Link href={route('admin.kelola-pengguna')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-pengguna' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <Users className="w-5 h-5" />
-                        <span className="text-[10px] font-semibold">Pengguna</span>
+                        <span className="text-[10px]">Pengguna</span>
                     </Link>
 
                     {/* Menu 3: Tampilan */}
-                    <Link
-                        href={route('admin.kelola-tampilan')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-3.5 rounded-2xl transition-all duration-200 ${
-                            activePage === 'kelola-tampilan'
-                                ? 'text-[#1F7A54] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 font-bold shadow-xs'
-                                : 'text-gray-400 dark:text-emerald-100/30 hover:text-[#1F7A54] dark:hover:text-emerald-400'
-                        }`}
-                    >
+                    <Link href={route('admin.kelola-tampilan')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-tampilan' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <FileText className="w-5 h-5" />
-                        <span className="text-[10px] font-semibold">Tampilan</span>
+                        <span className="text-[10px]">Tampilan</span>
                     </Link>
 
                     {/* Menu 4: Laporan */}
-                    <Link
-                        href={route('admin.laporan-global')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-3.5 rounded-2xl transition-all duration-200 ${
-                            activePage === 'laporan-global'
-                                ? 'text-[#1F7A54] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 font-bold shadow-xs'
-                                : 'text-gray-400 dark:text-emerald-100/30 hover:text-[#1F7A54] dark:hover:text-emerald-400'
-                        }`}
-                    >
+                    <Link href={route('admin.laporan-global')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'laporan-global' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <BarChart3 className="w-5 h-5" />
-                        <span className="text-[10px] font-semibold">Laporan</span>
+                        <span className="text-[10px]">Laporan</span>
                     </Link>
 
                     {/* Menu 5: Pengaturan */}
-                    <Link
-                        href={route('admin.pengaturan-sistem')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-3.5 rounded-2xl transition-all duration-200 ${
-                            activePage === 'pengaturan-sistem'
-                                ? 'text-[#1F7A54] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 font-bold shadow-xs'
-                                : 'text-gray-400 dark:text-emerald-100/30 hover:text-[#1F7A54] dark:hover:text-emerald-400'
-                        }`}
-                    >
+                    <Link href={route('admin.pengaturan-sistem')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'pengaturan-sistem' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <Settings className="w-5 h-5" />
-                        <span className="text-[10px] font-semibold">Pengaturan</span>
+                        <span className="text-[10px]">Pengaturan</span>
                     </Link>
 
                 </div>

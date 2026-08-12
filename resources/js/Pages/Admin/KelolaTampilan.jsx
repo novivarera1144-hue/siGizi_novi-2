@@ -113,8 +113,8 @@ export default function KelolaTampilan() {
                     <svg
                         key={i}
                         className={`w-4 h-4 ${i < rating
-                                ? 'text-amber-500 fill-current'
-                                : 'text-gray-300 dark:text-gray-600'
+                            ? 'text-amber-500 fill-current'
+                            : 'text-gray-300 dark:text-gray-600'
                             }`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -378,7 +378,7 @@ export default function KelolaTampilan() {
                     </div>
                 </div>
 
-                {/* 4. CARD "Moderasi Rating & Testimoni" */}
+                {/* 4. CARD "Moderasi Rating & Testimoni" (Dilengkapi overflow-x-auto untuk geser animasi/responsif) */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-6">
                     <div className="flex items-center space-x-2 text-gray-900 dark:text-white border-b border-gray-100 dark:border-emerald-950/40 pb-4">
                         <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
@@ -388,7 +388,7 @@ export default function KelolaTampilan() {
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full text-left border-collapse min-w-[650px]">
                             <thead>
                                 <tr className="border-b border-gray-100 dark:border-emerald-950/40 text-xs font-bold text-gray-400 dark:text-emerald-100/60 uppercase tracking-wider">
                                     <th className="py-4 px-4">Nama & Status</th>
@@ -402,27 +402,27 @@ export default function KelolaTampilan() {
                                     <tr
                                         key={review.id}
                                         className={`border-b border-gray-50 dark:border-emerald-950/20 text-sm transition duration-150 ${review.visible
-                                                ? 'hover:bg-gray-50/50 dark:hover:bg-emerald-950/10'
-                                                : 'bg-gray-50/30 dark:bg-emerald-950/30 opacity-70 hover:bg-gray-50/60 dark:hover:bg-emerald-950/20'
+                                            ? 'hover:bg-gray-50/50 dark:hover:bg-emerald-950/10'
+                                            : 'bg-gray-50/30 dark:bg-emerald-950/30 opacity-70 hover:bg-gray-50/60 dark:hover:bg-emerald-950/20'
                                             }`}
                                     >
-                                        <td className="py-4 px-4">
+                                        <td className="py-4 px-4 whitespace-nowrap">
                                             <div className="font-bold text-gray-800 dark:text-white">{review.name}</div>
                                             <div className="text-xs text-gray-400 dark:text-emerald-100/50 mt-0.5 font-medium">{review.status}</div>
                                         </td>
-                                        <td className="py-4 px-4">
+                                        <td className="py-4 px-4 whitespace-nowrap">
                                             {renderStars(review.rating)}
                                         </td>
                                         <td className="py-4 px-4 text-gray-600 dark:text-emerald-100/80 font-medium italic leading-relaxed">
                                             "{review.content}"
                                         </td>
-                                        <td className="py-4 px-4 text-right">
+                                        <td className="py-4 px-4 text-right whitespace-nowrap">
                                             <div className="inline-flex space-x-2">
                                                 <button
                                                     onClick={() => handleSetReviewVisibility(review.id, true)}
                                                     className={`rounded-full px-4 py-1.5 text-xs font-semibold cursor-pointer transition duration-150 shadow-sm ${review.visible
-                                                            ? 'bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white'
-                                                            : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-500 dark:text-emerald-300 hover:bg-[#1F7A54] hover:text-white'
+                                                        ? 'bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white'
+                                                        : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-500 dark:text-emerald-300 hover:bg-[#1F7A54] hover:text-white'
                                                         }`}
                                                 >
                                                     Tampilkan
@@ -430,8 +430,8 @@ export default function KelolaTampilan() {
                                                 <button
                                                     onClick={() => handleSetReviewVisibility(review.id, false)}
                                                     className={`rounded-full px-4 py-1.5 text-xs font-semibold cursor-pointer transition duration-150 ${!review.visible
-                                                            ? 'bg-gray-700 text-white hover:bg-gray-800'
-                                                            : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-600 dark:text-emerald-300 hover:bg-gray-200 dark:hover:bg-emerald-900/60'
+                                                        ? 'bg-gray-700 text-white hover:bg-gray-800'
+                                                        : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-600 dark:text-emerald-300 hover:bg-gray-200 dark:hover:bg-emerald-900/60'
                                                         }`}
                                                 >
                                                     Sembunyikan
