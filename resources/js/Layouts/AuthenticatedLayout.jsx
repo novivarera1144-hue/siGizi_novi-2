@@ -10,52 +10,6 @@ export default function AuthenticatedLayout({ children }) {
         setSidebarOpen(false);
     }, [url]);
 
-    const [notificationOpen, setNotificationOpen] = useState(false);
-    const notificationRef = useRef(null);
-
-    const [notifications, setNotifications] = useState([
-        {
-            id: 1,
-            icon: '🥗',
-            title: 'Waktunya Makan Siang!',
-            message: 'Jangan lupa catat dan scan menu makan siangmu hari ini agar target gizi tercapai.',
-            time: 'Baru saja',
-            isRead: false,
-        },
-        {
-            id: 2,
-            icon: '🎯',
-            title: 'Target Kalori Terpenuhi',
-            message: 'Hebat! Target nutrisi mingguanmu menunjukkan tren positif yang konsisten.',
-            time: 'Kemarin',
-            isRead: false,
-        },
-        {
-            id: 3,
-            icon: '💧',
-            title: 'Pengingat Minum Air',
-            message: 'Jangan biarkan tubuhmu dehidrasi. Yuk, minum segelas air sekarang.',
-            time: '2 hari lalu',
-            isRead: false,
-        },
-        {
-            id: 4,
-            icon: '🏃',
-            title: 'Aktivitas Fisik Tercapai',
-            message: 'Kamu telah berjalan 8.000 langkah hari ini. Pertahankan!',
-            time: '3 hari lalu',
-            isRead: false,
-        },
-        {
-            id: 5,
-            icon: '🍎',
-            title: 'Tips Kesehatan Harian',
-            message: 'Konsumsi buah kaya vitamin C di siang hari untuk menjaga imun tubuh.',
-            time: '4 hari lalu',
-            isRead: true,
-        }
-    ]);
-
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -95,17 +49,6 @@ export default function AuthenticatedLayout({ children }) {
             localStorage.setItem('theme', 'light');
         }
     }, [darkMode]);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
-                setNotificationOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     useEffect(() => {
         const handleClickOutsideSearch = (event) => {
@@ -152,22 +95,6 @@ export default function AuthenticatedLayout({ children }) {
     const toggleDarkMode = () => {
         setDarkMode((prev) => !prev);
     };
-
-    const handleNotificationClick = (id) => {
-        setNotifications((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, isRead: true } : item
-            )
-        );
-    };
-
-    const handleMarkAllAsRead = () => {
-        setNotifications((prev) =>
-            prev.map((item) => ({ ...item, isRead: true }))
-        );
-    };
-
-    const unreadCount = notifications.filter((item) => !item.isRead).length;
 
     const menuItems = [
         {
@@ -266,7 +193,7 @@ export default function AuthenticatedLayout({ children }) {
                         </button>
                     </div>
 
-                    <div className="px-4 py-6 space-y-1.5 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar">
+                    <div className="px-4 py-6 space-y-1.5 overflow-y-auto max-h-[calc(100vh-140px)] scroll-smooth custom-scrollbar">
                         <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-widest block mb-4">
                             Pengguna
                         </span>
@@ -308,7 +235,7 @@ export default function AuthenticatedLayout({ children }) {
             {sidebarOpen && (
                 <div
                     onClick={() => setSidebarOpen(false)}
-                    className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity"
                 ></div>
             )}
 
@@ -356,12 +283,12 @@ export default function AuthenticatedLayout({ children }) {
                             </div>
 
                             {isSearching && (
-                                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/40 rounded-2xl shadow-xl py-2 z-50">
+                                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/40 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                                     <div className="px-3 py-1.5 border-b border-gray-50 dark:border-emerald-900/30 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                                         Hasil Pencarian
                                     </div>
 
-                                    <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                                    <div className="max-h-60 overflow-y-auto scroll-smooth custom-scrollbar">
                                         {searchResults.length > 0 ? (
                                             searchResults.map((item, idx) => (
                                                 <Link
@@ -396,96 +323,6 @@ export default function AuthenticatedLayout({ children }) {
                             {darkMode ? '☀️' : '🌙'}
                         </button>
 
-                        {/* Notifications */}
-                        <div className="relative" ref={notificationRef}>
-                            <button
-                                onClick={() => setNotificationOpen(!notificationOpen)}
-                                className="relative p-2 rounded-full text-gray-600 dark:text-emerald-400 hover:text-gray-900 cursor-pointer bg-gray-50 dark:bg-emerald-950/40 border border-gray-200/70 dark:border-emerald-900/40 shadow-sm"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-
-                                {unreadCount > 0 && (
-                                    <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-[#08160E]"></span>
-                                )}
-                            </button>
-
-                            {notificationOpen && (
-                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/40 rounded-2xl shadow-xl pt-3 pb-2 z-50">
-
-                                    <div className="flex items-center justify-between px-4 pb-2.5 border-b border-gray-50 dark:border-emerald-900/30">
-                                        <div className="flex items-center space-x-2">
-                                            <span className="text-xs font-bold text-gray-800 dark:text-emerald-100">
-                                                Notifikasi
-                                            </span>
-
-                                            {unreadCount > 0 && (
-                                                <span className="text-[10px] bg-gray-100 dark:bg-emerald-900/60 text-gray-600 dark:text-emerald-300 px-2 py-0.5 rounded-full font-semibold">
-                                                    {unreadCount} Baru
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        <button
-                                            onClick={handleMarkAllAsRead}
-                                            className="text-[11px] text-gray-500 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
-                                        >
-                                            Tandai semua dibaca
-                                        </button>
-                                    </div>
-
-                                    <div className="divide-y divide-gray-50 dark:divide-emerald-900/20 max-h-[280px] overflow-y-auto custom-scrollbar">
-                                        {notifications.length > 0 ? (
-                                            notifications.map((item) => (
-                                                <div
-                                                    key={item.id}
-                                                    onClick={() => handleNotificationClick(item.id)}
-                                                    className={`px-4 py-3 transition-colors cursor-pointer flex gap-3 items-start relative ${item.isRead
-                                                            ? 'opacity-60 bg-transparent hover:bg-gray-50/50'
-                                                            : 'hover:bg-gray-50 dark:hover:bg-emerald-900/20'
-                                                        }`}
-                                                >
-                                                    {!item.isRead && (
-                                                        <span className="absolute top-4 right-4 w-2 h-2 bg-gray-400 dark:bg-emerald-400 rounded-full"></span>
-                                                    )}
-
-                                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-emerald-900/60 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
-                                                        {item.icon}
-                                                    </div>
-
-                                                    <div>
-                                                        <p className="text-xs font-semibold text-gray-800 dark:text-emerald-100">
-                                                            {item.title}
-                                                        </p>
-                                                        <p className="text-[11px] text-gray-500 dark:text-emerald-300/70 mt-0.5 leading-relaxed">
-                                                            {item.message}
-                                                        </p>
-                                                        <span className="text-[10px] text-gray-400 dark:text-emerald-400 mt-1 block">
-                                                            {item.time}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="px-4 py-8 text-center text-xs text-gray-400 dark:text-emerald-400/50">
-                                                Tidak ada notifikasi baru
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="px-4 pt-2 mt-1 border-t border-gray-50 dark:border-emerald-900/35">
-                                        <button
-                                            onClick={() => setNotificationOpen(false)}
-                                            className="w-full py-2 bg-gray-100 hover:bg-gray-200 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/40 text-gray-700 dark:text-emerald-300 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                                        >
-                                            Tutup
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
                         {/* Profile Initial / Photo */}
                         {user && (
                             <Link
@@ -493,10 +330,10 @@ export default function AuthenticatedLayout({ children }) {
                                 className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 dark:bg-[#1F7A54] dark:text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer border border-gray-300/60 dark:border-transparent overflow-hidden"
                             >
                                 {user.avatar || user.photo ? (
-                                    <img 
-                                        src={user.avatar || (user.photo.startsWith('http') ? user.photo : `/storage/${user.photo}`)} 
-                                        alt={user.name} 
-                                        className="w-full h-full object-cover rounded-full" 
+                                    <img
+                                        src={user.avatar || (user.photo.startsWith('http') ? user.photo : `/storage/${user.photo}`)}
+                                        alt={user.name}
+                                        className="w-full h-full object-cover rounded-full"
                                     />
                                 ) : (
                                     user.name ? user.name.charAt(0).toUpperCase() : 'U'

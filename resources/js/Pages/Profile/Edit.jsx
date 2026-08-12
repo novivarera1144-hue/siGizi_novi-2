@@ -7,7 +7,7 @@ export default function Edit({ auth, flash }) {
     const user = auth.user;
 
     // --- State Management ---
-    // View state: 'main', 'notifikasi', 'keamanan'
+    // View state: 'main', 'keamanan'
     const [activeView, setActiveView] = useState('main');
 
     // Modal states
@@ -181,13 +181,6 @@ export default function Edit({ auth, flash }) {
     };
 
     const fmt = (n) => n.toLocaleString('id-ID');
-
-    // Toggle states for Notifikasi
-    const [notifSettings, setNotifSettings] = useState({
-        harian: true,
-        mingguan: true,
-        artikel: false
-    });
 
     // Security states
     const [showPassword, setShowPassword] = useState(false);
@@ -390,11 +383,6 @@ export default function Edit({ auth, flash }) {
                     <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Goal Setting</p></div>
                     <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
                 </button>
-                <button onClick={() => setActiveView('notifikasi')} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><Bell size={18} /></div>
-                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Notifikasi</p></div>
-                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
-                </button>
                 <button onClick={() => setActiveView('keamanan')} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
                     <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><ShieldCheck size={18} /></div>
                     <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Keamanan Akun</p></div>
@@ -411,52 +399,6 @@ export default function Edit({ auth, flash }) {
                     <ChevronRight size={20} className="text-red-300 dark:text-red-800" />
                 </button>
             </div>
-        </div>
-    );
-
-    const renderNotifikasiView = () => (
-        <div className="max-w-2xl mx-auto animate-in slide-in-from-right-4 duration-300">
-            <button onClick={() => setActiveView('main')} className="flex items-center gap-2 text-gray-500 dark:text-emerald-500/80 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium mb-6 transition">
-                <ChevronLeft size={20} /> Notifikasi
-            </button>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Pengaturan Notifikasi</h2>
-
-            <div className="space-y-4 mb-8">
-                {/* Item 1 */}
-                <div className="bg-white dark:bg-[#09170F] p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 flex items-center justify-between">
-                    <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">Pengingat Makan Harian</h4>
-                        <p className="text-sm text-gray-500 dark:text-emerald-500/80 mt-1">Kirim notifikasi untuk mencatat sarapan, makan siang, dan makan malam.</p>
-                    </div>
-                    <button onClick={() => setNotifSettings({ ...notifSettings, harian: !notifSettings.harian })} className={`w-12 h-6 rounded-full transition-colors relative shrink-0 ${notifSettings.harian ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-emerald-950'}`}>
-                        <div className={`w-4 h-4 rounded-full bg-white dark:bg-slate-900 absolute top-1 shadow-sm transition-transform ${notifSettings.harian ? 'translate-x-7' : 'translate-x-1'}`}></div>
-                    </button>
-                </div>
-                {/* Item 2 */}
-                <div className="bg-white dark:bg-[#09170F] p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 flex items-center justify-between">
-                    <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">Laporan Mingguan</h4>
-                        <p className="text-sm text-gray-500 dark:text-emerald-500/80 mt-1">Terima ringkasan analisis nutrisi mingguan Anda.</p>
-                    </div>
-                    <button onClick={() => setNotifSettings({ ...notifSettings, mingguan: !notifSettings.mingguan })} className={`w-12 h-6 rounded-full transition-colors relative shrink-0 ${notifSettings.mingguan ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-emerald-950'}`}>
-                        <div className={`w-4 h-4 rounded-full bg-white dark:bg-slate-900 absolute top-1 shadow-sm transition-transform ${notifSettings.mingguan ? 'translate-x-7' : 'translate-x-1'}`}></div>
-                    </button>
-                </div>
-                {/* Item 3 */}
-                <div className="bg-white dark:bg-[#09170F] p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 flex items-center justify-between">
-                    <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">Tips & Artikel Gizi</h4>
-                        <p className="text-sm text-gray-500 dark:text-emerald-500/80 mt-1">Rekomendasi artikel kesehatan harian dari AI.</p>
-                    </div>
-                    <button onClick={() => setNotifSettings({ ...notifSettings, artikel: !notifSettings.artikel })} className={`w-12 h-6 rounded-full transition-colors relative shrink-0 ${notifSettings.artikel ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-emerald-950'}`}>
-                        <div className={`w-4 h-4 rounded-full bg-white dark:bg-slate-900 absolute top-1 shadow-sm transition-transform ${notifSettings.artikel ? 'translate-x-7' : 'translate-x-1'}`}></div>
-                    </button>
-                </div>
-            </div>
-
-            <button onClick={() => setActiveView('main')} className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold rounded-2xl transition shadow-sm">
-                Simpan Pengaturan
-            </button>
         </div>
     );
 
@@ -568,7 +510,6 @@ export default function Edit({ auth, flash }) {
 
             <div className="py-8 px-4 md:px-8 min-h-[calc(100vh-4rem)] bg-white dark:bg-transparent transition-colors">
                 {activeView === 'main' && renderMainView()}
-                {activeView === 'notifikasi' && renderNotifikasiView()}
                 {activeView === 'keamanan' && renderKeamananView()}
             </div>
 
