@@ -486,13 +486,21 @@ export default function AuthenticatedLayout({ children }) {
                             )}
                         </div>
 
-                        {/* Profile Initial */}
+                        {/* Profile Initial / Photo */}
                         {user && (
                             <Link
                                 href={route('profile.edit')}
-                                className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 dark:bg-[#1F7A54] dark:text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer border border-gray-300/60 dark:border-transparent"
+                                className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 dark:bg-[#1F7A54] dark:text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer border border-gray-300/60 dark:border-transparent overflow-hidden"
                             >
-                                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                                {user.avatar || user.photo ? (
+                                    <img 
+                                        src={user.avatar || (user.photo.startsWith('http') ? user.photo : `/storage/${user.photo}`)} 
+                                        alt={user.name} 
+                                        className="w-full h-full object-cover rounded-full" 
+                                    />
+                                ) : (
+                                    user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                                )}
                             </Link>
                         )}
                     </div>

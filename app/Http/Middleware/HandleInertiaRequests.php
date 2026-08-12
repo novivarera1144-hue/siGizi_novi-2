@@ -32,7 +32,10 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? array_merge($request->user()->toArray(), [
+                    'photo' => $request->user()->photo,
+                    'avatar' => $request->user()->photo ? (filter_var($request->user()->photo, FILTER_VALIDATE_URL) ? $request->user()->photo : '/storage/' . $request->user()->photo) : null,
+                ]) : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

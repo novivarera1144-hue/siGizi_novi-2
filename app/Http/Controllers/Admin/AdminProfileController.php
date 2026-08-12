@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class AdminProfileController extends Controller
@@ -19,12 +20,33 @@ class AdminProfileController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        $user->fill($validated);
+        $user->fill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
+        }
+
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old photo if it exists
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            // Store new photo
+            $path = $request->file('avatar')->store('profile-photos', 'public');
+            $user->photo = $path;
+        } elseif ($request->boolean('remove_avatar')) {
+            // Delete old photo if it exists
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $user->photo = null;
         }
 
         $user->save();
