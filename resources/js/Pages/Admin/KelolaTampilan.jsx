@@ -22,13 +22,13 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
         'Memantau asupan nutrisi harian dengan mudah'
     ]);
 
-    // 3. Testimoni/Rating Moderasi — data dari database
+    // 3. Testimoni/Rating Moderasi — data dari database (DISESUAIKAN)
     const reviews = initialTestimonials.map((t) => ({
         id: t.id,
         name: t.user?.name || 'Anonim',
-        status: t.occupation,
+        status: t.pekerjaan, // Diubah dari t.occupation agar mengambil kolom 'pekerjaan'
         rating: t.rating,
-        content: t.comment,
+        content: t.ulasan,   // Diubah dari t.comment agar mengambil kolom 'ulasan'
         visible: t.is_approved,
         created_at: t.created_at,
     }));
@@ -154,14 +154,9 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
         >
             <Head title="Kelola Tampilan - Admin" />
 
-            {/* Wrapper utama — tanpa padding horizontal tambahan
-                karena AdminLayout <main> sudah p-4 sm:p-6 lg:p-8.
-                overflow-x-hidden di sini mencegah bocoran horizontal. */}
             <div className="w-full overflow-x-hidden space-y-4 pb-24">
 
-                {/* ═══════════════════════════════════════════════
-                    1. STAT CARDS — grid 2 kolom rapat di mobile
-                   ═══════════════════════════════════════════════ */}
+                {/* 1. STAT CARDS */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full">
                     {statCards.map((card, idx) => (
                         <div
@@ -194,9 +189,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     ))}
                 </div>
 
-                {/* ═══════════════════════════════════════════════
-                    2. MANAJEMEN BERANDA — Hero Section
-                   ═══════════════════════════════════════════════ */}
+                {/* 2. MANAJEMEN BERANDA — Hero Section */}
                 <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
                     <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                         <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -205,7 +198,6 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Manajemen Beranda — Hero Section</h2>
                     </div>
 
-                    {/* Headline Input */}
                     <div>
                         <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-1.5">
                             Headline Utama Homepage
@@ -234,7 +226,6 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         </div>
                     </div>
 
-                    {/* Hero Image */}
                     <div>
                         <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-1.5">
                             Gambar Utama Beranda
@@ -275,9 +266,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     </div>
                 </div>
 
-                {/* ═══════════════════════════════════════════════
-                    3. PENGATURAN HALAMAN TENTANG KAMI
-                   ═══════════════════════════════════════════════ */}
+                {/* 3. PENGATURAN HALAMAN TENTANG KAMI */}
                 <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
                     <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                         <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -286,7 +275,6 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Pengaturan Halaman Tentang Kami</h2>
                     </div>
 
-                    {/* Deskripsi Singkat */}
                     <div>
                         <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-1.5">
                             Deskripsi Singkat
@@ -299,7 +287,6 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         />
                     </div>
 
-                    {/* Latar Belakang & Tujuan — 1 kolom di mobile, 2 kolom di md+ */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-1.5">
@@ -325,7 +312,6 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         </div>
                     </div>
 
-                    {/* Manfaat Platform */}
                     <div>
                         <div className="flex justify-between items-center mb-1.5">
                             <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase">
@@ -372,9 +358,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                     </button>
                 </div>
 
-                {/* ═══════════════════════════════════════════════
-                    4. MODERASI RATING & TESTIMONI
-                   ═══════════════════════════════════════════════ */}
+                {/* 4. MODERASI RATING & TESTIMONI */}
                 <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
                     <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                         <svg className="w-5 h-5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -383,7 +367,6 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Moderasi Rating & Testimoni</h2>
                     </div>
 
-                    {/* Tabel dengan overflow-x-auto untuk scroll horizontal di mobile */}
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                             <thead>
@@ -399,15 +382,13 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                     reviews.map((review) => (
                                         <tr
                                             key={review.id}
-                                            className={`hover:bg-gray-50/50 dark:hover:bg-[#182b1f]/20 transition-colors text-xs sm:text-sm ${
-                                                !review.visible ? 'opacity-60' : ''
-                                            }`}
+                                            className={`hover:bg-gray-50/50 dark:hover:bg-[#182b1f]/20 transition-colors text-xs sm:text-sm ${!review.visible ? 'opacity-60' : ''
+                                                }`}
                                         >
                                             <td className="py-3.5 px-2 sm:px-4">
                                                 <div className="flex flex-col">
                                                     <span className="font-semibold text-gray-900 dark:text-white">{review.name}</span>
                                                     <span className="text-[10px] text-slate-400 dark:text-emerald-100/40 font-normal mt-0.5">{review.status}</span>
-                                                    {/* Ulasan terlihat di mobile di bawah nama */}
                                                     <span className="text-[10px] text-gray-500 dark:text-emerald-100/60 font-medium italic mt-1 line-clamp-2 md:hidden">
                                                         "{review.content}"
                                                     </span>
