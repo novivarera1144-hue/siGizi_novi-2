@@ -127,13 +127,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
         }
     ];
 
-    // Testimonials (Apa kata mereka) — dari database
+    // Testimonials (Apa kata mereka) — dari database (menggunakan t.ulasan)
     const testimonials = dbTestimonials.map((t) => ({
         name: t.user?.name || 'Anonim',
-        role: t.occupation,
+        role: t.pekerjaan,
         initial: (t.user?.name || 'A').charAt(0).toUpperCase(),
         stars: t.rating,
-        quote: `\u201C${t.comment}\u201D`,
+        quote: `\u201C${t.ulasan}\u201D`,
         photo: t.user?.photo ? `/storage/${t.user.photo}` : null,
         color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
     }));
@@ -265,30 +265,23 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
 
                 {/* Hero Section */}
                 <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16 transition-colors duration-300">
-                    {/* Background Food Image with Balanced Brightness & Soft Left Dark Gradient */}
                     <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
                         <img
                             src="/images/sayuran1.webp"
                             alt="Background Makanan Sehat"
                             className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05]"
                         />
-                        {/* Gradient Gelap di sebelah kiri agar teks sangat kontras */}
                         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent"></div>
                     </div>
 
-                    {/* Container Utama Konten Hero */}
                     <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-
-                            {/* Left Content: Headline & CTA */}
                             <div className="lg:col-span-7 space-y-5 pl-2 sm:pl-4">
-                                {/* Badge Teknologi AI */}
                                 <div className="inline-flex items-center space-x-2 bg-white/15 border border-white/25 px-3.5 py-1.5 rounded-full backdrop-blur-md">
                                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                                     <span className="text-xs font-medium text-white">Didukung Teknologi AI</span>
                                 </div>
 
-                                {/* Judul Utama (Disusun 3 baris ke bawah) */}
                                 <h1
                                     className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] max-w-xl"
                                     style={{ WebkitTextStroke: '1.5px white' }}
@@ -298,12 +291,10 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                     Dalam Detik
                                 </h1>
 
-                                {/* Deskripsi */}
                                 <p className="text-sm sm:text-base text-gray-200 max-w-md font-normal leading-relaxed">
                                     Foto makananmu &rarr; AI analisis kandungan nutrisi &rarr; dapatkan insight kesehatan dan rekomendasi pola makan sehatmu.
                                 </p>
 
-                                {/* Tombol Aksi (CTA) */}
                                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 pt-1">
                                     <Link
                                         href="/scan"
@@ -324,73 +315,40 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                     </a>
                                 </div>
 
-                                {/* Statistik Singkat di Bawah Teks dengan Jarak Aman (Tidak Mepet) */}
                                 <div className="flex items-center space-x-12 pt-8 max-w-md">
                                     <div>
-                                        <div
-                                            className="text-2xl sm:text-3xl font-black text-white tracking-tight"
-                                            style={{ WebkitTextStroke: '1px white' }}
-                                        >
-                                            10K+
-                                        </div>
+                                        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight" style={{ WebkitTextStroke: '1px white' }}>10K+</div>
                                         <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">Pengguna</div>
                                     </div>
                                     <div>
-                                        <div
-                                            className="text-2xl sm:text-3xl font-black text-white tracking-tight"
-                                            style={{ WebkitTextStroke: '1px white' }}
-                                        >
-                                            98%
-                                        </div>
+                                        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight" style={{ WebkitTextStroke: '1px white' }}>98%</div>
                                         <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">Akurasi AI</div>
                                     </div>
                                     <div>
-                                        <div
-                                            className="text-2xl sm:text-3xl font-black text-white tracking-tight"
-                                            style={{ WebkitTextStroke: '1px white' }}
-                                        >
-                                            500+
-                                        </div>
+                                        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight" style={{ WebkitTextStroke: '1px white' }}>500+</div>
                                         <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">Menu Dikenal</div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right Floating Mockup Card */}
                             <div className="lg:col-span-5 flex justify-center relative scale-[0.92] transform origin-top pt-12 pb-6">
                                 <div className="w-full max-w-[330px] bg-white dark:bg-[#09170F] rounded-3xl overflow-visible shadow-2xl border border-gray-100 dark:border-emerald-950/40 relative mt-4">
-
-                                    {/* Badge Floating 450 kkal (Ditarik lebih jauh ke atas dan kiri menggunakan -top-12 dan -left-14) */}
                                     <div className="absolute -top-12 -left-14 z-30 bg-white dark:bg-zinc-900 text-orange-500 font-extrabold text-xs px-4 py-2 rounded-full shadow-xl flex items-center space-x-1.5 border border-orange-100 dark:border-zinc-800 whitespace-nowrap">
                                         <span>🔥</span>
                                         <span>450 kkal</span>
                                     </div>
 
-                                    {/* Mock Food Image Container dengan Teks di Dalamnya */}
                                     <div className="relative w-full h-52 overflow-hidden rounded-t-3xl bg-gray-100">
-                                        <img
-                                            src="/images/nasgor.webp"
-                                            alt="Nasi Goreng Ayam"
-                                            className="w-full h-full object-cover object-center"
-                                        />
-                                        {/* Gradasi Hitam Transparan */}
+                                        <img src="/images/nasgor.webp" alt="Nasi Goreng Ayam" className="w-full h-full object-cover object-center" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-                                        {/* Score Badge di Pojok Kanan Atas */}
-                                        <div className="absolute top-3 right-3 bg-[#1F7A54] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
-                                            Skor 72
-                                        </div>
-
-                                        {/* Teks Nama Makanan & Porsi di Dalam Foto */}
+                                        <div className="absolute top-3 right-3 bg-[#1F7A54] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">Skor 72</div>
                                         <div className="absolute bottom-4 left-4 right-4 text-white">
                                             <h3 className="text-lg font-bold">Nasi Goreng Ayam</h3>
                                             <p className="text-xs text-gray-200">1 porsi ≈ 250g</p>
                                         </div>
                                     </div>
 
-                                    {/* Card Content Details Bagian Bawah */}
                                     <div className="p-4 space-y-3">
-                                        {/* Grid Nutrisi */}
                                         <div className="grid grid-cols-4 gap-2">
                                             <div className="bg-orange-50 dark:bg-orange-950/30 p-2 rounded-xl text-center">
                                                 <div className="text-xs text-orange-600 font-extrabold">450</div>
@@ -411,7 +369,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                             </div>
                                         </div>
 
-                                        {/* Insight Box */}
                                         <div className="bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-2.5 rounded-xl">
                                             <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium leading-tight flex items-center">
                                                 <span className="text-emerald-600 font-bold mr-1.5">✓</span>
@@ -421,7 +378,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                     </div>
                                 </div>
 
-                                {/* Floating "Analisis Selesai" Badge */}
                                 <div className="absolute -bottom-6 -right-6 sm:-right-8 z-30 bg-white dark:bg-zinc-900 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 border border-gray-100 dark:border-zinc-800">
                                     <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
                                         <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -438,111 +394,72 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 {/* 3 Langkah Mudah (Cara Kerja) */}
                 <section id="cara-kerja" className="py-20 bg-gray-50 dark:bg-zinc-900/50 transition-colors duration-300">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                        {/* Section Header */}
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
                             <span className="text-xs font-extrabold uppercase tracking-widest text-[#1F7A54] dark:text-emerald-400">CARA KERJA</span>
                             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Hanya 3 Langkah Mudah</h2>
                         </div>
 
-                        {/* Steps Grid */}
                         <div className="relative mt-8">
-                            {/* Connecting Dashed Line on Larger Screens */}
                             <div className="hidden md:block absolute top-[52px] left-[16%] right-[16%] h-0.5 border-t-2 border-dashed border-gray-200 dark:border-zinc-800 z-0"></div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 relative z-10">
-
-                                {/* Step 1 */}
                                 <div className="flex flex-col items-center text-center space-y-4 group">
                                     <div className="relative">
-                                        {/* Step Counter Badge */}
-                                        <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#1F7A54] text-white font-bold text-sm flex items-center justify-center shadow-md">
-                                            1
-                                        </div>
-                                        {/* Step Icon */}
-                                        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all duration-300 group-hover:scale-105 group-hover:shadow-[#1F7A54]/10 group-hover:border-[#1F7A54]/30">
+                                        <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#1F7A54] text-white font-bold text-sm flex items-center justify-center shadow-md">1</div>
+                                        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all duration-300 group-hover:scale-105">
                                             <svg className="w-10 h-10 text-[#1F7A54]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                             </svg>
                                         </div>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white pt-2">Upload Foto</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs leading-relaxed">
-                                        Foto makanan yang ingin kamu ketahui nutrisinya.
-                                    </p>
+                                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs leading-relaxed">Foto makanan yang ingin kamu ketahui nutrisinya.</p>
                                 </div>
 
-                                {/* Step 2 */}
                                 <div className="flex flex-col items-center text-center space-y-4 group">
                                     <div className="relative">
-                                        <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#1F7A54] text-white font-bold text-sm flex items-center justify-center shadow-md">
-                                            2
-                                        </div>
-                                        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all duration-300 group-hover:scale-105 group-hover:shadow-[#1F7A54]/10 group-hover:border-[#1F7A54]/30">
+                                        <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#1F7A54] text-white font-bold text-sm flex items-center justify-center shadow-md">2</div>
+                                        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all duration-300 group-hover:scale-105">
                                             <svg className="w-10 h-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
                                         </div>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white pt-2">AI Analisis</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs leading-relaxed">
-                                        Sistem AI mengenali jenis makanan dan menghitung nutrisinya dalam detik.
-                                    </p>
+                                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs leading-relaxed">Sistem AI mengenali jenis makanan dan menghitung nutrisinya dalam detik.</p>
                                 </div>
 
-                                {/* Step 3 */}
                                 <div className="flex flex-col items-center text-center space-y-4 group">
                                     <div className="relative">
-                                        <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#1F7A54] text-white font-bold text-sm flex items-center justify-center shadow-md">
-                                            3
-                                        </div>
-                                        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all duration-300 group-hover:scale-105 group-hover:shadow-[#1F7A54]/10 group-hover:border-[#1F7A54]/30">
+                                        <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#1F7A54] text-white font-bold text-sm flex items-center justify-center shadow-md">3</div>
+                                        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all duration-300 group-hover:scale-105">
                                             <svg className="w-10 h-10 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white pt-2">Dapatkan Insight</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs leading-relaxed">
-                                        Lihat kalori, nutrisi, skor kesehatan, dan rekomendasi pola makan.
-                                    </p>
+                                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs leading-relaxed">Lihat kalori, nutrisi, skor kesehatan, dan rekomendasi pola makan.</p>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
                 </section>
 
                 {/* Kenali Jenis Makanan (Food Gallery) */}
                 <section id="jenis-makanan" className="py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                        {/* Section Header */}
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
                             <span className="text-xs font-extrabold uppercase tracking-widest text-[#1F7A54] dark:text-emerald-400">MAKANAN TERDUKUNG</span>
                             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Kenali ratusan jenis makanan</h2>
-                            <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-sm leading-relaxed">
-                                Dari masakan Indonesia hingga internasional, siGizi mengenali kandungan nutrisi ribuan jenis makanan.
-                            </p>
+                            <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-sm leading-relaxed">Dari masakan Indonesia hingga internasional, siGizi mengenali kandungan nutrisi ribuan jenis makanan.</p>
                         </div>
 
-                        {/* Gallery Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {foods.map((food, index) => (
-                                <div
-                                    key={index}
-                                    className="group relative h-80 rounded-3xl overflow-hidden shadow-lg border border-gray-100 dark:border-zinc-800 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-                                >
-                                    <img
-                                        src={food.image}
-                                        alt={food.name}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                    {/* Gradient Dark Overlay */}
+                                <div key={index} className="group relative h-80 rounded-3xl overflow-hidden shadow-lg border border-gray-100 dark:border-zinc-800 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
+                                    <img src={food.image} alt={food.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent"></div>
-
-                                    {/* Text Content Overlay */}
                                     <div className="absolute bottom-6 left-6 right-6 text-white">
                                         <h3 className="text-xl font-bold tracking-tight">{food.name}</h3>
                                         <p className="text-orange-400 text-sm font-semibold mt-1 flex items-center">
@@ -555,27 +472,20 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                 </div>
                             ))}
                         </div>
-
                     </div>
                 </section>
 
                 {/* Keunggulan/Fitur */}
                 <section className="py-20 bg-gray-50 dark:bg-zinc-900/50 transition-colors duration-300">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                        {/* Section Header */}
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
                             <span className="text-xs font-extrabold uppercase tracking-widest text-[#1F7A54] dark:text-emerald-400">FITUR UTAMA</span>
                             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Solusi Pantau Gizi Terpadu</h2>
                         </div>
 
-                        {/* Features Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {features.map((feature, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group"
-                                >
+                                <div key={index} className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group">
                                     <div className={`w-12 h-12 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110`}>
                                         {feature.icon}
                                     </div>
@@ -584,90 +494,63 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                 </div>
                             ))}
                         </div>
-
                     </div>
                 </section>
 
                 {/* Testimoni */}
                 <section className="py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                        {/* Section Header */}
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
                             <span className="text-xs font-extrabold uppercase tracking-widest text-[#1F7A54] dark:text-emerald-400">TESTIMONI</span>
                             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Apa kata mereka?</h2>
                         </div>
 
-                        {/* Testimonial Cards Grid */}
                         {testimonials.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {testimonials.map((testi, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-md flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
-                                >
-                                    <div className="space-y-4">
-                                        {/* Stars Row */}
-                                        <div className="flex items-center space-x-1">
-                                            {[...Array(5)].map((_, i) => (
-                                                <svg
-                                                    key={i}
-                                                    className={`w-5 h-5 ${i < testi.stars ? 'text-amber-400' : 'text-gray-200 dark:text-zinc-800'}`}
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
-                                                >
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.88a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.88a1 1 0 00-1.175 0l-3.97 2.88c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.88c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                                </svg>
-                                            ))}
-                                        </div>
-
-                                        {/* Quote Text */}
-                                        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed italic">
-                                            {testi.quote}
-                                        </p>
-                                    </div>
-
-                                    {/* Author Profile */}
-                                    <div className="flex items-center space-x-3 pt-6 mt-6 border-t border-gray-100 dark:border-zinc-800">
-                                        {testi.photo ? (
-                                            <img src={testi.photo} alt={testi.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
-                                        ) : (
-                                            <div className={`w-10 h-10 rounded-full ${testi.color} flex items-center justify-center font-bold text-sm shadow-sm`}>
-                                                {testi.initial}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {testimonials.map((testi, index) => (
+                                    <div key={index} className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-md flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center space-x-1">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <svg key={i} className={`w-5 h-5 ${i < testi.stars ? 'text-amber-400' : 'text-gray-200 dark:text-zinc-800'}`} fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.88a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.88a1 1 0 00-1.175 0l-3.97 2.88c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.88c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                    </svg>
+                                                ))}
                                             </div>
-                                        )}
-                                        <div>
-                                            <h4 className="font-bold text-gray-900 dark:text-white text-sm">{testi.name}</h4>
-                                            <p className="text-gray-500 dark:text-gray-400 text-xs">{testi.role}</p>
+
+                                            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed italic">{testi.quote}</p>
+                                        </div>
+
+                                        <div className="flex items-center space-x-3 pt-6 mt-6 border-t border-gray-100 dark:border-zinc-800">
+                                            {testi.photo ? (
+                                                <img src={testi.photo} alt={testi.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
+                                            ) : (
+                                                <div className={`w-10 h-10 rounded-full ${testi.color} flex items-center justify-center font-bold text-sm shadow-sm`}>{testi.initial}</div>
+                                            )}
+                                            <div>
+                                                <h4 className="font-bold text-gray-900 dark:text-white text-sm">{testi.name}</h4>
+                                                <p className="text-gray-500 dark:text-gray-400 text-xs">{testi.role}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
                         ) : (
                             <div className="text-center py-12">
                                 <p className="text-gray-400 dark:text-gray-500 text-sm font-medium">Belum ada testimoni yang ditampilkan.</p>
                             </div>
                         )}
-
                     </div>
                 </section>
 
                 {/* Footer Call-To-Action (CTA) Banner */}
                 <section className="py-16 md:py-20 relative overflow-hidden text-white text-center">
-                    {/* Background Image Asli Tanpa Efek Pudar */}
                     <div className="absolute inset-0 z-0">
-                        <img
-                            src="/images/background2.webp"
-                            alt="Background Makanan Sehat"
-                            className="w-full h-full object-cover"
-                        />
-                        {/* Overlay Gelap Tipis agar teks putih tetap terbaca jelas di atas foto */}
+                        <img src="/images/background2.webp" alt="Background Makanan Sehat" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40"></div>
                     </div>
 
                     <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-                        {/* Circle leaf logo outline */}
                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md">
                             <svg className="w-6.5 h-6.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Z" />
@@ -675,9 +558,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                             </svg>
                         </div>
 
-                        <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight drop-shadow-md">
-                            Mulai hidup lebih sehat hari ini
-                        </h2>
+                        <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight drop-shadow-md">Mulai hidup lebih sehat hari ini</h2>
 
                         <p className="text-zinc-100 max-w-xl mx-auto text-sm sm:text-base leading-relaxed drop-shadow">
                             Bergabung dengan ribuan pengguna yang sudah memantau gizi mereka dengan siGizi — gratis, mudah, dan akurat.
@@ -699,36 +580,25 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 <footer className="bg-white border-t border-gray-100 dark:bg-zinc-950 dark:border-zinc-900 py-10 transition-colors duration-300">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-
-                            {/* Logo siGizi Extra Besar */}
                             <div className="flex-shrink-0 flex items-center">
                                 <Link href="/" prefetch={["hover", "mount"]} className="flex items-center group py-1">
-                                    <img
-                                        src="/images/logo-sigizi.png"
-                                        alt="siGizi Logo"
-                                        className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200"
-                                    />
+                                    <img src="/images/logo-sigizi.png" alt="siGizi Logo" className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200" />
                                 </Link>
                             </div>
 
-                            {/* Copyright Text */}
                             <div className="text-xs text-gray-500 dark:text-gray-400 text-center order-last md:order-none">
                                 © 2026 siGizi — Sistem Informasi Gizi Berbasis AI - Nutrisi Untuk Hidup Lebih Baik
                             </div>
 
-                            {/* Links */}
                             <div className="flex items-center space-x-6">
                                 <Link href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Privasi</Link>
                                 <Link href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Syarat</Link>
                                 <Link href="#" className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#1F7A54] dark:hover:text-emerald-400">Kontak</Link>
                             </div>
-
                         </div>
                     </div>
                 </footer>
-
             </div>
         </>
     );
 }
-
