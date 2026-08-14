@@ -4,7 +4,6 @@ use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -72,6 +71,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/kelola-pengguna', [KelolaPenggunaController::class, 'store'])->name('admin.kelola-pengguna.store');
             Route::put('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'update'])->name('admin.kelola-pengguna.update');
             Route::delete('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'destroy'])->name('admin.kelola-pengguna.destroy');
+            
+            // Rute Tambahan untuk Fitur Tangguhkan / Suspend Pengguna
+            Route::patch('/kelola-pengguna/{id}/toggle-suspend', [KelolaPenggunaController::class, 'toggleSuspend'])->name('admin.users.toggle-suspend');
 
             Route::get('/kelola-tampilan', function () {
                 $testimonials = \App\Models\Testimonial::with('user:id,name,photo')->latest()->get();

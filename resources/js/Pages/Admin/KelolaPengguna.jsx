@@ -1,5 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
 export default function KelolaPengguna({ initialUsers }) {
@@ -23,21 +23,35 @@ export default function KelolaPengguna({ initialUsers }) {
     const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Pengguna' });
 
     // Fungsi Toggle Status Aktif / Ditangguhkan
-    const handleToggleStatus = (id) => {
-        setUsers(users.map(u => {
-            if (u.id === id) {
-                const isAktif = u.status === 'Aktif';
-                return {
-                    ...u,
-                    status: isAktif ? 'Ditangguhkan' : 'Aktif',
-                    statusColor: isAktif
-                        ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
-                        : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
-                };
-            }
-            return u;
-        }));
-    };
+const handleToggleStatus = (id) => {
+    // Optimistic UI update (optional)
+    setUsers(prev => prev.map(u => {
+        if (u.id === id) {
+            const isAktif = u.status === 'Aktif';
+            return {
+                ...u,
+                status: isAktif ? 'Ditangguhkan' : 'Aktif',
+                statusColor: isAktif
+                    ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
+                    : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400',
+            };
+        }
+        return u;
+    }));
+
+    // Kirim request PATCH via Inertia
+    router.patch(
+        route('admin.users.toggle-suspend', { id }),
+        {},
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Reload data from server to avoid stale cache
+                router.reload({ preserveState: false, preserveScroll: true });
+            },
+        }
+    );
+};
 
     // Handler Edit
     const handleOpenEdit = (user) => {

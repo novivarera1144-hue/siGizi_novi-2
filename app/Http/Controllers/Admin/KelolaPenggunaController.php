@@ -22,9 +22,18 @@ class KelolaPenggunaController extends Controller
             $email = $u['email'] ?? '';
             $isAdmin = str_contains($email, 'admin') || str_contains($email, 'novi');
             $role = $isAdmin ? 'Admin' : 'Pengguna';
-            $status = $u['status'] ?? 'Aktif';
+            
+            // Ambil status mentah dari database dan bersihkan spasi
+            $rawStatus = trim($u['status'] ?? 'Aktif');
+            
+            // Cek apakah statusnya termasuk kategori ditangguhkan (case-insensitive)
+            $isSuspended = in_array(strtolower($rawStatus), ['suspended', 'ditangguhkan']);
+            
+            // Tentukan label status yang akan ditampilkan ke UI secara konsisten
+            $status = $isSuspended ? 'Ditangguhkan' : 'Aktif';
 
-            $statusColor = $status === 'Aktif'
+            // Warna badge status
+            $statusColor = !$isSuspended
                 ? ($isAdmin
                     ? 'text-[#1F7A54] bg-emerald-100 dark:bg-[#34D399]/20 dark:text-[#34D399]'
                     : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400')
@@ -58,6 +67,7 @@ class KelolaPenggunaController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make('password123'),
+            'status' => 'Aktif',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
@@ -67,6 +77,7 @@ class KelolaPenggunaController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make('password123'),
+                'status' => 'Aktif',
             ]);
         } catch (\Exception $e) {}
 
@@ -90,6 +101,56 @@ class KelolaPenggunaController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Data pengguna berhasil diperbarui.');
+    }
+
+    /**
+     * Toggle status "Aktif / Ditangguhkan" for a user.
+     * Returns JSON when called via Inertia (X-Inertia header) so the
+     * frontend can reload the props, otherwise falls back to a redirect
+     * for non‑ajax usage.
+     */
+    public function toggleSuspend($id, SupabaseService $supabase)
+    {
+        // 1️⃣ Ambil data user dari Supabase berdasarkan ID
+        $users = $supabase->get('users', [
+            'id'    => 'eq.' . $id,
+            'limit' => 1,
+        ]);
+
+        $currentUser = $users[0] ?? null;
+        if (! $currentUser) {
+            // 2️⃣ Jika request datang dari Inertia → JSON error, else redirect
+            if (request()->header('X-Inertia')) {
+                return response()->json(['message' => 'Pengguna tidak ditemukan.'], 404);
+            }
+            return redirect()->back()->with('error', 'Pengguna tidak ditemukan.');
+        }
+
+        // 3️⃣ Tentukan status baru (case‑insensitive)
+        $currentStatus = strtolower(trim($currentUser['status'] ?? 'aktif'));
+        $newStatus = in_array($currentStatus, ['aktif', 'active']) ? 'Ditangguhkan' : 'Aktif';
+        $now = now()->toIso8601String();
+
+        // 4️⃣ Update di Supabase
+        $supabase->update('users', $id, [
+            'status'     => $newStatus,
+            'updated_at' => $now,
+        ]);
+
+        // 5️⃣ Sinkronkan ke DB lokal (jika ada)
+        try {
+            $localUser = User::find($id);
+            if ($localUser) {
+                $localUser->status = $newStatus;
+                $localUser->save();
+            }
+        } catch (\Exception $e) {}
+
+        // 6️⃣ Response JSON untuk Inertia, fallback ke redirect
+        if (request()->header('X-Inertia')) {
+            return response()->json(['message' => 'Status berhasil diperbarui.']);
+        }
+        return redirect()->back()->with('success', 'Status penangguhan pengguna berhasil diperbarui.');
     }
 
     public function destroy($id, SupabaseService $supabase)
