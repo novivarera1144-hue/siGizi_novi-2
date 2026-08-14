@@ -1,10 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
 
-export default function Dashboard({ auth, stats, progressNutrients, recentHistory, weeklyData }) {
-    const user = auth.user;
-    const [hoveredDay, setHoveredDay] = useState(null);
+export default function Dashboard({ auth, stats, progressNutrients, recentHistory }) {
+    const user = auth?.user;
 
     // Fungsi untuk menentukan salam berdasarkan jam saat ini
     const getGreeting = () => {
@@ -97,22 +95,12 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
     const defaultStats = stats || [];
     const defaultProgress = progressNutrients || [];
     const defaultHistory = recentHistory || [];
-    const defaultWeekly = weeklyData || [
-        { day: "Sen", calories: 0, target: 2000 },
-        { day: "Sel", calories: 0, target: 2000 },
-        { day: "Rab", calories: 0, target: 2000 },
-        { day: "Kam", calories: 0, target: 2000 },
-        { day: "Jum", calories: 0, target: 2000 },
-        { day: "Sab", calories: 0, target: 2000 },
-        { day: "Min", calories: 0, target: 2000 },
-    ];
 
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard - siGizi" />
 
             <div className="space-y-8">
-
                 {/* Header Greeting */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
@@ -149,13 +137,12 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                         const displayUnit = isCalorie ? 'kkal' : 'g';
                         const currentValueDisplay = `${rawValue || '0'} ${displayUnit}`;
 
-                        const rawDailyTarget = parseInt(String(stat.dailyTarget || stat.target).replace(/[^0-9]/g, '')) || 0;
+                        const rawDailyTarget = parseInt(String(stat.dailyTarget || stat.target || '0').replace(/[^0-9]/g, '')) || 0;
                         const totalProgramTarget = `${(rawDailyTarget * 7).toLocaleString('id-ID')} ${displayUnit}`;
 
                         return (
                             <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
-
-                                {/* Top Section: Icon, Label HARI INI & Angka Utama */}
+                                {/* Top Section */}
                                 <div className="flex items-start space-x-3">
                                     <div className={`w-11 h-11 rounded-2xl ${theme.bg} flex items-center justify-center shrink-0 shadow-sm`}>
                                         {theme.icon}
@@ -175,14 +162,14 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                     <div className="flex justify-between items-center text-xs">
                                         <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Target per hari:</span>
                                         <span className="font-bold text-gray-700 dark:text-emerald-200">
-                                            {stat.dailyTarget || stat.target}
+                                            {stat.dailyTarget || stat.target || '-'}
                                         </span>
                                     </div>
 
                                     <div className="flex justify-between items-center text-xs">
                                         <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total sementara:</span>
                                         <span className="font-extrabold text-[#1F7A54] dark:text-emerald-400">
-                                            {stat.total_sementara}
+                                            {stat.total_sementara || '-'}
                                         </span>
                                     </div>
 
@@ -193,7 +180,6 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                         </span>
                                     </div>
                                 </div>
-
                             </div>
                         );
                     })}
@@ -221,8 +207,8 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                     </div>
                                     <div className="w-full bg-gray-100 dark:bg-[#0b140e] rounded-full h-3 overflow-hidden">
                                         <div
-                                            className={`${nutri.barColor} h-full rounded-full transition-all duration-500`}
-                                            style={{ width: `${nutri.pct}%` }}
+                                            className={`${nutri.barColor || 'bg-emerald-500'} h-full rounded-full transition-all duration-500`}
+                                            style={{ width: `${Math.min(nutri.pct || 0, 100)}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -266,69 +252,6 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                         </div>
                     </div>
                 </div>
-
-                {/* Bottom Bar Chart */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
-                    <div className="flex justify-between items-center mb-8">
-                        <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Kalori Minggu Ini</h2>
-                        <Link href="/riwayat" prefetch={["hover", "mount"]} className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 flex items-center hover:underline">
-                            <span>Lihat laporan</span>
-                            <span className="ml-1">→</span>
-                        </Link>
-                    </div>
-
-                    <div className="flex items-end pt-6 pb-2 px-2 sm:px-4">
-                        <div className="grid grid-cols-7 gap-2 sm:gap-6 items-end h-44 w-full relative border-b border-gray-100 dark:border-[#1a2e22] px-2">
-                            {defaultWeekly.map((data, idx) => {
-                                const currentHeight = Math.min((data.calories / 2400) * 100, 100);
-                                const targetHeight = Math.min((data.target / 2400) * 100, 100);
-                                const isHovered = hoveredDay === data.day;
-
-                                return (
-                                    <div
-                                        key={idx}
-                                        onMouseEnter={() => setHoveredDay(data.day)}
-                                        onMouseLeave={() => setHoveredDay(null)}
-                                        onClick={() => setHoveredDay(hoveredDay === data.day ? null : data.day)}
-                                        className="flex flex-col items-center group relative w-full pt-4 rounded-2xl px-1 pb-1 cursor-pointer"
-                                    >
-                                        {isHovered && (
-                                            <div className="absolute -top-20 bg-gray-900 text-white text-[11px] font-medium py-2 px-3 rounded-2xl shadow-xl z-30 pointer-events-none transition-all flex flex-col space-y-0.5 min-w-[95px] border border-gray-800">
-                                                <span className="font-extrabold text-emerald-400 mb-0.5 border-b border-gray-800 pb-0.5">
-                                                    {data.day}
-                                                </span>
-                                                <div className="flex justify-between items-center text-[10px]">
-                                                    <span className="text-gray-400">Kalori :</span>
-                                                    <span className="font-bold text-white ml-2">{data.calories}</span>
-                                                </div>
-                                                <div className="flex justify-between items-center text-[10px]">
-                                                    <span className="text-gray-400">Target :</span>
-                                                    <span className="font-bold text-white ml-2">{data.target}</span>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="flex space-x-1 items-end justify-center w-full h-36">
-                                            <div
-                                                style={{ height: `${currentHeight}%` }}
-                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered ? 'bg-emerald-400' : 'bg-[#22c55e]/90'}`}
-                                            ></div>
-                                            <div
-                                                style={{ height: `${targetHeight}%` }}
-                                                className={`w-2.5 sm:w-3.5 rounded-t-sm transition-all duration-200 ${isHovered ? 'bg-gray-700' : 'bg-gray-900 dark:bg-gray-800'}`}
-                                            ></div>
-                                        </div>
-
-                                        <span className={`text-xs font-bold mt-2 block transition-colors ${isHovered ? 'text-[#1F7A54] dark:text-emerald-400' : 'text-gray-400 dark:text-emerald-100/40'}`}>
-                                            {data.day}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </AuthenticatedLayout>
     );
