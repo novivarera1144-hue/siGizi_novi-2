@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Testimonial extends Model
 {
+    protected $table = 'reviews';
+
     protected $fillable = [
         'user_id',
-        'occupation',
+        'pekerjaan',
         'rating',
-        'comment',
+        'ulasan',
         'is_approved',
     ];
 

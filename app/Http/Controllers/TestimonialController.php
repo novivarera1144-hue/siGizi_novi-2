@@ -33,9 +33,9 @@ class TestimonialController extends Controller
 
         Testimonial::create([
             'user_id' => $request->user()->id,
-            'occupation' => $validated['occupation'],
+            'pekerjaan' => $validated['occupation'],
             'rating' => $validated['rating'],
-            'comment' => $validated['comment'],
+            'ulasan' => $validated['comment'],
             'is_approved' => false,
         ]);
 
