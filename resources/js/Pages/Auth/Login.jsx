@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GoogleButton from '@/Components/GoogleButton';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm, router } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset, setError } = useForm({
@@ -134,9 +134,10 @@ export default function Login({ status, canResetPassword }) {
                 </div>
 
                 <GoogleButton
-                    text="Lanjutkan dengan Google"
+                    text="Masuk dengan Google"
                     dividerPosition="top"
                     dividerText="atau"
+                    action="login"
                 />
 
                 {/* Footer Link to Register */}
@@ -144,7 +145,6 @@ export default function Login({ status, canResetPassword }) {
                     Belum punya akun?{' '}
                     <Link
                         href={route('register')}
-                        prefetch={["hover", "mount"]}
                         className="font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 transition-colors duration-200"
                     >
                         Daftar sekarang

@@ -40,7 +40,9 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
+                'googleData' => fn () => $request->session()->get('googleData'),
             ],
+            'googleData' => fn () => $request->session()->get('googleData') ?? $request->session()->get('google_register_data'),
             'status' => fn () => $request->session()->get('status'),
         ];
     }

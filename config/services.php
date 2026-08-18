@@ -46,4 +46,10 @@ return [
         'key' => env('SUPABASE_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmbW1vbXl2dndybWRudXRvYnFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDI4NjEsImV4cCI6MjEwMDM3ODg2MX0.89oNLB97h8JO-UwDt1zBa54P1TIB85sa9Nww0Tf64TA'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8000/auth/google/callback'),
+    ],
+
 ];

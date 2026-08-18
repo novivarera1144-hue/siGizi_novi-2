@@ -4,15 +4,31 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GoogleButton from '@/Components/GoogleButton';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm, router } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
 
-export default function Register() {
+export default function Register({ googleData: propGoogleData }) {
+    const { flash, googleData: pageGoogleData } = usePage().props;
+    const googleData = flash?.googleData || pageGoogleData || propGoogleData;
+
     const { data, setData, post, processing, errors, reset, setError } = useForm({
-        name: '',
-        email: '',
+        name: googleData?.name || '',
+        email: googleData?.email || '',
+        google_id: googleData?.google_id || '',
         password: '',
         password_confirmation: '',
     });
+
+    useEffect(() => {
+        if (googleData) {
+            setData((prev) => ({
+                ...prev,
+                name: googleData.name || prev.name,
+                email: googleData.email || prev.email,
+                google_id: googleData.google_id || prev.google_id,
+            }));
+        }
+    }, [googleData]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -36,12 +52,36 @@ export default function Register() {
         >
             <Head title="Daftar Akun Baru" />
 
+            {/* Indikator Visual Google Register */}
+            {googleData && (
+                <div className="mb-5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-200 shadow-sm flex items-start gap-3">
+                    <div className="p-1.5 bg-emerald-100 dark:bg-emerald-900/60 rounded-lg text-emerald-600 dark:text-emerald-400 mt-0.5">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="font-bold text-sm text-emerald-900 dark:text-emerald-100">
+                            Terhubung dengan akun Google: <span className="underline">{googleData.email}</span>
+                        </p>
+                        <p className="mt-1 text-[11px] text-emerald-700 dark:text-emerald-300">
+                            Data nama dan email telah diisi otomatis. Silakan tentukan kata sandi Anda untuk menyelesaikan pendaftaran.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <form onSubmit={submit} className="space-y-5">
-                <GoogleButton
-                    text="Daftar dengan Google"
-                    dividerPosition="bottom"
-                    dividerText="atau isi form"
-                />
+                <input type="hidden" name="google_id" value={data.google_id || ''} />
+
+                {!googleData && (
+                    <GoogleButton
+                        text="Daftar dengan Google"
+                        dividerPosition="bottom"
+                        dividerText="atau isi form"
+                        action="register"
+                    />
+                )}
 
                 {/* Name Field */}
                 <div>
@@ -58,7 +98,7 @@ export default function Register() {
                         className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="Budi Santoso"
                         autoComplete="name"
-                        isFocused={true}
+                        isFocused={!googleData}
                         onChange={(e) => setData('name', e.target.value)}
                         required
                     />
@@ -79,7 +119,9 @@ export default function Register() {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
+                        readOnly={!!googleData?.email}
+                        className={`mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm ${googleData?.email ? 'opacity-80 cursor-not-allowed bg-emerald-100/50 dark:bg-emerald-900/30' : ''
+                            }`}
                         placeholder="budi@email.com"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
@@ -102,6 +144,7 @@ export default function Register() {
                         type="password"
                         name="password"
                         value={data.password}
+                        isFocused={!!googleData}
                         className="mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm"
                         placeholder="Min. 8 karakter"
                         autoComplete="new-password"
@@ -139,9 +182,8 @@ export default function Register() {
                 <div className="pt-2">
                     <PrimaryButton
                         disabled={processing}
-                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md transition-all duration-200 ${
-                            processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
-                        }`}
+                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md transition-all duration-200 ${processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+                            }`}
                     >
                         {processing ? (
                             <>
@@ -162,7 +204,6 @@ export default function Register() {
                     Sudah memiliki akun?{' '}
                     <Link
                         href={route('login')}
-                        prefetch={["hover", "mount"]}
                         className="font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 transition-colors duration-200"
                     >
                         Masuk sekarang

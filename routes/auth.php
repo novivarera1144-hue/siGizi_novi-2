@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -34,6 +35,18 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])
         ->name('password.store');
+
+    // Google OAuth — Login Flow
+    Route::get('auth/google/login', [GoogleAuthController::class, 'redirectToGoogleLogin'])
+        ->name('google.login');
+
+    // Google OAuth — Register Flow
+    Route::get('auth/google/register', [GoogleAuthController::class, 'redirectToGoogleRegister'])
+        ->name('google.register');
+
+    // Google OAuth — Unified Callback (satu callback URI untuk kedua alur)
+    Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])
+        ->name('google.callback');
 });
 
 Route::middleware('auth')->group(function () {

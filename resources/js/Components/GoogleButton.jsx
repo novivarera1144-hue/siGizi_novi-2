@@ -1,15 +1,12 @@
-import { Link } from '@inertiajs/react';
-
 export default function GoogleButton({
     text = 'Lanjutkan dengan Google',
     dividerPosition = 'none', // 'top' | 'bottom' | 'none'
     dividerText = 'atau',
-    className = ''
+    className = '',
+    action = 'login', // 'login' | 'register'
+    href
 }) {
-    const handleClick = (e) => {
-        e.preventDefault();
-        alert('Fitur login dengan Google sedang dalam pengembangan. Akan dihubungkan ke backend pada tahap selanjutnya.');
-    };
+    const targetUrl = href || (action === 'register' ? '/auth/google/register' : '/auth/google/login');
 
     const dividerEl = (
         <div className="relative flex items-center justify-center my-5 py-2">
@@ -24,9 +21,8 @@ export default function GoogleButton({
         <div className={className}>
             {dividerPosition === 'top' && dividerEl}
 
-            <button
-                type="button"
-                onClick={handleClick}
+            <a
+                href={targetUrl}
                 className="w-full flex items-center justify-center space-x-3 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-sm transition-all duration-200 shadow-sm cursor-pointer bg-white dark:bg-transparent dark:hover:bg-[#164D2B]/20 dark:border-[#164D2B] dark:text-gray-200"
             >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -36,7 +32,7 @@ export default function GoogleButton({
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
                 </svg>
                 <span>{text}</span>
-            </button>
+            </a>
 
             {dividerPosition === 'bottom' && dividerEl}
         </div>
