@@ -17,8 +17,9 @@ class RedirectIfOnboardingCompleted
     {
         $user = $request->user();
 
-        // Jika user login dan sudah menyelesaikan onboarding, alihkan ke dashboard
-        if ($user && $user->onboarding_completed) {
+        // Jika user login dan sudah menyelesaikan onboarding, alihkan ke dashboard,
+        // kecuali jika ada session 'success' (baru saja submit form onboarding agar modal sukses tampil).
+        if ($user && $user->onboarding_completed && !session()->has('success')) {
             return redirect()->route('dashboard');
         }
 

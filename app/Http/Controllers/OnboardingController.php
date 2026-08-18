@@ -53,6 +53,6 @@ class OnboardingController extends Controller
             'onboarding_completed' => true,
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Target kesehatan berhasil disimpan! Selamat datang di siGizi.');
+        return redirect()->back()->with('success', 'Target kesehatan berhasil disimpan! Selamat datang di siGizi.');
     }
 }

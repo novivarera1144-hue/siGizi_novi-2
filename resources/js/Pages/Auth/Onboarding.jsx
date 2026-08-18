@@ -4,6 +4,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import PrimaryButton from '@/Components/PrimaryButton';
+import OnboardingSuccessModal from '@/Components/OnboardingSuccessModal';
 import {
     Target, LogOut, Sparkles,
     Clock, Flame, Beef, Droplets, Wheat, TrendingDown,
@@ -111,6 +112,8 @@ export default function Onboarding() {
         }));
 
         post(route('onboarding.store'), {
+            preserveScroll: true,
+            preserveState: true,
             onSuccess: () => {
                 // Begitu backend sukses menyimpan data, tampilkan pop-up selamat datang
                 setShowWelcomeModal(true);
@@ -373,27 +376,7 @@ export default function Onboarding() {
                 </div>
 
                 {/* POP-UP / MODAL SELAMAT DATANG */}
-                {showWelcomeModal && (
-                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                        <div className="bg-white dark:bg-[#08160E] border border-emerald-100 dark:border-emerald-900/40 p-6 sm:p-8 rounded-3xl max-w-md w-full text-center shadow-2xl space-y-4">
-                            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
-                                <CheckCircle2 size={32} />
-                            </div>
-                            <div className="space-y-1">
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white">🎉 Selamat Datang di siGizi!</h3>
-                                <p className="text-xs text-gray-500 dark:text-emerald-500/70">
-                                    Target program sehatmu berhasil disimpan. Mari mulai perjalanan hidup sehatmu hari ini!
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => window.location.href = route('dashboard')}
-                                className="w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#20D080] dark:hover:bg-emerald-400 py-3.5 rounded-2xl font-bold text-sm text-white dark:text-slate-950 shadow-lg transition-all cursor-pointer"
-                            >
-                                Masuk ke Dashboard
-                            </button>
-                        </div>
-                    </div>
-                )}
+                <OnboardingSuccessModal show={showWelcomeModal} />
 
                 <div className="mt-6">
                     <Link
