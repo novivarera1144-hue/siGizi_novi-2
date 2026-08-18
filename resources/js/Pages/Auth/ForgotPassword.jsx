@@ -11,40 +11,34 @@ export default function ForgotPassword({ status }) {
     const [step, setStep] = useState(1);
     const [verifiedEmail, setVerifiedEmail] = useState('');
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, clearErrors } = useForm({
         email: '',
         otp: '',
         password: '',
         password_confirmation: '',
     });
 
-    // Handle perpindahan antar step secara interaktif (Mockup UI)
+    // Handle perpindahan antar step secara interaktif dengan backend
     const handleNextStep = (e) => {
         e.preventDefault();
 
         if (step === 1) {
-            if (!data.email) return;
-            setVerifiedEmail(data.email);
-            setStep(2); // Lanjut ke input kode verifikasi
+            post(route('password.email'), {
+                onSuccess: () => {
+                    setVerifiedEmail(data.email);
+                    clearErrors();
+                    setStep(2); // Lanjut ke input kode verifikasi
+                }
+            });
         } else if (step === 2) {
-            if (!data.otp) {
-                alert('Silakan masukkan kode verifikasi terlebih dahulu!');
-                return;
-            }
-            setStep(3); // Lanjut ke form password baru
+            post(route('password.otp.verify'), {
+                onSuccess: () => {
+                    clearErrors();
+                    setStep(3); // Lanjut ke form password baru
+                }
+            });
         } else if (step === 3) {
-            if (!data.password || !data.password_confirmation) {
-                alert('Semua kolom password harus diisi!');
-                return;
-            }
-            if (data.password !== data.password_confirmation) {
-                alert('Konfirmasi password tidak cocok!');
-                return;
-            }
-
-            // Simulasi sukses ubah password total
-            alert('Kata sandi berhasil diubah! Silakan masuk kembali dengan kata sandi baru Anda.');
-            window.location.href = route('login');
+            post(route('password.store'));
         }
     };
 
@@ -136,6 +130,7 @@ export default function ForgotPassword({ status }) {
                             onChange={(e) => setData('otp', e.target.value)}
                             required
                         />
+                        <InputError message={errors.otp} className="mt-1.5 text-xs text-center" />
                     </div>
                 )}
 
@@ -163,6 +158,7 @@ export default function ForgotPassword({ status }) {
                                 onChange={(e) => setData('password', e.target.value)}
                                 required
                             />
+                            <InputError message={errors.password} className="mt-1.5 text-xs" />
                         </div>
 
                         <div>
@@ -181,6 +177,7 @@ export default function ForgotPassword({ status }) {
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 required
                             />
+                            <InputError message={errors.password_confirmation} className="mt-1.5 text-xs" />
                         </div>
                     </div>
                 )}
@@ -201,7 +198,10 @@ export default function ForgotPassword({ status }) {
                     <div className="text-center">
                         <button
                             type="button"
-                            onClick={() => setStep(step - 1)}
+                            onClick={() => {
+                                clearErrors();
+                                setStep(step - 1);
+                            }}
                             className="text-xs font-semibold text-gray-400 hover:text-gray-600 dark:text-[#52B788]/60 dark:hover:text-emerald-400 transition-colors"
                         >
                             ← Kembali ke langkah sebelumnya
