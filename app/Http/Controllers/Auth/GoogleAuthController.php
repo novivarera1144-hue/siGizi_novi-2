@@ -25,7 +25,7 @@ class GoogleAuthController extends Controller
         $request->session()->put('google_auth_intent', 'login');
         $request->session()->save();
 
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->with(['prompt' => 'select_account'])->redirect();
     }
 
     /**
@@ -37,7 +37,7 @@ class GoogleAuthController extends Controller
         $request->session()->put('google_auth_intent', 'register');
         $request->session()->save();
 
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->with(['prompt' => 'select_account'])->redirect();
     }
 
     // ══════════════════════════════════════════════
