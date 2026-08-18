@@ -7,17 +7,20 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 
-export default function Register({ googleData: propGoogleData }) {
-    const { flash, googleData: pageGoogleData } = usePage().props;
+export default function Register({ googleData: propGoogleData, errors: propErrors }) {
+    const { errors: pageErrors, flash, googleData: pageGoogleData } = usePage().props;
     const googleData = flash?.googleData || pageGoogleData || propGoogleData;
 
-    const { data, setData, post, processing, errors, reset, setError } = useForm({
+    const { data, setData, post, processing, errors: formErrors, reset, setError } = useForm({
         name: googleData?.name || '',
         email: googleData?.email || '',
         google_id: googleData?.google_id || '',
         password: '',
         password_confirmation: '',
     });
+
+    // Gabungkan error dari Inertia page props (withErrors) dan form errors
+    const errors = { ...propErrors, ...pageErrors, ...formErrors };
 
     useEffect(() => {
         if (googleData) {
@@ -37,9 +40,9 @@ export default function Register({ googleData: propGoogleData }) {
             preserveScroll: true,
             preserveState: true,
             onFinish: () => reset('password', 'password_confirmation'),
-            onError: (errors) => {
-                Object.keys(errors).forEach((key) => {
-                    setError(key, errors[key]);
+            onError: (errs) => {
+                Object.keys(errs).forEach((key) => {
+                    setError(key, errs[key]);
                 });
             },
         });
@@ -120,8 +123,9 @@ export default function Register({ googleData: propGoogleData }) {
                         name="email"
                         value={data.email}
                         readOnly={!!googleData?.email}
-                        className={`mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm ${googleData?.email ? 'opacity-80 cursor-not-allowed bg-emerald-100/50 dark:bg-emerald-900/30' : ''
-                            }`}
+                        className={`mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm ${
+                            googleData?.email ? 'opacity-80 cursor-not-allowed bg-emerald-100/50 dark:bg-emerald-900/30' : ''
+                        }`}
                         placeholder="budi@email.com"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
@@ -182,8 +186,9 @@ export default function Register({ googleData: propGoogleData }) {
                 <div className="pt-2">
                     <PrimaryButton
                         disabled={processing}
-                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md transition-all duration-200 ${processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
-                            }`}
+                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md transition-all duration-200 ${
+                            processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+                        }`}
                     >
                         {processing ? (
                             <>
