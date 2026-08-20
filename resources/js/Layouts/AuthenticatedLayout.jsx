@@ -239,7 +239,7 @@ export default function AuthenticatedLayout({ children }) {
                 ></div>
             )}
 
-            {/* Main Content */}
+            {/* Main Content Layout */}
             <div className="flex-1 lg:pl-64 flex flex-col min-h-screen bg-white dark:bg-[#07110B]">
 
                 {/* Header */}
@@ -294,6 +294,7 @@ export default function AuthenticatedLayout({ children }) {
                                                 <Link
                                                     key={idx}
                                                     href={route(item.route)}
+                                                    prefetch={['hover', 'mount']}
                                                     onClick={() => setIsSearching(false)}
                                                     className="px-3.5 py-2.5 hover:bg-gray-50 dark:hover:bg-emerald-900/30 transition-colors flex items-center justify-between cursor-pointer block"
                                                 >
@@ -327,6 +328,7 @@ export default function AuthenticatedLayout({ children }) {
                         {user && (
                             <Link
                                 href={route('profile.edit')}
+                                prefetch={['hover', 'mount']}
                                 className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 dark:bg-[#1F7A54] dark:text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer border border-gray-300/60 dark:border-transparent overflow-hidden"
                             >
                                 {user.avatar || user.photo ? (
@@ -348,7 +350,7 @@ export default function AuthenticatedLayout({ children }) {
                     {children}
                 </main>
 
-                {/* Bottom Navigation */}
+                {/* Bottom Navigation (Mobile) */}
                 <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 px-2 py-2 flex items-center justify-around shadow-lg">
                     {menuItems.map((item, idx) => {
                         const isCurrent = checkIsActive(item.route);
@@ -357,6 +359,7 @@ export default function AuthenticatedLayout({ children }) {
                             <Link
                                 key={idx}
                                 href={item.route !== '#' ? route(item.route) : '#'}
+                                prefetch={item.route !== '#' ? ['hover', 'mount'] : undefined}
                                 className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${isCurrent
                                         ? 'text-[#1F7A54] dark:text-emerald-400 font-bold'
                                         : 'text-gray-400 dark:text-emerald-300/60 hover:text-gray-600 dark:hover:text-emerald-200'
