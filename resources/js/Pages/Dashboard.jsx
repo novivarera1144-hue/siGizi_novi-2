@@ -137,9 +137,6 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                         const displayUnit = isCalorie ? 'kkal' : 'g';
                         const currentValueDisplay = `${rawValue || '0'} ${displayUnit}`;
 
-                        const rawDailyTarget = parseInt(String(stat.dailyTarget || stat.target || '0').replace(/[^0-9]/g, '')) || 0;
-                        const totalProgramTarget = `${(rawDailyTarget * 7).toLocaleString('id-ID')} ${displayUnit}`;
-
                         return (
                             <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
                                 {/* Top Section */}
@@ -176,7 +173,7 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                                     <div className="flex justify-between items-center text-xs">
                                         <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total target:</span>
                                         <span className="font-bold text-gray-900 dark:text-white">
-                                            {stat.totalTargetProgram || totalProgramTarget}
+                                            {stat.totalTarget || '-'}
                                         </span>
                                     </div>
                                 </div>

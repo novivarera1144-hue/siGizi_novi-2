@@ -12,7 +12,8 @@ class DashboardController extends Controller
 {
     public function index(SupabaseService $supabase)
     {
-        $user = Auth::user();
+        $user = Auth::user()->fresh();
+        
         if ($user && $user->email === 'admin@sigizi.com') {
             return redirect()->route('admin.dashboard');
         }
@@ -32,54 +33,40 @@ class DashboardController extends Controller
             $scans = [];
         }
 
-        // 1. Ambil Tanggal Hari Ini (Y-m-d)
         $todayStr = Carbon::today()->toDateString();
 
-        // 2. Filter Scan Khusus Hari Ini (Untuk Angka Utama di Kotak Atas)
         $todayScans = array_filter($scans, function ($scan) use ($todayStr) {
             if (!isset($scan['created_at'])) return false;
             $scanDate = Carbon::parse($scan['created_at'])->toDateString();
             return $scanDate === $todayStr;
         });
 
-        // Hitung nutrisi khusus HARI INI
         $todayKalori = array_sum(array_column($todayScans, 'kalori_terdeteksi'));
         $todayProtein = array_sum(array_column($todayScans, 'protein'));
         $todayLemak = array_sum(array_column($todayScans, 'lemak'));
         $todayKarbo = array_sum(array_column($todayScans, 'karbohidrat'));
 
-        // 3. Hitung Total Keseluruhan (All-Time) untuk "Total Sementara"
         $totalKaloriAll = array_sum(array_column($scans, 'kalori_terdeteksi'));
         $totalProteinAll = array_sum(array_column($scans, 'protein'));
         $totalLemakAll = array_sum(array_column($scans, 'lemak'));
         $totalKarboAll = array_sum(array_column($scans, 'karbohidrat'));
 
-        if ($user && $user->target_calories) {
-            $targetCalories = $user->target_calories;
-            $targetProtein = $user->target_protein ?? round($user->weight * 1.5);
-            $targetFat = $user->target_fat ?? round(($targetCalories * 0.25) / 9);
-            $targetCarbs = $user->target_carbs ?? round(($targetCalories * 0.60) / 4);
-        } else {
-            $targetCalories = 2000;
-            if ($user && $user->height && $user->weight) {
-                $bmr = (10 * $user->weight) + (6.25 * $user->height) - 120;
-                $tdee = $bmr * 1.375;
-                if ($user->weight_goal === 'Menurunkan Berat Badan') {
-                    $targetCalories = $tdee - 400;
-                } elseif ($user->weight_goal === 'Menaikkan Berat Badan') {
-                    $targetCalories = $tdee + 400;
-                } else {
-                    $targetCalories = $tdee;
-                }
-                $targetCalories = max(1200, min(4000, round($targetCalories / 50) * 50));
-            }
-            $targetProtein = $user && $user->weight ? round($user->weight * 1.5) : 90;
-            $targetFat = round(($targetCalories * 0.25) / 9);
-            $targetCarbs = round(($targetCalories * 0.60) / 4);
-        }
+        // --- AMBIL TARGET HARIAN DARI DATABASE ---
+        $targetCalories = (!empty($user->target_calories) && $user->target_calories > 0) ? $user->target_calories : 2000;
+        $targetProtein  = (!empty($user->target_protein) && $user->target_protein > 0) ? $user->target_protein : 90;
+        $targetFat      = (!empty($user->target_fat) && $user->target_fat > 0) ? $user->target_fat : 57;
+        $targetCarbs    = (!empty($user->target_carbs) && $user->target_carbs > 0) ? $user->target_carbs : 308;
 
-        // --- PERUBAHAN: 'value' pakai data hari ini, 'total_sementara' (atau sesuaikan dengan props di frontend) pakai data all-time ---
-        // Jika di Frontend Anda menggunakan properti terpisah, sesuaikan kuncinya di bawah ini:
+        // --- AMBIL DURASI MINGGU (DEFAULT 10 MINGGU JIKA KOSONG) ---
+        $durationWeeks = (!empty($user->duration_weeks) && $user->duration_weeks > 0) ? $user->duration_weeks : 10;
+        $totalDays = $durationWeeks * 7;
+
+        // Hitung total target keseluruhan selama durasi program
+        $totalTargetCalories = $targetCalories * $totalDays;
+        $totalTargetProtein  = $targetProtein * $totalDays;
+        $totalTargetFat      = $targetFat * $totalDays;
+        $totalTargetCarbs    = $targetCarbs * $totalDays;
+
         $stats = [
             [
                 'title' => 'Kalori Hari Ini',
@@ -87,6 +74,8 @@ class DashboardController extends Controller
                 'total_sementara' => number_format($totalKaloriAll) . ' kkal',
                 'unit' => 'kkal',
                 'target' => 'Target: ' . number_format($targetCalories) . ' kkal',
+                'dailyTarget' => number_format($targetCalories) . ' kkal',
+                'totalTarget' => number_format($totalTargetCalories, 0, ',', '.') . ' kkal',
                 'color' => 'bg-orange-500 text-white',
                 'icon' => 'cal'
             ],
@@ -96,6 +85,8 @@ class DashboardController extends Controller
                 'total_sementara' => $totalProteinAll . 'g',
                 'unit' => 'g',
                 'target' => 'Target: ' . $targetProtein . 'g',
+                'dailyTarget' => $targetProtein . 'g',
+                'totalTarget' => number_format($totalTargetProtein, 0, ',', '.') . ' g',
                 'color' => 'bg-blue-500 text-white',
                 'icon' => 'prot'
             ],
@@ -105,6 +96,8 @@ class DashboardController extends Controller
                 'total_sementara' => $totalLemakAll . 'g',
                 'unit' => 'g',
                 'target' => 'Target: ' . $targetFat . 'g',
+                'dailyTarget' => $targetFat . 'g',
+                'totalTarget' => number_format($totalTargetFat, 0, ',', '.') . ' g',
                 'color' => 'bg-amber-400 text-black',
                 'icon' => 'fat'
             ],
@@ -114,12 +107,13 @@ class DashboardController extends Controller
                 'total_sementara' => $totalKarboAll . 'g',
                 'unit' => 'g',
                 'target' => 'Target: ' . $targetCarbs . 'g',
+                'dailyTarget' => $targetCarbs . 'g',
+                'totalTarget' => number_format($totalTargetCarbs, 0, ',', '.') . ' g',
                 'color' => 'bg-emerald-500 text-white',
                 'icon' => 'carbs'
             ]
         ];
 
-        // Untuk progress bar tetap menggunakan data hari ini agar akurat dengan target harian
         $progressNutrients = [
             ['name' => 'Kalori', 'current' => (string)$todayKalori, 'target' => (string)$targetCalories, 'unit' => 'kkal', 'pct' => $targetCalories > 0 ? min(100, round(($todayKalori / $targetCalories) * 100)) : 0, 'barColor' => 'bg-orange-500'],
             ['name' => 'Protein', 'current' => (string)$todayProtein, 'target' => (string)$targetProtein, 'unit' => 'g', 'pct' => $targetProtein > 0 ? min(100, round(($todayProtein / $targetProtein) * 100)) : 0, 'barColor' => 'bg-blue-500'],
@@ -154,27 +148,10 @@ class DashboardController extends Controller
             ];
         }, $uniqueScans), 0, 5);
 
-        $days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-        $weeklyData = [];
-        foreach ($days as $idx => $d) {
-            $dayScans = array_filter($scans, function ($s) use ($idx) {
-                if (!isset($s['created_at'])) return false;
-                $w = date('N', strtotime($s['created_at'])); 
-                return $w == ($idx + 1);
-            });
-            $cals = array_sum(array_column($dayScans, 'kalori_terdeteksi'));
-            $weeklyData[] = [
-                'day' => $d,
-                'calories' => $cals,
-                'target' => $targetCalories
-            ];
-        }
-
         return Inertia::render('Dashboard', [
             'stats' => $stats,
             'progressNutrients' => $progressNutrients,
             'recentHistory' => $recentHistory,
-            'weeklyData' => $weeklyData,
         ]);
     }
 }
