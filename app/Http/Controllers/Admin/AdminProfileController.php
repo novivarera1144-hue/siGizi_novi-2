@@ -32,21 +32,21 @@ class AdminProfileController extends Controller
             $user->email_verified_at = null;
         }
 
-        // Handle avatar upload
+        // Handle avatar upload (DIUBAH DARI photo MENJADI avatar)
         if ($request->hasFile('avatar')) {
             // Delete old photo if it exists
-            if ($user->photo) {
-                Storage::disk('public')->delete($user->photo);
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
             }
             // Store new photo
             $path = $request->file('avatar')->store('profile-photos', 'public');
-            $user->photo = $path;
+            $user->avatar = $path; // <-- Perbaikan di sini
         } elseif ($request->boolean('remove_avatar')) {
             // Delete old photo if it exists
-            if ($user->photo) {
-                Storage::disk('public')->delete($user->photo);
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
             }
-            $user->photo = null;
+            $user->avatar = null; // <-- Perbaikan di sini
         }
 
         $user->save();

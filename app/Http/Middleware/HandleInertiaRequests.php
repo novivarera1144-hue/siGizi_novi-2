@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user() ? array_merge($request->user()->toArray(), [
                     'photo' => $request->user()->photo,
-                    'avatar' => $request->user()->photo ? (filter_var($request->user()->photo, FILTER_VALIDATE_URL) ? $request->user()->photo : '/storage/' . $request->user()->photo) : null,
+                    'avatar' => $request->user()->avatar ? (filter_var($request->user()->avatar, FILTER_VALIDATE_URL) ? $request->user()->avatar : '/storage/' . $request->user()->avatar) : null,
                 ]) : null,
             ],
             'flash' => [
