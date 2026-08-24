@@ -1,10 +1,12 @@
 <?php
 
-// Set APP_KEY secara langsung di runtime PHP
-$_ENV['APP_KEY'] = 'base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=';
-putenv('APP_KEY=base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=');
+// Paksa APP_KEY yang valid (32 karakter Base64 yang valid)
+$appKey = 'base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=';
+$_ENV['APP_KEY'] = $appKey;
+$_SERVER['APP_KEY'] = $appKey;
+putenv("APP_KEY={$appKey}");
 
-// Set LOG dan Storage ke folder /tmp bawaan Vercel
+// Arahkan direktori storage & log ke /tmp (lingkungan Vercel)
 $_ENV['APP_STORAGE_PATH'] = '/tmp/storage';
 $_ENV['LOG_CHANNEL'] = 'stderr';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
