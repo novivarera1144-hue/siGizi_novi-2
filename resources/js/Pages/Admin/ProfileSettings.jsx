@@ -26,9 +26,6 @@ export default function ProfileSettings() {
         password_confirmation: '',
     });
 
-    // State untuk 2FA Toggle
-    const [is2faEnabled, setIs2faEnabled] = useState(user.two_factor_enabled || false);
-
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -88,10 +85,6 @@ export default function ProfileSettings() {
 
     const handleLogoutOtherDevices = () => {
         alert('Fitur Log Out perangkat lain berhasil dipicu.');
-    };
-
-    const toggle2fa = () => {
-        setIs2faEnabled(!is2faEnabled);
     };
 
     return (
@@ -294,23 +287,6 @@ export default function ProfileSettings() {
                                     </button>
                                 </div>
                             </form>
-                        </div>
-
-                        {/* FITUR: AUTENTIKASI DUA FAKTOR (2FA) */}
-                        <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between">
-                            <div>
-                                <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-1 uppercase tracking-wider">Autentikasi Dua Faktor (2FA)</h2>
-                                <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold">Tambahkan lapisan keamanan ekstra ke akun admin menggunakan verifikasi Google Authenticator.</p>
-                            </div>
-                            <button
-                                onClick={toggle2fa}
-                                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${is2faEnabled
-                                    ? 'bg-emerald-600 text-white shadow-md'
-                                    : 'bg-gray-200 dark:bg-emerald-950/60 text-gray-700 dark:text-emerald-400'
-                                    }`}
-                            >
-                                {is2faEnabled ? 'Aktif' : 'Nonaktif'}
-                            </button>
                         </div>
 
                         {/* FITUR: MANAJEMEN SESI / PERANGKAT AKTIF */}
