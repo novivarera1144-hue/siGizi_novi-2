@@ -141,24 +141,32 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
 
     // Formatter headline Hero: 3 baris dengan kata tengah berwarna amber/oranye
     const rawHeadline = homeSettings?.hero_headline?.trim();
-    let headlineLine1 = "Kenali Gizi";
-    let headlineLine2 = "Makananmu";
-    let headlineLine3 = "Dalam Detik";
+    let headlineLine1 = "";
+    let headlineLine2 = "";
+    let headlineLine3 = "";
 
-    if (rawHeadline) {
+    if (!rawHeadline) {
+        headlineLine1 = "Kenali Gizi";
+        headlineLine2 = "Makananmu";
+        headlineLine3 = "Dalam Detik";
+    } else {
         const words = rawHeadline.split(/\s+/);
         if (words.length === 1) {
             headlineLine2 = words[0];
-        } else if (words.length === 3) {
-            headlineLine1 = `${words[0]} ${words[1]}`;
-            headlineLine2 = words[2];
-        } else if (words.length > 3) {
-            headlineLine1 = words.slice(0, 2).join(' ');
-            headlineLine2 = words.slice(2, -1).join(' ') || words[2];
-            headlineLine3 = words.slice(-1).join(' ') || "Dalam Detik";
         } else if (words.length === 2) {
             headlineLine1 = words[0];
             headlineLine2 = words[1];
+        } else if (words.length === 3) {
+            headlineLine1 = `${words[0]} ${words[1]}`;
+            headlineLine2 = words[2];
+        } else if (words.length === 4) {
+            headlineLine1 = `${words[0]} ${words[1]}`;
+            headlineLine2 = words[2];
+            headlineLine3 = words[3];
+        } else {
+            headlineLine1 = `${words[0]} ${words[1]}`;
+            headlineLine2 = words[2];
+            headlineLine3 = words.slice(3).join(" ");
         }
     }
 
@@ -311,15 +319,21 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                 <h1
                                     className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] max-w-xl"
                                 >
-                                    <span className="text-white block" style={{ WebkitTextStroke: '1.5px white' }}>
-                                        {headlineLine1}
-                                    </span>
-                                    <span className="text-amber-500 block" style={{ WebkitTextStroke: '1.5px #f59e0b' }}>
-                                        {headlineLine2}
-                                    </span>
-                                    <span className="text-white block" style={{ WebkitTextStroke: '1.5px white' }}>
-                                        {headlineLine3}
-                                    </span>
+                                    {headlineLine1 && (
+                                        <span className="text-white block" style={{ WebkitTextStroke: '1.5px white' }}>
+                                            {headlineLine1}
+                                        </span>
+                                    )}
+                                    {headlineLine2 && (
+                                        <span className="text-amber-500 block" style={{ WebkitTextStroke: '1.5px #f59e0b' }}>
+                                            {headlineLine2}
+                                        </span>
+                                    )}
+                                    {headlineLine3 && (
+                                        <span className="text-white block" style={{ WebkitTextStroke: '1.5px white' }}>
+                                            {headlineLine3}
+                                        </span>
+                                    )}
                                 </h1>
 
                                 <p className="text-sm sm:text-base text-gray-200 max-w-md font-normal leading-relaxed">
