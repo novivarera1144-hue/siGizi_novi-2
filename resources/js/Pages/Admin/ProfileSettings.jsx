@@ -1,6 +1,7 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState, useRef } from 'react';
+import Swal from 'sweetalert2';
 
 export default function ProfileSettings() {
     const { auth, flash } = usePage().props;
@@ -59,7 +60,29 @@ export default function ProfileSettings() {
         e.preventDefault();
         passwordForm.put(route('admin.profile.password'), {
             preserveScroll: true,
-            onSuccess: () => passwordForm.reset(),
+            onSuccess: (page) => {
+                passwordForm.reset();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: page.props.flash.success || 'Kata sandi berhasil diperbarui.',
+                    confirmButtonColor: '#1F7A54',
+                });
+            },
+            onError: (errors) => {
+                if (errors.password) {
+                    passwordForm.reset('password', 'password_confirmation');
+                }
+                if (errors.current_password) {
+                    passwordForm.reset('current_password');
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    text: 'Silakan periksa kembali isian form Anda. Pastikan sandi lama benar dan sandi baru valid.',
+                    confirmButtonColor: '#d33',
+                });
+            },
         });
     };
 
