@@ -3,9 +3,10 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState, useRef } from 'react';
 import Swal from 'sweetalert2';
 
-export default function ProfileSettings() {
+export default function ProfileSettings({ sessions = [] }) {
     const { auth, flash } = usePage().props;
     const user = auth?.user || { name: 'Administrator', email: 'admin@sigizi.com', avatar: null };
+    const { delete: destroy } = useForm();
 
     // Form data untuk update profil & foto profil
     const profileForm = useForm({
@@ -83,8 +84,31 @@ export default function ProfileSettings() {
         });
     };
 
-    const handleLogoutOtherDevices = () => {
-        alert('Fitur Log Out perangkat lain berhasil dipicu.');
+    const handleLogoutDevice = (sessionId) => {
+        Swal.fire({
+            title: 'Keluarkan Perangkat Ini?',
+            text: 'Sesi di perangkat ini akan diakhiri dan pengguna akan otomatis keluar.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#9CA3AF',
+            confirmButtonText: 'Ya, Keluarkan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                destroy(route('admin.profile.sessions.destroy', sessionId), {
+                    preserveScroll: true,
+                    onSuccess: (page) => {
+                        Swal.fire({
+                            icon: page.props.flash.error ? 'error' : 'success',
+                            title: page.props.flash.error ? 'Gagal' : 'Berhasil!',
+                            text: page.props.flash.error || page.props.flash.success || 'Sesi perangkat berhasil dikeluarkan.',
+                            confirmButtonColor: '#1F7A54',
+                        });
+                    }
+                });
+            }
+        });
     };
 
     return (
@@ -297,27 +321,41 @@ export default function ProfileSettings() {
                             </div>
 
                             <div className="space-y-3 pt-2">
-                                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#071A0E] rounded-2xl border border-gray-100 dark:border-[#1a2e22]">
-                                    <div className="flex items-center gap-3">
-                                        <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        <div>
-                                            <p className="text-xs font-bold text-gray-800 dark:text-emerald-100">Windows • Chrome (Sesi Saat Ini)</p>
-                                            <p className="text-[10px] text-gray-400 dark:text-emerald-100/40">IP: 127.0.0.1 • Aktif Sekarang</p>
+                                {sessions.length > 0 ? (
+                                    sessions.map((session, i) => (
+                                        <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#071A0E] rounded-2xl border border-gray-100 dark:border-[#1a2e22]">
+                                            <div className="flex items-center gap-3">
+                                                <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    {session.os === 'macOS' || session.os === 'Windows' || session.os === 'Linux' ? (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    ) : (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                                                    )}
+                                                </svg>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-800 dark:text-emerald-100">
+                                                        {session.os} • {session.browser} {session.is_current_device && '(Sesi Saat Ini)'}
+                                                    </p>
+                                                    <p className="text-[10px] text-gray-400 dark:text-emerald-100/40">
+                                                        IP: {session.ip_address} • {session.is_current_device ? 'Aktif Sekarang' : `Aktif ${session.last_active}`}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {session.is_current_device ? (
+                                                <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-1 rounded-full">Perangkat Ini</span>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleLogoutDevice(session.id)}
+                                                    className="px-3 py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/30 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-[10px] font-bold rounded-xl transition duration-150 cursor-pointer"
+                                                >
+                                                    Keluarkan
+                                                </button>
+                                            )}
                                         </div>
-                                    </div>
-                                    <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-1 rounded-full">Perangkat Ini</span>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end pt-2">
-                                <button
-                                    onClick={handleLogoutOtherDevices}
-                                    className="py-2 px-4 bg-red-50 hover:bg-red-100 dark:bg-red-950/30 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
-                                >
-                                    Log Out Dari Perangkat Lain
-                                </button>
+                                    ))
+                                ) : (
+                                    <p className="text-xs text-gray-500 italic">Data sesi perangkat tidak tersedia. Pastikan driver session adalah database.</p>
+                                )}
                             </div>
                         </div>
                     </div>

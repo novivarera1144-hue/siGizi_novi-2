@@ -108,9 +108,11 @@ Route::middleware(['auth'])->group(function () {
             })->name('admin.pengaturan-update');
 
             // Rute untuk Pengaturan Profil Admin
-            Route::get('/settings/profile', function () {
-                return Inertia::render('Admin/ProfileSettings');
-            })->name('admin.profile.settings');
+            Route::get('/settings/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])
+                ->name('admin.profile.settings');
+
+            Route::delete('/settings/profile/sessions/{sessionId}', [\App\Http\Controllers\Admin\AdminProfileController::class, 'destroySession'])
+                ->name('admin.profile.sessions.destroy');
 
             // Ubah dari Route::put menjadi Route::post
             Route::post('/settings/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'updateProfile'])
