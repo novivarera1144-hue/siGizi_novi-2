@@ -18,9 +18,10 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     $testimonials = \App\Models\Testimonial::with('user:id,name,photo')
-        ->where('is_approved', true)
+        ->where('is_visible', true)
         ->latest()
         ->get();
+    $settings = \App\Models\HomeSetting::getSettings();
 
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -28,15 +29,19 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
         'testimonials' => $testimonials,
+        'homeSettings' => $settings,
     ]);
 });
 
 // Route halaman Tentang Kami
 Route::get('/tentang-kami', function () {
+    $settings = \App\Models\HomeSetting::getSettings();
+
     return Inertia::render('About', [
         'auth' => [
             'user' => auth()->user(),
         ],
+        'aboutSettings' => $settings,
     ]);
 })->name('tentang-kami');
 
@@ -76,15 +81,10 @@ Route::middleware(['auth'])->group(function () {
             // Rute Tambahan untuk Fitur Tangguhkan / Suspend Pengguna
             Route::patch('/kelola-pengguna/{id}/toggle-suspend', [KelolaPenggunaController::class, 'toggleSuspend'])->name('admin.users.toggle-suspend');
 
-            Route::get('/kelola-tampilan', function () {
-                $testimonials = \App\Models\Testimonial::with('user:id,name,photo')->latest()->get();
-                return Inertia::render('Admin/KelolaTampilan', [
-                    'testimonials' => $testimonials
-                ]);
-            })->name('admin.kelola-tampilan');
-
-            Route::patch('/testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])
-                ->name('admin.testimonials.update-status');
+            Route::get('/kelola-tampilan', [\App\Http\Controllers\Admin\KelolaTampilanController::class, 'index'])->name('admin.kelola-tampilan');
+            Route::post('/kelola-tampilan/hero', [\App\Http\Controllers\Admin\KelolaTampilanController::class, 'updateHero'])->name('admin.kelola-tampilan.update-hero');
+            Route::post('/kelola-tampilan/about', [\App\Http\Controllers\Admin\KelolaTampilanController::class, 'updateAbout'])->name('admin.kelola-tampilan.update-about');
+            Route::patch('/testimonials/{testimonial}/status', [\App\Http\Controllers\Admin\KelolaTampilanController::class, 'toggleTestimonial'])->name('admin.testimonials.update-status');
 
             Route::get('/laporan-global', [LaporanGlobalController::class, 'index'])->name('admin.laporan-global');
 

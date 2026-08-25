@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
-export default function Welcome({ auth, laravelVersion, phpVersion, testimonials: dbTestimonials = [] }) {
+export default function Welcome({ auth, laravelVersion, phpVersion, testimonials: dbTestimonials = [], homeSettings = null }) {
     const [darkMode, setDarkMode] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -63,17 +63,18 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
         }
     ];
 
-    // Six features list (Keunggulan)
+    // Six features list (Keunggulan - 6 items)
     const features = [
         {
             title: "Scan AI",
-            description: "Upload foto makanan, AI identifikasi dan analisis nutrisi dalam hitungan detik.",
+            description: "Upload foto makanan, AI identifikasi dan analisis kandungan nutrisi dalam hitungan detik.",
             icon: (
-                <svg className="w-6 h-6 text-[#1F7A54]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg className="w-6 h-6 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
             ),
-            bg: "bg-emerald-50 dark:bg-emerald-950/20"
+            bg: "bg-emerald-50 dark:bg-emerald-950/40"
         },
         {
             title: "Health Insight",
@@ -83,60 +84,83 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
             ),
-            bg: "bg-blue-50 dark:bg-blue-950/20"
+            bg: "bg-blue-50 dark:bg-blue-950/40"
         },
         {
-            title: "Daily Tracker",
-            description: "Pantau total asupan nutrisi harianmu dan perkembangan pola makan dari waktu ke waktu.",
+            title: "Riwayat & Log Nutrisi",
+            description: "Simpan dan lacak semua riwayat scan makanan harianmu untuk menjaga konsistensi pola makan.",
             icon: (
-                <svg className="w-6 h-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
             ),
-            bg: "bg-emerald-50 dark:bg-emerald-950/20"
+            bg: "bg-emerald-50 dark:bg-emerald-950/40"
+        },
+        {
+            title: "Laporan Konsumsi Mingguan",
+            description: "Grafik dan ringkasan pola konsumsi nutrisi lengkap selama satu minggu penuh.",
+            icon: (
+                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            ),
+            bg: "bg-purple-50 dark:bg-purple-950/40"
         },
         {
             title: "Food Score",
             description: "Nilai kesehatan makanan 1-100 berdasarkan keseimbangan nutrisi dan kandungan gizinya.",
             icon: (
-                <svg className="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.88a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.88a1 1 0 00-1.175 0l-3.97 2.88c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.88c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                 </svg>
             ),
-            bg: "bg-amber-50 dark:bg-amber-950/20"
-        },
-        {
-            title: "Laporan Mingguan",
-            description: "Grafik dan ringkasan pola konsumsi nutrisi lengkap selama satu minggu penuh.",
-            icon: (
-                <svg className="w-6 h-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-            ),
-            bg: "bg-purple-50 dark:bg-purple-950/20"
+            bg: "bg-amber-50 dark:bg-amber-950/40"
         },
         {
             title: "AI Nutrition Chat",
             description: "Tanya jawab nutrisi langsung dengan AI assistant yang siap membantu kapan saja.",
             icon: (
-                <svg className="w-6 h-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
             ),
-            bg: "bg-orange-50 dark:bg-orange-950/20"
+            bg: "bg-orange-50 dark:bg-orange-950/40"
         }
     ];
 
-    // Testimonials (Apa kata mereka) — dari database (menggunakan t.ulasan)
+    // Testimonials (Apa kata mereka) — dari database (menggunakan t.comment)
     const testimonials = dbTestimonials.map((t) => ({
         name: t.user?.name || 'Anonim',
-        role: t.pekerjaan,
+        role: t.role || t.pekerjaan,
         initial: (t.user?.name || 'A').charAt(0).toUpperCase(),
         stars: t.rating,
-        quote: `\u201C${t.ulasan}\u201D`,
+        quote: `\u201C${t.comment || t.ulasan}\u201D`,
         photo: t.user?.photo ? `/storage/${t.user.photo}` : null,
         color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
     }));
+
+    // Formatter headline Hero: 3 baris dengan kata tengah berwarna amber/oranye
+    const rawHeadline = homeSettings?.hero_headline?.trim();
+    let headlineLine1 = "Kenali Gizi";
+    let headlineLine2 = "Makananmu";
+    let headlineLine3 = "Dalam Detik";
+
+    if (rawHeadline) {
+        const words = rawHeadline.split(/\s+/);
+        if (words.length === 1) {
+            headlineLine2 = words[0];
+        } else if (words.length === 3) {
+            headlineLine1 = `${words[0]} ${words[1]}`;
+            headlineLine2 = words[2];
+        } else if (words.length > 3) {
+            headlineLine1 = words.slice(0, 2).join(' ');
+            headlineLine2 = words.slice(2, -1).join(' ') || words[2];
+            headlineLine3 = words.slice(-1).join(' ') || "Dalam Detik";
+        } else if (words.length === 2) {
+            headlineLine1 = words[0];
+            headlineLine2 = words[1];
+        }
+    }
 
     return (
         <>
@@ -264,12 +288,14 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 </header>
 
                 {/* Hero Section */}
-                <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16 transition-colors duration-300">
+                <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16">
                     <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
                         <img
-                            src="/images/sayuran1.webp"
+                            src={homeSettings?.hero_image ? `/storage/${homeSettings.hero_image}` : "/images/sayuran1.webp"}
                             alt="Background Makanan Sehat"
-                            className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05]"
+                            loading="eager"
+                            fetchPriority="high"
+                            className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05] transition-none"
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent"></div>
                     </div>
@@ -278,17 +304,22 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                             <div className="lg:col-span-7 space-y-5 pl-2 sm:pl-4">
                                 <div className="inline-flex items-center space-x-2 bg-white/15 border border-white/25 px-3.5 py-1.5 rounded-full backdrop-blur-md">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                                     <span className="text-xs font-medium text-white">Didukung Teknologi AI</span>
                                 </div>
 
                                 <h1
-                                    className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] max-w-xl"
-                                    style={{ WebkitTextStroke: '1.5px white' }}
+                                    className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] max-w-xl"
                                 >
-                                    Kenali Gizi <br />
-                                    <span className="text-amber-500" style={{ WebkitTextStroke: '1.5px #f59e0b' }}>Makananmu</span> <br />
-                                    Dalam Detik
+                                    <span className="text-white block" style={{ WebkitTextStroke: '1.5px white' }}>
+                                        {headlineLine1}
+                                    </span>
+                                    <span className="text-amber-500 block" style={{ WebkitTextStroke: '1.5px #f59e0b' }}>
+                                        {headlineLine2}
+                                    </span>
+                                    <span className="text-white block" style={{ WebkitTextStroke: '1.5px white' }}>
+                                        {headlineLine3}
+                                    </span>
                                 </h1>
 
                                 <p className="text-sm sm:text-base text-gray-200 max-w-md font-normal leading-relaxed">
@@ -299,7 +330,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                     <Link
                                         href="/scan"
                                         prefetch={["hover", "mount"]}
-                                        className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-900/40 transition-all duration-300 text-sm"
+                                        className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-900/40 text-sm"
                                     >
                                         <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -309,7 +340,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                     </Link>
                                     <a
                                         href="#cara-kerja"
-                                        className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md border border-white/25 transition-all duration-300 text-sm"
+                                        className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md border border-white/25 text-sm"
                                     >
                                         Lihat Demo
                                     </a>
@@ -476,21 +507,21 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 </section>
 
                 {/* Keunggulan/Fitur */}
-                <section className="py-20 bg-gray-50 dark:bg-zinc-900/50 transition-colors duration-300">
+                <section className="py-20 bg-gray-50 dark:bg-zinc-900/50">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
                             <span className="text-xs font-extrabold uppercase tracking-widest text-[#1F7A54] dark:text-emerald-400">FITUR UTAMA</span>
                             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Solusi Pantau Gizi Terpadu</h2>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {features.map((feature, index) => (
-                                <div key={index} className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group">
-                                    <div className={`w-12 h-12 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110`}>
+                                <div key={index} className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800 shadow-sm flex flex-col justify-start">
+                                    <div className={`w-12 h-12 rounded-xl ${feature.bg} flex items-center justify-center mb-4 shrink-0`}>
                                         {feature.icon}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{feature.description}</p>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-relaxed">{feature.description}</p>
                                 </div>
                             ))}
                         </div>

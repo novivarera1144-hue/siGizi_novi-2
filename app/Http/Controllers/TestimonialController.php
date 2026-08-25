@@ -33,10 +33,10 @@ class TestimonialController extends Controller
 
         Testimonial::create([
             'user_id' => $request->user()->id,
-            'pekerjaan' => $validated['occupation'],
+            'role' => $validated['occupation'],
             'rating' => $validated['rating'],
-            'ulasan' => $validated['comment'],
-            'is_approved' => false,
+            'comment' => $validated['comment'],
+            'is_visible' => false,
         ]);
 
         return Redirect::back()->with('success', 'Ulasan Anda berhasil dikirim dan menunggu persetujuan admin.');
@@ -48,14 +48,14 @@ class TestimonialController extends Controller
     public function updateStatus(Request $request, Testimonial $testimonial): RedirectResponse
     {
         $validated = $request->validate([
-            'is_approved' => ['required', 'boolean'],
+            'is_visible' => ['required', 'boolean'],
         ]);
 
         $testimonial->update([
-            'is_approved' => $validated['is_approved'],
+            'is_visible' => $validated['is_visible'],
         ]);
 
-        $statusMessage = $testimonial->is_approved 
+        $statusMessage = $testimonial->is_visible 
             ? 'Testimoni berhasil ditampilkan di halaman utama.' 
             : 'Testimoni berhasil disembunyikan.';
 

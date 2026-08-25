@@ -1,76 +1,118 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 
-export default function KelolaTampilan({ testimonials: initialTestimonials = [] }) {
-    // 1. Headline & Hero Image state
-    const [headline, setHeadline] = useState('Kenali Gizi Makananmu');
-    const [heroImage, setHeroImage] = useState('/images/smoothie.jpg');
+export default function KelolaTampilan({ settings, testimonials = [], stats }) {
+    const { flash } = usePage().props;
 
-    // 2. Tentang Kami details state
-    const [deskripsiSingkat, setDeskripsiSingkat] = useState(
-        'Platform berbasis web yang dirancang untuk membantu masyarakat memahami kandungan nutrisi makanan sehari-hari secara mudah, cepat, dan akurat.'
+    // 1. Hero Section Form
+    const heroForm = useForm({
+        hero_headline: settings?.hero_headline || '',
+        hero_image: null,
+        delete_image: false,
+    });
+
+    const [heroImagePreview, setHeroImagePreview] = useState(
+        settings?.hero_image ? `/storage/${settings.hero_image}` : '/images/smoothie.jpg'
     );
-    const [latarBelakang, setLatarBelakang] = useState(
-        'Banyak masyarakat peduli kesehatan namun kesulitan mengetahui kandungan nutrisi lengkap dari makanan yang mereka konsumsi sehari-hari.'
-    );
-    const [tujuan, setTujuan] = useState(
-        'Mengembangkan platform AI berbasis web untuk membantu masyarakat memantau gizi demi gaya hidup sehat berkelanjutan.'
-    );
-    const [manfaatList, setManfaatList] = useState([
-        'Mengetahui kandungan nutrisi makanan secara instan',
-        'Memantau asupan nutrisi harian dengan mudah'
-    ]);
 
-    // 3. Testimoni/Rating Moderasi — data dari database (DISESUAIKAN)
-    const reviews = initialTestimonials.map((t) => ({
-        id: t.id,
-        name: t.user?.name || 'Anonim',
-        status: t.pekerjaan, // Diubah dari t.occupation agar mengambil kolom 'pekerjaan'
-        rating: t.rating,
-        content: t.ulasan,   // Diubah dari t.comment agar mengambil kolom 'ulasan'
-        visible: t.is_approved,
-        created_at: t.created_at,
-    }));
-
-    const totalReviews = reviews.length;
-    const displayedReviewsCount = reviews.filter((r) => r.visible).length;
-    const hiddenReviewsCount = totalReviews - displayedReviewsCount;
-    const averageRating = reviews.length > 0
-        ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
-        : '0.0';
+    // Sync state if settings prop changes
+    useEffect(() => {
+        if (settings) {
+            heroForm.setData('hero_headline', settings.hero_headline || '');
+            setHeroImagePreview(settings.hero_image ? `/storage/${settings.hero_image}` : '/images/smoothie.jpg');
+        }
+    }, [settings]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setHeroImage(imageUrl);
+            heroForm.setData((data) => ({
+                ...data,
+                hero_image: file,
+                delete_image: false,
+            }));
+            setHeroImagePreview(URL.createObjectURL(file));
         }
     };
 
     const handleImageDelete = () => {
-        setHeroImage(null);
+        heroForm.setData((data) => ({
+            ...data,
+            hero_image: null,
+            delete_image: true,
+        }));
+        setHeroImagePreview(null);
     };
 
+    const submitHero = (e) => {
+        e.preventDefault();
+        heroForm.post(route('admin.kelola-tampilan.update-hero'), {
+            preserveScroll: true,
+        });
+    };
+
+    // 2. Tentang Kami Details Form
+    const aboutForm = useForm({
+        about_short_description: settings?.about_short_description || '',
+        about_background: settings?.about_background || '',
+        about_goal: settings?.about_goal || '',
+        about_benefits: settings?.about_benefits || [],
+    });
+
+    // Sync state if settings prop changes
+    useEffect(() => {
+        if (settings) {
+            aboutForm.setData({
+                about_short_description: settings.about_short_description || '',
+                about_background: settings.about_background || '',
+                about_goal: settings.about_goal || '',
+                about_benefits: settings.about_benefits || [],
+            });
+        }
+    }, [settings]);
+
     const handleAddManfaat = () => {
-        setManfaatList([...manfaatList, '']);
+        aboutForm.setData('about_benefits', [...aboutForm.data.about_benefits, '']);
     };
 
     const handleRemoveManfaat = (index) => {
-        const newList = manfaatList.filter((_, i) => i !== index);
-        setManfaatList(newList);
+        const newList = aboutForm.data.about_benefits.filter((_, i) => i !== index);
+        aboutForm.setData('about_benefits', newList);
     };
 
     const handleUpdateManfaat = (index, value) => {
-        const newList = [...manfaatList];
+        const newList = [...aboutForm.data.about_benefits];
         newList[index] = value;
-        setManfaatList(newList);
+        aboutForm.setData('about_benefits', newList);
     };
 
-    const handleSetReviewVisibility = (id, visible) => {
-        router.patch(route('admin.testimonials.update-status', id), {
-            is_approved: visible,
-        }, {
+    const submitAbout = (e) => {
+        e.preventDefault();
+        aboutForm.post(route('admin.kelola-tampilan.update-about'), {
+            preserveScroll: true,
+        });
+    };
+
+    // 3. Testimoni/Rating Moderasi — data dari database
+    const reviews = testimonials.map((t) => ({
+        id: t.id,
+        name: t.name,
+        status: t.role,
+        rating: t.rating,
+        content: t.comment,
+        visible: t.is_visible,
+        created_at: t.created_at,
+    }));
+
+    const totalReviews = stats?.total_reviews ?? reviews.length;
+    const displayedReviewsCount = stats?.active_reviews ?? reviews.filter((r) => r.visible).length;
+    const hiddenReviewsCount = stats?.hidden_reviews ?? (totalReviews - displayedReviewsCount);
+    const averageRating = stats?.average_rating ?? '0.0';
+
+    const handleSetReviewVisibility = (id, targetVisible, currentVisible) => {
+        if (targetVisible === currentVisible) return;
+        router.patch(route('admin.testimonials.update-status', id), {}, {
             preserveScroll: true,
         });
     };
@@ -156,6 +198,16 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
 
             <div className="w-full overflow-x-hidden space-y-4 pb-24">
 
+                {/* NOTIFICATION MESSAGES */}
+                {flash?.success && (
+                    <div className="p-4 bg-emerald-50 border border-emerald-200/60 dark:bg-[#102A1C]/50 dark:border-[#1E4D34]/50 text-emerald-800 dark:text-emerald-300 rounded-2xl flex items-start gap-3 shadow-sm transition-all duration-300 animate-in fade-in duration-300">
+                        <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div className="text-xs font-bold leading-relaxed">{flash.success}</div>
+                    </div>
+                )}
+
                 {/* 1. STAT CARDS */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full">
                     {statCards.map((card, idx) => (
@@ -190,7 +242,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                 </div>
 
                 {/* 2. MANAJEMEN BERANDA — Hero Section */}
-                <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
+                <form onSubmit={submitHero} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
                     <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                         <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -205,25 +257,30 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
-                                value={headline}
-                                onChange={(e) => setHeadline(e.target.value)}
+                                value={heroForm.data.hero_headline}
+                                onChange={(e) => heroForm.setData('hero_headline', e.target.value)}
                                 className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all"
                             />
                             <div className="flex gap-2 shrink-0">
                                 <button
-                                    onClick={() => alert(`Headline disimpan: ${headline}`)}
-                                    className="flex-1 sm:flex-initial py-2 px-4 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white text-xs font-bold rounded-xl transition duration-150 cursor-pointer shadow-sm"
+                                    type="submit"
+                                    disabled={heroForm.processing}
+                                    className="flex-1 sm:flex-initial py-2 px-4 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white text-xs font-bold rounded-xl transition duration-150 cursor-pointer shadow-sm disabled:opacity-50"
                                 >
-                                    Simpan
+                                    {heroForm.processing ? 'Menyimpan...' : 'Simpan'}
                                 </button>
                                 <button
-                                    onClick={() => setHeadline('')}
+                                    type="button"
+                                    onClick={() => heroForm.setData('hero_headline', '')}
                                     className="flex-1 sm:flex-initial py-2 px-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-500 dark:text-red-400 hover:bg-red-100 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
                                 >
                                     Hapus
                                 </button>
                             </div>
                         </div>
+                        {heroForm.errors.hero_headline && (
+                            <p className="text-red-500 text-xs mt-1 font-semibold">{heroForm.errors.hero_headline}</p>
+                        )}
                     </div>
 
                     <div>
@@ -232,8 +289,8 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                         </label>
                         <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4">
                             <div className="w-full max-w-[200px] h-32 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-emerald-900/40 shrink-0 bg-gray-100 dark:bg-emerald-950/20 flex items-center justify-center">
-                                {heroImage ? (
-                                    <img src={heroImage} alt="Preview Utama" className="w-full h-full object-cover" />
+                                {heroImagePreview ? (
+                                    <img src={heroImagePreview} alt="Preview Utama" className="w-full h-full object-cover" />
                                 ) : (
                                     <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">Tidak ada gambar</span>
                                 )}
@@ -261,13 +318,16 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                         Hapus
                                     </button>
                                 </div>
+                                {heroForm.errors.hero_image && (
+                                    <p className="text-red-500 text-xs mt-1 font-semibold">{heroForm.errors.hero_image}</p>
+                                )}
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
 
                 {/* 3. PENGATURAN HALAMAN TENTANG KAMI */}
-                <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
+                <form onSubmit={submitAbout} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
                     <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                         <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -280,11 +340,14 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                             Deskripsi Singkat
                         </label>
                         <textarea
-                            value={deskripsiSingkat}
-                            onChange={(e) => setDeskripsiSingkat(e.target.value)}
+                            value={aboutForm.data.about_short_description}
+                            onChange={(e) => aboutForm.setData('about_short_description', e.target.value)}
                             rows={3}
                             className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all leading-relaxed"
                         />
+                        {aboutForm.errors.about_short_description && (
+                            <p className="text-red-500 text-xs mt-1 font-semibold">{aboutForm.errors.about_short_description}</p>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -293,22 +356,28 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                 Latar Belakang
                             </label>
                             <textarea
-                                value={latarBelakang}
-                                onChange={(e) => setLatarBelakang(e.target.value)}
+                                value={aboutForm.data.about_background}
+                                onChange={(e) => aboutForm.setData('about_background', e.target.value)}
                                 rows={4}
                                 className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all leading-relaxed"
                             />
+                            {aboutForm.errors.about_background && (
+                                <p className="text-red-500 text-xs mt-1 font-semibold">{aboutForm.errors.about_background}</p>
+                            )}
                         </div>
                         <div>
                             <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-1.5">
                                 Tujuan
                             </label>
                             <textarea
-                                value={tujuan}
-                                onChange={(e) => setTujuan(e.target.value)}
+                                value={aboutForm.data.about_goal}
+                                onChange={(e) => aboutForm.setData('about_goal', e.target.value)}
                                 rows={4}
                                 className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all leading-relaxed"
                             />
+                            {aboutForm.errors.about_goal && (
+                                <p className="text-red-500 text-xs mt-1 font-semibold">{aboutForm.errors.about_goal}</p>
+                            )}
                         </div>
                     </div>
 
@@ -326,7 +395,7 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                             </button>
                         </div>
                         <div className="space-y-2">
-                            {manfaatList.map((manfaatItem, idx) => (
+                            {aboutForm.data.about_benefits.map((manfaatItem, idx) => (
                                 <div key={idx} className="flex items-center gap-2">
                                     <input
                                         type="text"
@@ -348,15 +417,19 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                 </div>
                             ))}
                         </div>
+                        {aboutForm.errors.about_benefits && (
+                            <p className="text-red-500 text-xs mt-1 font-semibold">{aboutForm.errors.about_benefits}</p>
+                        )}
                     </div>
 
                     <button
-                        onClick={() => alert('Semua data Tentang Kami berhasil disimpan!')}
-                        className="w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-sm block mx-auto"
+                        type="submit"
+                        disabled={aboutForm.processing}
+                        className="w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-sm block mx-auto disabled:opacity-50"
                     >
-                        Simpan Perubahan Tentang Kami
+                        {aboutForm.processing ? 'Menyimpan...' : 'Simpan Perubahan Tentang Kami'}
                     </button>
-                </div>
+                </form>
 
                 {/* 4. MODERASI RATING & TESTIMONI */}
                 <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
@@ -403,7 +476,8 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                             <td className="py-3.5 px-2 sm:px-4 text-right">
                                                 <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-1.5">
                                                     <button
-                                                        onClick={() => handleSetReviewVisibility(review.id, true)}
+                                                        type="button"
+                                                        onClick={() => handleSetReviewVisibility(review.id, true, review.visible)}
                                                         className={`rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-semibold cursor-pointer transition duration-150 shadow-sm ${review.visible
                                                             ? 'bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white'
                                                             : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-500 dark:text-emerald-300 hover:bg-[#1F7A54] hover:text-white'
@@ -412,7 +486,8 @@ export default function KelolaTampilan({ testimonials: initialTestimonials = [] 
                                                         Tampilkan
                                                     </button>
                                                     <button
-                                                        onClick={() => handleSetReviewVisibility(review.id, false)}
+                                                        type="button"
+                                                        onClick={() => handleSetReviewVisibility(review.id, false, review.visible)}
                                                         className={`rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-semibold cursor-pointer transition duration-150 ${!review.visible
                                                             ? 'bg-gray-700 text-white hover:bg-gray-800'
                                                             : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-600 dark:text-emerald-300 hover:bg-gray-200 dark:hover:bg-emerald-900/60'

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 
-export default function About() {
+export default function About({ aboutSettings = null }) {
     // State untuk mengatur dark mode
     const [darkMode, setDarkMode] = useState(false);
 
@@ -101,8 +101,8 @@ export default function About() {
                         <div className="space-y-4">
                             <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-emerald-600/80">TENTANG KAMI</span>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Mengenal siGizi</h2>
-                            <p className="text-gray-600 dark:text-[#52B788] max-w-3xl text-lg leading-relaxed">
-                                Platform berbasis web yang dirancang untuk membantu masyarakat memahami kandungan nutrisi makanan secara lebih mudah dan praktis melalui teknologi AI.
+                            <p className="text-gray-600 dark:text-[#52B788] max-w-3xl text-lg leading-relaxed whitespace-pre-line">
+                                {aboutSettings?.about_short_description || 'Platform berbasis web yang dirancang untuk membantu masyarakat memahami kandungan nutrisi makanan secara lebih mudah dan praktis melalui teknologi AI.'}
                             </p>
                         </div>
 
@@ -115,8 +115,8 @@ export default function About() {
                                     </svg>
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Latar Belakang</h3>
-                                <p className="text-gray-500 dark:text-[#52B788]/90 text-sm leading-relaxed">
-                                    Banyak masyarakat peduli kesehatan namun kesulitan mengetahui kandungan nutrisi makanan yang dikonsumsi. siGizi hadir sebagai solusi berbasis AI yang mudah diakses.
+                                <p className="text-gray-500 dark:text-[#52B788]/90 text-sm leading-relaxed whitespace-pre-line">
+                                    {aboutSettings?.about_background || 'Banyak masyarakat peduli kesehatan namun kesulitan mengetahui kandungan nutrisi makanan yang dikonsumsi. siGizi hadir sebagai solusi berbasis AI yang mudah diakses.'}
                                 </p>
                             </div>
 
@@ -127,8 +127,8 @@ export default function About() {
                                     </svg>
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Tujuan</h3>
-                                <p className="text-gray-500 dark:text-[#52B788]/90 text-sm leading-relaxed">
-                                    Mengembangkan platform AI berbasis web untuk membantu masyarakat memahami nutrisi makanan dan menerapkan pola makan sehat.
+                                <p className="text-gray-500 dark:text-[#52B788]/90 text-sm leading-relaxed whitespace-pre-line">
+                                    {aboutSettings?.about_goal || 'Mengembangkan platform AI berbasis web untuk membantu masyarakat memahami nutrisi makanan dan menerapkan pola makan sehat.'}
                                 </p>
                             </div>
                         </div>
@@ -137,14 +137,17 @@ export default function About() {
                         <div className="space-y-6">
                             <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Manfaat Platform</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {[
-                                    "Mengetahui kandungan nutrisi makanan dengan cepat",
-                                    "Memantau asupan nutrisi harian secara terstruktur",
-                                    "Mendapatkan rekomendasi pola makan yang lebih sehat",
-                                    "Meningkatkan kesadaran terhadap pentingnya gizi",
-                                    "Edukasi nutrisi yang mudah diakses semua kalangan",
-                                    "Membangun kebiasaan makan sehat secara berkelanjutan"
-                                ].map((manfaat, index) => (
+                                {(aboutSettings?.about_benefits && aboutSettings.about_benefits.length > 0
+                                    ? aboutSettings.about_benefits
+                                    : [
+                                        "Mengetahui kandungan nutrisi makanan dengan cepat",
+                                        "Memantau asupan nutrisi harian secara terstruktur",
+                                        "Mendapatkan rekomendasi pola makan yang lebih sehat",
+                                        "Meningkatkan kesadaran terhadap pentingnya gizi",
+                                        "Edukasi nutrisi yang mudah diakses semua kalangan",
+                                        "Membangun kebiasaan makan sehat secara berkelanjutan"
+                                    ]
+                                ).map((manfaat, index) => (
                                     <div key={index} className="flex items-center space-x-3 bg-white dark:bg-[#0B2B18] p-4 rounded-2xl border border-gray-100 dark:border-[#164D2B] shadow-sm">
                                         <svg className="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

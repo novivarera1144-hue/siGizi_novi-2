@@ -10,15 +10,15 @@ class Testimonial extends Model
 
     protected $fillable = [
         'user_id',
-        'pekerjaan',
+        'role',
         'rating',
-        'ulasan',
-        'is_approved',
+        'comment',
+        'is_visible',
     ];
 
     protected $casts = [
-        'is_approved' => 'boolean',
-        'rating' => 'integer',
+        'is_visible' => 'boolean',
+        'rating'     => 'integer',
     ];
 
     public function user()
