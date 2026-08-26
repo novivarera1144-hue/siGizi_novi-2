@@ -102,6 +102,8 @@ class KelolaTampilanController extends Controller
             'about_goal'              => ['required', 'string', 'max:2000'],
             'about_benefits'          => ['nullable', 'array'],
             'about_benefits.*'        => ['string', 'max:300'],
+            'about_target_users'      => ['nullable', 'array'],
+            'about_target_users.*'    => ['string', 'max:100'],
         ], [
             'about_short_description.required' => 'Deskripsi singkat wajib diisi.',
             'about_background.required'        => 'Latar belakang wajib diisi.',
@@ -116,11 +118,18 @@ class KelolaTampilanController extends Controller
             ->values()
             ->toArray();
 
+        // Filter out empty target user entries
+        $targetUsers = collect($request->about_target_users ?? [])
+            ->filter(fn($t) => filled($t))
+            ->values()
+            ->toArray();
+
         $settings->update([
             'about_short_description' => $request->about_short_description,
             'about_background'        => $request->about_background,
             'about_goal'              => $request->about_goal,
             'about_benefits'          => $benefits,
+            'about_target_users'      => $targetUsers,
         ]);
 
         return redirect()->back()->with('success', 'Halaman Tentang Kami berhasil diperbarui!');

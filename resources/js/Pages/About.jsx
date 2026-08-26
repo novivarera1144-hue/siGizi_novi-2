@@ -162,9 +162,12 @@ export default function About({ aboutSettings = null }) {
                         <div className="bg-white dark:bg-[#0B2B18] p-8 rounded-3xl border border-gray-100 dark:border-[#164D2B] shadow-sm text-center space-y-6">
                             <h4 className="text-lg font-bold text-gray-900 dark:text-white">Target Pengguna</h4>
                             <div className="flex flex-wrap justify-center gap-3">
-                                {[
-                                    "Mahasiswa", "Pelajar", "Anak Kost", "Pekerja", "Masyarakat Umum", "Program Diet", "Penggiat Hidup Sehat"
-                                ].map((target, index) => (
+                                {(aboutSettings?.about_target_users && aboutSettings.about_target_users.length > 0
+                                    ? aboutSettings.about_target_users
+                                    : [
+                                        "Mahasiswa", "Pelajar", "Anak Kost", "Pekerja", "Masyarakat Umum", "Program Diet", "Penggiat Hidup Sehat"
+                                    ]
+                                ).map((target, index) => (
                                     <span key={index} className="px-4 py-2 rounded-full bg-[#F8F9FA] dark:bg-[#092213] text-xs font-semibold text-gray-700 dark:text-[#52B788] border border-gray-200/60 dark:border-[#164D2B]">
                                         {target}
                                     </span>

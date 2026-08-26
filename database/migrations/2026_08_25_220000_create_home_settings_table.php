@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('about_background')->nullable();
             $table->text('about_goal')->nullable();
             $table->json('about_benefits')->nullable();
+            $table->json('about_target_users')->nullable();
             $table->timestamps();
         });
 
@@ -33,6 +34,15 @@ return new class extends Migration
             'about_benefits' => json_encode([
                 'Mengetahui kandungan nutrisi makanan secara instan',
                 'Memantau asupan nutrisi harian dengan mudah',
+            ]),
+            'about_target_users' => json_encode([
+                'Mahasiswa',
+                'Pelajar',
+                'Anak Kost',
+                'Pekerja',
+                'Masyarakat Umum',
+                'Program Diet',
+                'Penggiat Hidup Sehat',
             ]),
             'created_at' => now(),
             'updated_at' => now(),

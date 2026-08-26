@@ -58,6 +58,7 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
         about_background: settings?.about_background || '',
         about_goal: settings?.about_goal || '',
         about_benefits: settings?.about_benefits || [],
+        about_target_users: settings?.about_target_users || [],
     });
 
     // Sync state if settings prop changes
@@ -68,6 +69,7 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                 about_background: settings.about_background || '',
                 about_goal: settings.about_goal || '',
                 about_benefits: settings.about_benefits || [],
+                about_target_users: settings.about_target_users || [],
             });
         }
     }, [settings]);
@@ -85,6 +87,21 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
         const newList = [...aboutForm.data.about_benefits];
         newList[index] = value;
         aboutForm.setData('about_benefits', newList);
+    };
+
+    const handleAddTargetUser = () => {
+        aboutForm.setData('about_target_users', [...aboutForm.data.about_target_users, '']);
+    };
+
+    const handleRemoveTargetUser = (index) => {
+        const newList = aboutForm.data.about_target_users.filter((_, i) => i !== index);
+        aboutForm.setData('about_target_users', newList);
+    };
+
+    const handleUpdateTargetUser = (index, value) => {
+        const newList = [...aboutForm.data.about_target_users];
+        newList[index] = value;
+        aboutForm.setData('about_target_users', newList);
     };
 
     const submitAbout = (e) => {
@@ -419,6 +436,47 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                         </div>
                         {aboutForm.errors.about_benefits && (
                             <p className="text-red-500 text-xs mt-1 font-semibold">{aboutForm.errors.about_benefits}</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <div className="flex justify-between items-center mb-1.5">
+                            <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase">
+                                Target Pengguna
+                            </label>
+                            <button
+                                type="button"
+                                onClick={handleAddTargetUser}
+                                className="text-xs font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 dark:hover:text-emerald-300 cursor-pointer"
+                            >
+                                + Tambah Baru
+                            </button>
+                        </div>
+                        <div className="space-y-2">
+                            {aboutForm.data.about_target_users.map((targetItem, idx) => (
+                                <div key={idx} className="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        value={targetItem}
+                                        onChange={(e) => handleUpdateTargetUser(idx, e.target.value)}
+                                        placeholder="Tuliskan target pengguna..."
+                                        className="flex-1 min-w-0 bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveTargetUser(idx)}
+                                        className="p-2 bg-red-50 dark:bg-red-950/40 text-red-500 dark:text-red-400 hover:bg-red-100 border border-red-100 dark:border-red-900/50 rounded-xl transition duration-150 cursor-pointer shrink-0"
+                                        title="Hapus target pengguna"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        {aboutForm.errors.about_target_users && (
+                            <p className="text-red-500 text-xs mt-1 font-semibold">{aboutForm.errors.about_target_users}</p>
                         )}
                     </div>
 

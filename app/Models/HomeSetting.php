@@ -15,10 +15,12 @@ class HomeSetting extends Model
         'about_background',
         'about_goal',
         'about_benefits',
+        'about_target_users',
     ];
 
     protected $casts = [
-        'about_benefits' => 'array',
+        'about_benefits'     => 'array',
+        'about_target_users' => 'array',
     ];
 
     /**
@@ -35,6 +37,15 @@ class HomeSetting extends Model
             'about_benefits'          => [
                 'Mengetahui kandungan nutrisi makanan secara instan',
                 'Memantau asupan nutrisi harian dengan mudah',
+            ],
+            'about_target_users'      => [
+                'Mahasiswa',
+                'Pelajar',
+                'Anak Kost',
+                'Pekerja',
+                'Masyarakat Umum',
+                'Program Diet',
+                'Penggiat Hidup Sehat',
             ],
         ]);
     }
