@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\Admin\KelolaPenggunaController;
 use App\Http\Controllers\Admin\LaporanGlobalController;
+use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\RiwayatController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,11 @@ Route::get('/tentang-kami', function () {
         'aboutSettings' => $settings,
     ]);
 })->name('tentang-kami');
+
+// Route Mode Pemeliharaan
+Route::get('/maintenance', function () {
+    return Inertia::render('Maintenance');
+})->name('maintenance');
 
 // API Endpoint untuk Scan History (dari Supabase)
 Route::get('/api/user/scan-history', function () {
@@ -88,24 +94,12 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/laporan-global', [LaporanGlobalController::class, 'index'])->name('admin.laporan-global');
 
-            Route::get('/pengaturan-sistem', function () {
-                return Inertia::render('Admin/PengaturanSistem');
-            })->name('admin.pengaturan-sistem');
-
-            // Rute untuk menyimpan pengaturan sistem (UPDATE)
-            Route::put('/pengaturan-sistem', function (\Illuminate\Http\Request $request) {
-                $validated = $request->validate([
-                    'app_name' => 'required|string|max:255',
-                    'admin_email' => 'required|email',
-                    'enable_2fa' => 'boolean',
-                    'maintenance_mode' => 'boolean',
-                    'notify_new_user' => 'boolean',
-                    'notify_weekly_report' => 'boolean',
-                    'session_timeout' => 'required',
-                ]);
-
-                return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui.');
-            })->name('admin.pengaturan-update');
+            Route::get('/pengaturan-sistem', [SystemSettingController::class, 'index'])->name('admin.pengaturan-sistem');
+            Route::put('/pengaturan-sistem', [SystemSettingController::class, 'update'])->name('admin.pengaturan-update');
+            Route::post('/pengaturan-sistem/admin', [SystemSettingController::class, 'storeAdmin'])->name('admin.pengaturan.admin.store');
+            Route::put('/pengaturan-sistem/admin/{id}', [SystemSettingController::class, 'updateAdmin'])->name('admin.pengaturan.admin.update');
+            Route::delete('/pengaturan-sistem/admin/{id}', [SystemSettingController::class, 'destroyAdmin'])->name('admin.pengaturan.admin.destroy');
+            Route::post('/pengaturan-sistem/reset', [SystemSettingController::class, 'resetData'])->name('admin.pengaturan-reset');
 
             // Rute untuk Pengaturan Profil Admin
             Route::get('/settings/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])

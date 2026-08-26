@@ -1,84 +1,135 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function PengaturanSistem() {
+export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhubung (Aktif)', admins = [], flash = {} }) {
     const { data, setData, put, processing, errors } = useForm({
-        app_name: 'siGizi',
-        admin_email: 'noreply@sigizi.com',
-        enable_2fa: true,
-        maintenance_mode: false,
-        session_timeout: 15,
+        app_name: settings.app_name || 'siGizi',
+        admin_email: settings.admin_email || 'noreply@sigizi.com',
+        enable_2fa: settings.enable_2fa ?? true,
+        maintenance_mode: settings.maintenance_mode ?? false,
+        session_timeout: settings.session_timeout || 15,
     });
 
-    // State interaktif untuk Daftar Admin & Modal
-    const [admins, setAdmins] = useState([
-        { id: 1, name: 'Novi', email: 'novi@sigizi.com', role: 'Admin Konten' },
-        { id: 2, name: 'Nadin', email: 'nadin@sigizi.com', role: 'Super Admin' },
-    ]);
+    // State Toast Notification
+    const [toastMessage, setToastMessage] = useState(null);
+    const [toastType, setToastType] = useState('success');
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingAdmin, setEditingAdmin] = useState(null); // null artinya mode Tambah, jika ada isinya berarti mode Edit
+    // State Modal Admin (Tambah & Edit)
+    const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+    const [editingAdmin, setEditingAdmin] = useState(null);
     const [adminForm, setAdminForm] = useState({ name: '', email: '', role: 'Admin Konten', password: '' });
+    const [adminProcessing, setAdminProcessing] = useState(false);
+
+    // State Modal Hapus Admin
+    const [deleteTarget, setDeleteTarget] = useState(null);
+
+    // State Modal Reset Data
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [resetProcessing, setResetProcessing] = useState(false);
+
+    const showToast = (message, type = 'success') => {
+        setToastMessage(message);
+        setToastType(type);
+        setTimeout(() => setToastMessage(null), 4000);
+    };
 
     const handleToggle = (name) => {
         setData(name, !data[name]);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmitSettings = (e) => {
         e.preventDefault();
         put(route('admin.pengaturan-update'), {
             preserveScroll: true,
-            onSuccess: () => alert('Pengaturan berhasil disimpan.'),
-            onError: () => alert('Terjadi kesalahan, silakan periksa kembali inputan.'),
+            onSuccess: () => showToast('Pengaturan sistem berhasil disimpan.'),
+            onError: () => showToast('Terjadi kesalahan, silakan periksa kembali inputan.', 'error'),
         });
     };
 
-    const handleResetData = () => {
-        if (window.confirm("APAKAH ANDA YAKIN? Tindakan ini akan menghapus SEMUA data sistem secara permanen dan tidak dapat dibatalkan.")) {
-            alert("Fitur Reset Data akan dijalankan.");
-        }
-    };
-
-    // Fungsi interaktif buka modal Tambah
+    // Modal Tambah Admin
     const openAddModal = () => {
         setEditingAdmin(null);
         setAdminForm({ name: '', email: '', role: 'Admin Konten', password: '' });
-        setIsModalOpen(true);
+        setIsAdminModalOpen(true);
     };
 
-    // Fungsi interaktif buka modal Edit
+    // Modal Edit Admin
     const openEditModal = (admin) => {
         setEditingAdmin(admin);
         setAdminForm({ name: admin.name, email: admin.email, role: admin.role, password: '' });
-        setIsModalOpen(true);
+        setIsAdminModalOpen(true);
     };
 
-    // Fungsi simpan data admin (Tambah / Edit)
+    // Submit Modal Admin (Tambah / Edit)
     const handleSaveAdmin = (e) => {
         e.preventDefault();
+        setAdminProcessing(true);
+
         if (editingAdmin) {
-            // Update admin
-            setAdmins(admins.map(item => item.id === editingAdmin.id ? { ...item, ...adminForm } : item));
-            alert(`Admin ${adminForm.name} berhasil diperbarui!`);
+            router.put(route('admin.pengaturan.admin.update', editingAdmin.id), adminForm, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsAdminModalOpen(false);
+                    setAdminProcessing(false);
+                    showToast(`Admin ${adminForm.name} berhasil diperbarui.`);
+                },
+                onError: (errs) => {
+                    setAdminProcessing(false);
+                    const msg = Object.values(errs)[0] || 'Gagal memperbarui admin.';
+                    showToast(msg, 'error');
+                }
+            });
         } else {
-            // Tambah admin baru
-            const newAdmin = {
-                id: Date.now(),
-                ...adminForm,
-            };
-            setAdmins([...admins, newAdmin]);
-            alert(`Admin ${adminForm.name} berhasil ditambahkan!`);
+            router.post(route('admin.pengaturan.admin.store'), adminForm, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsAdminModalOpen(false);
+                    setAdminProcessing(false);
+                    showToast(`Admin ${adminForm.name} berhasil ditambahkan.`);
+                },
+                onError: (errs) => {
+                    setAdminProcessing(false);
+                    const msg = Object.values(errs)[0] || 'Gagal menambahkan admin.';
+                    showToast(msg, 'error');
+                }
+            });
         }
-        setIsModalOpen(false);
     };
 
-    // Fungsi hapus admin
-    const handleDeleteAdmin = (id, name) => {
-        if (window.confirm(`Apakah Anda yakin ingin menghapus admin ${name}?`)) {
-            setAdmins(admins.filter(item => item.id !== id));
-            alert(`Admin ${name} berhasil dihapus.`);
-        }
+    // Confirm & Execute Delete Admin
+    const confirmDeleteAdmin = () => {
+        if (!deleteTarget) return;
+        router.delete(route('admin.pengaturan.admin.destroy', deleteTarget.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                showToast(`Admin ${deleteTarget.name} berhasil dihapus.`);
+                setDeleteTarget(null);
+            },
+            onError: (errs) => {
+                const msg = Object.values(errs)[0] || 'Gagal menghapus akun admin.';
+                showToast(msg, 'error');
+                setDeleteTarget(null);
+            }
+        });
+    };
+
+    // Execute Reset Data
+    const handleConfirmResetData = () => {
+        setResetProcessing(true);
+        router.post(route('admin.pengaturan-reset'), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsResetModalOpen(false);
+                setResetProcessing(false);
+                showToast('Pengaturan sistem berhasil di-reset ke nilai awal.');
+            },
+            onError: () => {
+                setIsResetModalOpen(false);
+                setResetProcessing(false);
+                showToast('Gagal mereset data sistem.', 'error');
+            }
+        });
     };
 
     const ToggleSwitch = ({ checked, onChange, label, description }) => (
@@ -110,7 +161,19 @@ export default function PengaturanSistem() {
         >
             <Head title="Pengaturan Sistem - Admin" />
 
-            <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl pb-10">
+            {/* TOAST NOTIFICATION */}
+            {(toastMessage || flash.success || flash.error) && (
+                <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-2xl shadow-xl border flex items-center gap-3 text-xs font-bold transition-all duration-300 animate-bounce ${
+                    (toastType === 'error' || flash.error)
+                        ? 'bg-red-900 text-white border-red-700'
+                        : 'bg-[#122017] text-[#34D399] border-[#1a2e22]'
+                }`}>
+                    <span>{toastMessage || flash.success || flash.error}</span>
+                    <button onClick={() => setToastMessage(null)} className="text-gray-400 hover:text-white ml-2 font-bold">&times;</button>
+                </div>
+            )}
+
+            <form onSubmit={handleSubmitSettings} className="space-y-8 max-w-4xl pb-10">
 
                 {/* CARD 1: APLIKASI */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
@@ -162,8 +225,12 @@ export default function PengaturanSistem() {
                                 <h4 className="text-xs font-bold text-gray-900 dark:text-white">API Gemini AI</h4>
                                 <p className="text-[10px] text-gray-400 dark:text-emerald-100/40 mt-0.5">Integrasi kecerdasan buatan untuk analisis gizi makanan.</p>
                             </div>
-                            <span className="px-3 py-1 bg-emerald-100 dark:bg-[#34D399]/20 text-[#1F7A54] dark:text-[#34D399] text-[10px] font-bold rounded-full border border-emerald-200 dark:border-[#34D399]/30">
-                                Terhubung (Aktif)
+                            <span className={`px-3 py-1 text-[10px] font-bold rounded-full border ${
+                                geminiStatus.includes('Terhubung')
+                                    ? 'bg-emerald-100 dark:bg-[#34D399]/20 text-[#1F7A54] dark:text-[#34D399] border-emerald-200 dark:border-[#34D399]/30'
+                                    : 'bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50'
+                            }`}>
+                                {geminiStatus}
                             </span>
                         </div>
                     </div>
@@ -202,7 +269,7 @@ export default function PengaturanSistem() {
                     </div>
                 </div>
 
-                {/* CARD 3: KELOLA AKUN ADMIN (INTERAKTIF) */}
+                {/* CARD 3: KELOLA AKUN ADMIN (SINKRON DATABASE) */}
                 <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">KELOLA AKUN ADMIN</h2>
@@ -228,7 +295,7 @@ export default function PengaturanSistem() {
                             <tbody className="divide-y divide-gray-50 dark:divide-[#1a2e22]/50 text-xs">
                                 {admins.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="py-4 text-center text-gray-400">Belum ada akun admin terdaftar.</td>
+                                        <td colSpan="4" className="py-4 text-center text-gray-400">Belum ada akun admin terdaftar di database.</td>
                                     </tr>
                                 ) : (
                                     admins.map((admin) => (
@@ -253,7 +320,7 @@ export default function PengaturanSistem() {
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    onClick={() => handleDeleteAdmin(admin.id, admin.name)}
+                                                    onClick={() => setDeleteTarget(admin)}
                                                     className="text-red-600 dark:text-red-400 font-semibold hover:underline cursor-pointer"
                                                 >
                                                     Hapus
@@ -289,12 +356,12 @@ export default function PengaturanSistem() {
                             </div>
                             <div>
                                 <h4 className="text-sm font-extrabold text-red-600 dark:text-red-400">Zona Berbahaya</h4>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Reset data bersifat permanen dan tidak dapat dibatalkan.</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Reset pengaturan sistem ke konfigurasi awal (default).</p>
                             </div>
                         </div>
                         <button
                             type="button"
-                            onClick={handleResetData}
+                            onClick={() => setIsResetModalOpen(true)}
                             className="py-2.5 px-5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md transition duration-150 cursor-pointer shrink-0"
                         >
                             Reset Data
@@ -304,8 +371,8 @@ export default function PengaturanSistem() {
 
             </form>
 
-            {/* MODAL INTERAKTIF TAMBAH / EDIT ADMIN */}
-            {isModalOpen && (
+            {/* MODAL TAMBAH / EDIT ADMIN */}
+            {isAdminModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
                     <div className="bg-white dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-6">
                         <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#1a2e22] pb-4">
@@ -314,7 +381,7 @@ export default function PengaturanSistem() {
                             </h3>
                             <button
                                 type="button"
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={() => setIsAdminModalOpen(false)}
                                 className="text-gray-400 hover:text-gray-600 dark:hover:text-white font-bold text-lg"
                             >
                                 &times;
@@ -356,35 +423,108 @@ export default function PengaturanSistem() {
                                 </select>
                             </div>
 
-                            {!editingAdmin && (
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-700 dark:text-emerald-100 mb-1">Password Sementara</label>
-                                    <input
-                                        type="password"
-                                        value={adminForm.password}
-                                        onChange={(e) => setAdminForm({ ...adminForm, password: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-emerald-100 dark:border-[#164D2B] bg-[#EFF7F4] dark:bg-[#071A0E] text-gray-800 dark:text-emerald-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#1F7A54]"
-                                        required
-                                    />
-                                </div>
-                            )}
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 dark:text-emerald-100 mb-1">
+                                    {editingAdmin ? 'Password Baru (Opsional)' : 'Password'}
+                                </label>
+                                <input
+                                    type="password"
+                                    value={adminForm.password}
+                                    onChange={(e) => setAdminForm({ ...adminForm, password: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-100 dark:border-[#164D2B] bg-[#EFF7F4] dark:bg-[#071A0E] text-gray-800 dark:text-emerald-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#1F7A54]"
+                                    required={!editingAdmin}
+                                    placeholder={editingAdmin ? 'Kosongkan jika tidak ingin mengubah' : ''}
+                                />
+                            </div>
 
                             <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-[#1a2e22]">
                                 <button
                                     type="button"
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={() => setIsAdminModalOpen(false)}
                                     className="py-2 px-4 bg-gray-200 dark:bg-[#16291e] hover:bg-gray-300 dark:hover:bg-[#1a3827] text-gray-700 dark:text-emerald-200 text-xs font-bold rounded-xl transition cursor-pointer"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="py-2 px-5 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl shadow-md transition cursor-pointer"
+                                    disabled={adminProcessing}
+                                    className="py-2 px-5 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl shadow-md transition cursor-pointer disabled:opacity-50"
                                 >
-                                    {editingAdmin ? 'Simpan Perubahan' : 'Tambah Admin'}
+                                    {adminProcessing ? 'Memproses...' : (editingAdmin ? 'Simpan Perubahan' : 'Tambah Admin')}
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL KONFIRMASI HAPUS ADMIN */}
+            {deleteTarget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center">
+                        <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="text-base font-extrabold text-gray-900 dark:text-white">Hapus Akun Admin</h3>
+                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 mt-1">
+                                Apakah Anda yakin ingin menghapus akun admin <span className="font-bold text-red-500">{deleteTarget.name}</span> ({deleteTarget.email})? Tindakan ini tidak dapat dibatalkan.
+                            </p>
+                        </div>
+                        <div className="flex justify-center gap-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setDeleteTarget(null)}
+                                className="py-2 px-4 bg-gray-200 dark:bg-[#16291e] hover:bg-gray-300 dark:hover:bg-[#1a3827] text-gray-700 dark:text-emerald-200 text-xs font-bold rounded-xl transition cursor-pointer"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDeleteAdmin}
+                                className="py-2 px-5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md transition cursor-pointer"
+                            >
+                                Ya, Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL KONFIRMASI RESET DATA */}
+            {isResetModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white dark:bg-[#122017] border border-red-200 dark:border-red-900/50 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center">
+                        <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="text-base font-extrabold text-red-600 dark:text-red-400">Konfirmasi Reset Pengaturan</h3>
+                            <p className="text-xs text-gray-500 dark:text-emerald-100/60 mt-1">
+                                Tindakan ini akan mengembalikan seluruh pengaturan sistem (Nama Platform, Email, Mode Pemeliharaan, 2FA, dan Session Timeout) ke konfigurasi default bawaan.
+                            </p>
+                        </div>
+                        <div className="flex justify-center gap-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setIsResetModalOpen(false)}
+                                className="py-2 px-4 bg-gray-200 dark:bg-[#16291e] hover:bg-gray-300 dark:hover:bg-[#1a3827] text-gray-700 dark:text-emerald-200 text-xs font-bold rounded-xl transition cursor-pointer"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirmResetData}
+                                disabled={resetProcessing}
+                                className="py-2 px-5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md transition cursor-pointer disabled:opacity-50"
+                            >
+                                {resetProcessing ? 'Mereset...' : 'Ya, Reset Pengaturan'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
