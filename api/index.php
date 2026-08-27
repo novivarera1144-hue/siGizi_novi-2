@@ -25,4 +25,8 @@ foreach ($dirs as $dir) {
     }
 }
 
+// Lokasi cache dinamis di /tmp
+putenv('APP_PACKAGES_CACHE=/tmp/storage/bootstrap/cache/packages.php');
+putenv('APP_SERVICES_CACHE=/tmp/storage/bootstrap/cache/services.php');
+
 require __DIR__ . '/../public/index.php';
