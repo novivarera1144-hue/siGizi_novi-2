@@ -1,33 +1,20 @@
 <?php
 
-// 1. Force Debug Mode & App Key
-$_ENV['APP_DEBUG'] = 'true';
-$_SERVER['APP_DEBUG'] = 'true';
+// 1. Force Environment Variables
+putenv('APP_ENV=production');
 putenv('APP_DEBUG=true');
+putenv('APP_KEY=base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=');
+putenv('LOG_CHANNEL=stderr');
+putenv('VIEW_COMPILED_PATH=/tmp');
 
-$key = 'base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=';
-$_ENV['APP_KEY'] = $key;
-$_SERVER['APP_KEY'] = $key;
-putenv("APP_KEY={$key}");
+$_ENV['APP_ENV'] = 'production';
+$_ENV['APP_DEBUG'] = 'true';
+$_ENV['APP_KEY'] = 'base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=';
 
-// 2. Alihkan Storage & Logging ke /tmp
-$_ENV['APP_STORAGE_PATH'] = '/tmp/storage';
-$_ENV['LOG_CHANNEL'] = 'stderr';
-$_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/views';
-$_ENV['SESSION_DRIVER'] = 'cookie';
-
-$dirs = [
-    '/tmp/storage/framework/sessions',
-    '/tmp/storage/framework/views',
-    '/tmp/storage/framework/cache/data',
-    '/tmp/storage/logs',
-    '/tmp/storage/views',
-];
-
-foreach ($dirs as $dir) {
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0755, true);
-    }
+// 2. Buat direktori cache sementara di serverless /tmp
+if (!is_dir('/tmp/views')) {
+    @mkdir('/tmp/views', 0755, true);
 }
 
+// 3. Panggil entrypoint utama Laravel
 require __DIR__ . '/../public/index.php';
