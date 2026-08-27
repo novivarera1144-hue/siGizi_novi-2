@@ -1,18 +1,15 @@
 <?php
 
-// Paksa set APP_KEY valid
 $key = 'base64:4d8vK9Xz2mQ1wE8rT5yU7iO0pA3sD6fG9hJ2kL5zX8=';
 $_ENV['APP_KEY'] = $key;
 $_SERVER['APP_KEY'] = $key;
 putenv("APP_KEY={$key}");
 
-// Set Storage & Log ke tmp
 $_ENV['APP_STORAGE_PATH'] = '/tmp/storage';
 $_ENV['LOG_CHANNEL'] = 'stderr';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 
 $dirs = [
-    '/tmp/storage/bootstrap/cache',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',
@@ -24,9 +21,5 @@ foreach ($dirs as $dir) {
         @mkdir($dir, 0755, true);
     }
 }
-
-// Lokasi cache dinamis di /tmp
-putenv('APP_PACKAGES_CACHE=/tmp/storage/bootstrap/cache/packages.php');
-putenv('APP_SERVICES_CACHE=/tmp/storage/bootstrap/cache/services.php');
 
 require __DIR__ . '/../public/index.php';
