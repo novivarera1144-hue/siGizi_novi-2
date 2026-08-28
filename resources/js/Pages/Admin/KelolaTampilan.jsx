@@ -1,9 +1,18 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 export default function KelolaTampilan({ settings, testimonials = [], stats }) {
     const { flash } = usePage().props;
+
+    const resolveHeroPreview = (img) => {
+        if (!img) return null;
+        if (img.startsWith('http') || img.startsWith('/storage/') || img.startsWith('/images/')) {
+            return img;
+        }
+        return `/storage/${img}`;
+    };
 
     // 1. Hero Section Form
     const heroForm = useForm({
@@ -13,14 +22,19 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
     });
 
     const [heroImagePreview, setHeroImagePreview] = useState(
-        settings?.hero_image ? `/storage/${settings.hero_image}` : '/images/smoothie.jpg'
+        settings?.hero_image ? resolveHeroPreview(settings.hero_image) : null
     );
 
     // Sync state if settings prop changes
     useEffect(() => {
         if (settings) {
-            heroForm.setData('hero_headline', settings.hero_headline || '');
-            setHeroImagePreview(settings.hero_image ? `/storage/${settings.hero_image}` : '/images/smoothie.jpg');
+            heroForm.setData((data) => ({
+                ...data,
+                hero_headline: settings.hero_headline || '',
+                hero_image: null,
+                delete_image: false,
+            }));
+            setHeroImagePreview(settings.hero_image ? resolveHeroPreview(settings.hero_image) : null);
         }
     }, [settings]);
 
@@ -43,12 +57,39 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
             delete_image: true,
         }));
         setHeroImagePreview(null);
+        const fileInput = document.getElementById('heroImageInput');
+        if (fileInput) fileInput.value = '';
     };
 
     const submitHero = (e) => {
         e.preventDefault();
         heroForm.post(route('admin.kelola-tampilan.update-hero'), {
             preserveScroll: true,
+            forceFormData: true,
+            onSuccess: (page) => {
+                const freshSettings = page.props.settings;
+                if (freshSettings) {
+                    setHeroImagePreview(freshSettings.hero_image ? resolveHeroPreview(freshSettings.hero_image) : null);
+                }
+                const fileInput = document.getElementById('heroImageInput');
+                if (fileInput) fileInput.value = '';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: page.props.flash?.success || 'Hero section berhasil diperbarui!',
+                    confirmButtonColor: '#1F7A54',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            },
+            onError: (errors) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Menyimpan',
+                    text: Object.values(errors)[0] || 'Terjadi kesalahan saat menyimpan pengaturan beranda.',
+                    confirmButtonColor: '#d33',
+                });
+            }
         });
     };
 
@@ -271,30 +312,14 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                         <label className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/60 tracking-wider uppercase block mb-1.5">
                             Headline Utama Homepage
                         </label>
-                        <div className="flex flex-col sm:flex-row gap-2">
-                            <input
-                                type="text"
-                                value={heroForm.data.hero_headline}
-                                onChange={(e) => heroForm.setData('hero_headline', e.target.value)}
-                                className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all"
-                            />
-                            <div className="flex gap-2 shrink-0">
-                                <button
-                                    type="submit"
-                                    disabled={heroForm.processing}
-                                    className="flex-1 sm:flex-initial py-2 px-4 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white text-xs font-bold rounded-xl transition duration-150 cursor-pointer shadow-sm disabled:opacity-50"
-                                >
-                                    {heroForm.processing ? 'Menyimpan...' : 'Simpan'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => heroForm.setData('hero_headline', '')}
-                                    className="flex-1 sm:flex-initial py-2 px-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-500 dark:text-red-400 hover:bg-red-100 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
-                                >
-                                    Hapus
-                                </button>
-                            </div>
-                        </div>
+                        <input
+                            type="text"
+                            value={heroForm.data.hero_headline}
+                            onChange={(e) => heroForm.setData('hero_headline', e.target.value)}
+                            placeholder="Contoh: Kenali Gizi Makananmu Dalam Detik"
+                            className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2.5 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all"
+                            required
+                        />
                         {heroForm.errors.hero_headline && (
                             <p className="text-red-500 text-xs mt-1 font-semibold">{heroForm.errors.hero_headline}</p>
                         )}
@@ -307,17 +332,28 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                         <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4">
                             <div className="w-full max-w-[200px] h-32 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-emerald-900/40 shrink-0 bg-gray-100 dark:bg-emerald-950/20 flex items-center justify-center">
                                 {heroImagePreview ? (
-                                    <img src={heroImagePreview} alt="Preview Utama" className="w-full h-full object-cover" />
+                                    <img
+                                        src={heroImagePreview}
+                                        alt="Preview Utama"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => { e.target.src = '/images/sayuran1.webp'; }}
+                                    />
                                 ) : (
-                                    <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">Tidak ada gambar</span>
+                                    <span className="text-xs text-gray-400 dark:text-emerald-100/40 font-medium">Gambar default (sayuran1.webp)</span>
                                 )}
                             </div>
                             <div className="space-y-2 text-center sm:text-left">
                                 <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium leading-relaxed">
-                                    Gambar yang ditampilkan di bagian hero halaman utama.
+                                    Pilih gambar latar yang ditampilkan pada hero section halaman utama. Ukuran maksimal 2MB (JPG, PNG, WebP).
                                 </p>
                                 <div className="flex justify-center sm:justify-start gap-2">
-                                    <input id="heroImageInput" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                                    <input
+                                        id="heroImageInput"
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleImageChange}
+                                    />
                                     <label
                                         htmlFor="heroImageInput"
                                         className="py-2 px-3 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white text-xs font-bold rounded-xl transition duration-150 flex items-center gap-1.5 cursor-pointer shadow-sm"
@@ -325,22 +361,37 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                                         </svg>
-                                        <span>Unggah</span>
+                                        <span>{heroForm.data.hero_image ? 'Ganti Pilihan' : 'Pilih Gambar'}</span>
                                     </label>
-                                    <button
-                                        type="button"
-                                        onClick={handleImageDelete}
-                                        className="py-2 px-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-500 dark:text-red-400 hover:bg-red-100 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
-                                    >
-                                        Hapus
-                                    </button>
+                                    {(heroImagePreview || heroForm.data.hero_image) && (
+                                        <button
+                                            type="button"
+                                            onClick={handleImageDelete}
+                                            className="py-2 px-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-500 dark:text-red-400 hover:bg-red-100 text-xs font-bold rounded-xl transition duration-150 cursor-pointer"
+                                        >
+                                            Hapus Foto
+                                        </button>
+                                    )}
                                 </div>
+                                {heroForm.data.hero_image && (
+                                    <p className="text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                                        ✓ File dipilih: {heroForm.data.hero_image.name} (klik tombol simpan di bawah)
+                                    </p>
+                                )}
                                 {heroForm.errors.hero_image && (
                                     <p className="text-red-500 text-xs mt-1 font-semibold">{heroForm.errors.hero_image}</p>
                                 )}
                             </div>
                         </div>
                     </div>
+
+                    <button
+                        type="submit"
+                        disabled={heroForm.processing}
+                        className="w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-sm block mx-auto disabled:opacity-50"
+                    >
+                        {heroForm.processing ? 'Menyimpan...' : 'Simpan Perubahan Beranda'}
+                    </button>
                 </form>
 
                 {/* 3. PENGATURAN HALAMAN TENTANG KAMI */}

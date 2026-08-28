@@ -58,10 +58,15 @@ class KelolaTampilanController extends Controller
      */
     public function updateHero(Request $request): RedirectResponse
     {
-        $request->validate([
+        $rules = [
             'hero_headline' => ['required', 'string', 'max:255'],
-            'hero_image'    => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
-        ], [
+        ];
+
+        if ($request->hasFile('hero_image')) {
+            $rules['hero_image'] = ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'];
+        }
+
+        $request->validate($rules, [
             'hero_headline.required' => 'Headline homepage wajib diisi.',
             'hero_headline.max'      => 'Headline maksimal 255 karakter.',
             'hero_image.image'       => 'File harus berupa gambar.',
@@ -73,7 +78,7 @@ class KelolaTampilanController extends Controller
 
         $data = ['hero_headline' => $request->hero_headline];
 
-        if ($request->boolean('delete_image')) {
+        if ($request->boolean('delete_image') || $request->input('delete_image') === 'true' || $request->input('delete_image') == 1) {
             if ($settings->hero_image && Storage::disk('public')->exists($settings->hero_image)) {
                 Storage::disk('public')->delete($settings->hero_image);
             }

@@ -10,6 +10,11 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Preload Critical Images -->
+        <link rel="preload" as="image" href="/images/logo-sigizi.png">
+        <link rel="preload" as="image" href="/images/sayuran1.webp">
+        <link rel="preload" as="image" href="/images/nasgor.webp">
+
         <!-- Scripts -->
         @routes
         @viteReactRefresh

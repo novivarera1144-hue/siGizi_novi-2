@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 export default function Welcome({ auth, laravelVersion, phpVersion, testimonials: dbTestimonials = [], homeSettings = null }) {
     const [darkMode, setDarkMode] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Synchronize theme with local storage & document class
     useEffect(() => {
@@ -28,6 +29,100 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
             setDarkMode(true);
         }
     };
+
+    const [loadProgress, setLoadProgress] = useState(0);
+
+    // Preload and decode ALL page assets before rendering the page content
+    useEffect(() => {
+        const heroBg = homeSettings?.hero_image
+            ? (homeSettings.hero_image.startsWith('http') || homeSettings.hero_image.startsWith('/storage/') || homeSettings.hero_image.startsWith('/images/')
+                ? homeSettings.hero_image
+                : `/storage/${homeSettings.hero_image}`)
+            : "/images/sayuran1.webp";
+
+        // Collect all testimonial photos
+        const testimonialPhotos = dbTestimonials.map((t) => {
+            if (t.user?.avatar) return t.user.avatar;
+            if (t.user?.photo) return t.user.photo.startsWith('http') ? t.user.photo : `/storage/${t.user.photo}`;
+            return null;
+        }).filter(Boolean);
+
+        // Every single image rendered anywhere on the homepage
+        const allPageImages = Array.from(new Set([
+            heroBg,
+            "/images/sayuran1.webp",
+            "/images/nasgor.webp",
+            "/images/logo-sigizi.png",
+            "/images/background2.webp",
+            "/images/nasigoreng1.jpg",
+            "/images/smoothie2.jpg",
+            "/images/salad1.jpg",
+            "/images/ikan3.avif",
+            "/images/roti2.jpg",
+            "/images/buah3.jpg",
+            ...testimonialPhotos,
+        ]));
+
+        let isMounted = true;
+        let loadedCount = 0;
+        const total = allPageImages.length;
+
+        const updateProgress = () => {
+            loadedCount++;
+            if (isMounted) {
+                setLoadProgress(Math.min(100, Math.round((loadedCount / total) * 100)));
+            }
+        };
+
+        const promises = allPageImages.map((src) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = src;
+
+                const finish = () => {
+                    updateProgress();
+                    resolve(src);
+                };
+
+                if (img.complete) {
+                    finish();
+                } else if (img.decode) {
+                    img.decode()
+                        .then(finish)
+                        .catch(() => {
+                            img.onload = finish;
+                            img.onerror = finish;
+                        });
+                } else {
+                    img.onload = finish;
+                    img.onerror = finish;
+                }
+            });
+        });
+
+        Promise.allSettled(promises).then(() => {
+            if (isMounted) {
+                setLoadProgress(100);
+                setTimeout(() => {
+                    if (isMounted) {
+                        setIsLoaded(true);
+                    }
+                }, 250);
+            }
+        });
+
+        // Safety fallback timer if network hangs indefinitely (12s)
+        const safetyTimer = setTimeout(() => {
+            if (isMounted) {
+                setIsLoaded(true);
+            }
+        }, 12000);
+
+        return () => {
+            isMounted = false;
+            clearTimeout(safetyTimer);
+        };
+    }, [homeSettings?.hero_image, dbTestimonials]);
 
     // Food Gallery items (Kenali Jenis Makanan)
     const foods = [
@@ -182,10 +277,37 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
         }
     }
 
+    if (!isLoaded) {
+        return (
+            <>
+                <Head title="Kenali Gizi Makananmu Dalam Detik - siGizi" />
+                <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-white dark:bg-zinc-950 px-4">
+                    <div className="flex flex-col items-center space-y-5 max-w-xs w-full text-center">
+                        <img
+                            src="/images/logo-sigizi.png"
+                            alt="siGizi Logo"
+                            className="h-16 sm:h-20 w-auto object-contain animate-pulse"
+                        />
+                        <div className="w-full bg-gray-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                            <div
+                                className="bg-[#1F7A54] dark:bg-emerald-400 h-1.5 rounded-full transition-all duration-200 ease-out"
+                                style={{ width: `${loadProgress}%` }}
+                            ></div>
+                        </div>
+                        <div className="flex items-center justify-between w-full text-[11px] font-bold text-gray-400 dark:text-zinc-500 tracking-wider uppercase">
+                            <span>Menyiapkan siGizi...</span>
+                            <span>{loadProgress}%</span>
+                        </div>
+                    </div>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
             <Head title="Kenali Gizi Makananmu Dalam Detik - siGizi" />
-            <div className="min-h-screen bg-white text-gray-800 transition-colors duration-300 dark:bg-zinc-950 dark:text-zinc-100 font-sans">
+            <div className="min-h-screen bg-white text-gray-800 transition-colors duration-300 dark:bg-zinc-950 dark:text-zinc-100 font-sans animate-in fade-in duration-300">
 
                 {/* Navbar/Header */}
                 <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/80 transition-colors duration-300 dark:bg-zinc-950/95 dark:border-zinc-900/80">
@@ -311,11 +433,23 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16">
                     <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
                         <img
-                            src={homeSettings?.hero_image ? `/storage/${homeSettings.hero_image}` : "/images/sayuran1.webp"}
+                            src={(() => {
+                                const img = homeSettings?.hero_image;
+                                if (!img) return "/images/sayuran1.webp";
+                                if (img.startsWith('http') || img.startsWith('/storage/') || img.startsWith('/images/')) {
+                                    return img;
+                                }
+                                return `/storage/${img}`;
+                            })()}
                             alt="Background Makanan Sehat"
                             loading="eager"
                             fetchPriority="high"
                             className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05] transition-none"
+                            onError={(e) => {
+                                if (e.target.src !== '/images/sayuran1.webp' && !e.target.src.endsWith('/images/sayuran1.webp')) {
+                                    e.target.src = '/images/sayuran1.webp';
+                                }
+                            }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent"></div>
                     </div>
