@@ -12,6 +12,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
     const user = usePage().props.auth?.user || { name: 'Administrator', email: 'admin@sigizi.com' };
     const { url } = usePage();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     useEffect(() => {
         setSidebarOpen(false);
@@ -25,9 +26,11 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
     const handleLogout = (e) => {
         e.preventDefault();
+        setIsLoggingOut(true);
         router.post(route('logout'), {}, {
             preserveScroll: true,
             preserveState: true,
+            onFinish: () => setIsLoggingOut(false),
         });
     };
 
@@ -230,12 +233,22 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                         <div className="pt-4 border-t border-gray-100 dark:border-emerald-950/40 mt-4">
                             <button
                                 onClick={handleLogout}
-                                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer"
+                                disabled={isLoggingOut}
+                                className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 cursor-pointer ${
+                                    isLoggingOut ? 'opacity-55 cursor-not-allowed' : ''
+                                }`}
                             >
-                                <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                <span>Keluar</span>
+                                {isLoggingOut ? (
+                                    <svg className="animate-spin h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                ) : (
+                                    <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    </svg>
+                                )}
+                                <span>{isLoggingOut ? 'Keluar...' : 'Keluar'}</span>
                             </button>
                         </div>
                     </div>
@@ -393,9 +406,18 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
 
                             <button
                                 onClick={handleLogout}
-                                className="inline-flex items-center px-3 py-1 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-full transition duration-150 cursor-pointer"
+                                disabled={isLoggingOut}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-full transition duration-150 cursor-pointer ${
+                                    isLoggingOut ? 'opacity-55 cursor-not-allowed' : ''
+                                }`}
                             >
-                                Keluar
+                                {isLoggingOut && (
+                                    <svg className="animate-spin h-3 w-3 text-red-500" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                )}
+                                <span>{isLoggingOut ? 'Keluar...' : 'Keluar'}</span>
                             </button>
                         </div>
                     </div>
