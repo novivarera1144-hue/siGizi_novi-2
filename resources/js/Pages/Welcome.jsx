@@ -129,15 +129,27 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
     ];
 
     // Testimonials (Apa kata mereka) — dari database (menggunakan t.comment)
-    const testimonials = dbTestimonials.map((t) => ({
-        name: t.user?.name || 'Anonim',
-        role: t.role || t.pekerjaan,
-        initial: (t.user?.name || 'A').charAt(0).toUpperCase(),
-        stars: t.rating,
-        quote: `\u201C${t.comment || t.ulasan}\u201D`,
-        photo: t.user?.photo ? `/storage/${t.user.photo}` : null,
-        color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
-    }));
+    const testimonials = dbTestimonials.map((t) => {
+        const userName = t.user?.name || 'Anonim';
+        // Fallback chain: avatar (external URL) -> photo (local storage) -> UI Avatars
+        const userAvatar = t.user?.avatar
+            ? t.user.avatar
+            : t.user?.photo
+                ? (t.user.photo.startsWith('http') ? t.user.photo : `/storage/${t.user.photo}`)
+                : null;
+        const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D9488&color=fff&size=128&font-size=0.45&bold=true`;
+
+        return {
+            name: userName,
+            role: t.role || t.pekerjaan,
+            initial: userName.charAt(0).toUpperCase(),
+            stars: t.rating,
+            quote: `\u201C${t.comment || t.ulasan}\u201D`,
+            photo: userAvatar,
+            fallbackPhoto: fallbackAvatar,
+            color: "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
+        };
+    });
 
     // Formatter headline Hero: 3 baris dengan kata tengah berwarna amber/oranye
     const rawHeadline = homeSettings?.hero_headline?.trim();
@@ -567,11 +579,16 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                                         </div>
 
                                         <div className="flex items-center space-x-3 pt-6 mt-6 border-t border-gray-100 dark:border-zinc-800">
-                                            {testi.photo ? (
-                                                <img src={testi.photo} alt={testi.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
-                                            ) : (
-                                                <div className={`w-10 h-10 rounded-full ${testi.color} flex items-center justify-center font-bold text-sm shadow-sm`}>{testi.initial}</div>
-                                            )}
+                                            <img
+                                                src={testi.photo || testi.fallbackPhoto}
+                                                alt={testi.name}
+                                                className="w-10 h-10 rounded-full object-cover shadow-sm bg-emerald-100 dark:bg-emerald-900"
+                                                onError={(e) => {
+                                                    if (e.target.src !== testi.fallbackPhoto) {
+                                                        e.target.src = testi.fallbackPhoto;
+                                                    }
+                                                }}
+                                            />
                                             <div>
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">{testi.name}</h4>
                                                 <p className="text-gray-500 dark:text-gray-400 text-xs">{testi.role}</p>

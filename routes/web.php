@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    $testimonials = \App\Models\Testimonial::with('user:id,name,photo')
+    $testimonials = \App\Models\Testimonial::with('user:id,name,photo,avatar')
         ->where('is_visible', true)
         ->latest()
         ->get();
