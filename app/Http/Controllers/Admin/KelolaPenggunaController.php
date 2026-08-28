@@ -13,44 +13,44 @@ class KelolaPenggunaController extends Controller
 {
     public function index(SupabaseService $supabase)
     {
-        $users = $supabase->get('users', [
-            'order' => 'id.asc',
-            'limit' => 100
-        ]);
-
-        $formattedUsers = array_map(function ($u) {
-            $email = $u['email'] ?? '';
-            $isAdmin = str_contains($email, 'admin') || str_contains($email, 'novi');
-            $role = $isAdmin ? 'Admin' : 'Pengguna';
-            
-            // Ambil status mentah dari database dan bersihkan spasi
-            $rawStatus = trim($u['status'] ?? 'Aktif');
-            
-            // Cek apakah statusnya termasuk kategori ditangguhkan (case-insensitive)
-            $isSuspended = in_array(strtolower($rawStatus), ['suspended', 'ditangguhkan']);
-            
-            // Tentukan label status yang akan ditampilkan ke UI secara konsisten
-            $status = $isSuspended ? 'Ditangguhkan' : 'Aktif';
-
-            // Warna badge status
-            $statusColor = !$isSuspended
-                ? ($isAdmin
-                    ? 'text-[#1F7A54] bg-emerald-100 dark:bg-[#34D399]/20 dark:text-[#34D399]'
-                    : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400')
-                : 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400';
-
-            return [
-                'id' => $u['id'],
-                'name' => $u['name'] ?? 'Pengguna',
-                'email' => $email,
-                'role' => $role,
-                'status' => $status,
-                'statusColor' => $statusColor
-            ];
-        }, $users);
-
         return Inertia::render('Admin/KelolaPengguna', [
-            'initialUsers' => $formattedUsers
+            'initialUsers' => function () use ($supabase) {
+                $users = $supabase->get('users', [
+                    'order' => 'id.asc',
+                    'limit' => 100
+                ]);
+
+                return array_map(function ($u) {
+                    $email = $u['email'] ?? '';
+                    $isAdmin = str_contains($email, 'admin') || str_contains($email, 'novi');
+                    $role = $isAdmin ? 'Admin' : 'Pengguna';
+                    
+                    // Ambil status mentah dari database dan bersihkan spasi
+                    $rawStatus = trim($u['status'] ?? 'Aktif');
+                    
+                    // Cek apakah statusnya termasuk kategori ditangguhkan (case-insensitive)
+                    $isSuspended = in_array(strtolower($rawStatus), ['suspended', 'ditangguhkan']);
+                    
+                    // Tentukan label status yang akan ditampilkan ke UI secara konsisten
+                    $status = $isSuspended ? 'Ditangguhkan' : 'Aktif';
+
+                    // Warna badge status
+                    $statusColor = !$isSuspended
+                        ? ($isAdmin
+                            ? 'text-[#1F7A54] bg-emerald-100 dark:bg-[#34D399]/20 dark:text-[#34D399]'
+                            : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400')
+                        : 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400';
+
+                    return [
+                        'id' => $u['id'],
+                        'name' => $u['name'] ?? 'Pengguna',
+                        'email' => $email,
+                        'role' => $role,
+                        'status' => $status,
+                        'statusColor' => $statusColor
+                    ];
+                }, $users);
+            }
         ]);
     }
 
@@ -119,10 +119,6 @@ class KelolaPenggunaController extends Controller
 
         $currentUser = $users[0] ?? null;
         if (! $currentUser) {
-            // 2️⃣ Jika request datang dari Inertia → JSON error, else redirect
-            if (request()->header('X-Inertia')) {
-                return response()->json(['message' => 'Pengguna tidak ditemukan.'], 404);
-            }
             return redirect()->back()->with('error', 'Pengguna tidak ditemukan.');
         }
 
@@ -146,10 +142,6 @@ class KelolaPenggunaController extends Controller
             }
         } catch (\Exception $e) {}
 
-        // 6️⃣ Response JSON untuk Inertia, fallback ke redirect
-        if (request()->header('X-Inertia')) {
-            return response()->json(['message' => 'Status berhasil diperbarui.']);
-        }
         return redirect()->back()->with('success', 'Status penangguhan pengguna berhasil diperbarui.');
     }
 

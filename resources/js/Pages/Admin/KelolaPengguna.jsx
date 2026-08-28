@@ -14,6 +14,13 @@ export default function KelolaPengguna({ initialUsers }) {
         { id: 5, name: "Novi Aulia", email: "novi@sigizi.com", role: "Admin", status: "Aktif", statusColor: "text-[#1F7A54] bg-emerald-100 dark:bg-[#34D399]/20 dark:text-[#34D399]" },
     ]);
 
+    // Sinkronisasi state lokal dengan props yang diperbarui dari server (Inertia reload)
+    useEffect(() => {
+        if (initialUsers) {
+            setUsers(initialUsers);
+        }
+    }, [initialUsers]);
+
     // State untuk Modal Edit
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -23,35 +30,32 @@ export default function KelolaPengguna({ initialUsers }) {
     const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Pengguna' });
 
     // Fungsi Toggle Status Aktif / Ditangguhkan
-const handleToggleStatus = (id) => {
-    // Optimistic UI update (optional)
-    setUsers(prev => prev.map(u => {
-        if (u.id === id) {
-            const isAktif = u.status === 'Aktif';
-            return {
-                ...u,
-                status: isAktif ? 'Ditangguhkan' : 'Aktif',
-                statusColor: isAktif
-                    ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
-                    : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400',
-            };
-        }
-        return u;
-    }));
+    const handleToggleStatus = (id) => {
+        // Optimistic UI update
+        setUsers(prev => prev.map(u => {
+            if (u.id === id) {
+                const isAktif = u.status === 'Aktif';
+                return {
+                    ...u,
+                    status: isAktif ? 'Ditangguhkan' : 'Aktif',
+                    statusColor: isAktif
+                        ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
+                        : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400',
+                };
+            }
+            return u;
+        }));
 
-    // Kirim request PATCH via Inertia
-    router.patch(
-        route('admin.users.toggle-suspend', { id }),
-        {},
-        {
-            preserveScroll: true,
-            onSuccess: () => {
-                // Reload data from server to avoid stale cache
-                router.reload({ preserveState: false, preserveScroll: true });
-            },
-        }
-    );
-};
+        // Kirim request PATCH via Inertia dengan partial reload (hanya memuat ulang 'initialUsers')
+        router.patch(
+            route('admin.users.toggle-suspend', { id }),
+            {},
+            {
+                preserveScroll: true,
+                only: ['initialUsers'],
+            }
+        );
+    };
 
     // Handler Edit
     const handleOpenEdit = (user) => {

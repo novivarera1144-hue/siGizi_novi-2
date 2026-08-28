@@ -306,6 +306,7 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                                             <Link
                                                 key={index}
                                                 href={route(item.route)}
+                                                prefetch={["hover", "mount"]}
                                                 onClick={() => setIsSearchFocused(false)}
                                                 className="flex items-center justify-between px-4 py-2.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 transition-colors"
                                             >
@@ -407,27 +408,27 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
             {/* --- BOTTOM NAVIGATION BAR (Khusus Mobile/Tablet di bagian bawah layar) --- */}
             <div className={`fixed bottom-0 left-0 right-0 z-30 bg-white/90 dark:bg-[#07110B]/90 backdrop-blur-md border-t border-gray-200 dark:border-[#1a2e22] py-2 px-4 lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
                 <div className="max-w-md mx-auto flex items-center justify-between">
-                    <Link href={route('admin.dashboard')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'dashboard' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                    <Link href={route('admin.dashboard')} prefetch={["hover", "mount"]} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'dashboard' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <LayoutDashboard className="w-5 h-5" />
                         <span className="text-[10px]">Dashboard</span>
                     </Link>
 
-                    <Link href={route('admin.kelola-pengguna')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-pengguna' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                    <Link href={route('admin.kelola-pengguna')} prefetch={["hover", "mount"]} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-pengguna' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <Users className="w-5 h-5" />
                         <span className="text-[10px]">Pengguna</span>
                     </Link>
 
-                    <Link href={route('admin.kelola-tampilan')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-tampilan' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                    <Link href={route('admin.kelola-tampilan')} prefetch={["hover", "mount"]} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'kelola-tampilan' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <FileText className="w-5 h-5" />
                         <span className="text-[10px]">Tampilan</span>
                     </Link>
 
-                    <Link href={route('admin.laporan-global')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'laporan-global' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                    <Link href={route('admin.laporan-global')} prefetch={["hover", "mount"]} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'laporan-global' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <BarChart3 className="w-5 h-5" />
                         <span className="text-[10px]">Laporan</span>
                     </Link>
 
-                    <Link href={route('admin.pengaturan-sistem')} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'pengaturan-sistem' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
+                    <Link href={route('admin.pengaturan-sistem')} prefetch={["hover", "mount"]} className={`flex flex-col items-center gap-1 transition-colors ${activePage === 'pengaturan-sistem' ? 'text-[#1F7A54] dark:text-emerald-400 font-bold' : 'text-gray-400 dark:text-emerald-100/40 hover:text-[#1F7A54]'}`}>
                         <Settings className="w-5 h-5" />
                         <span className="text-[10px]">Pengaturan</span>
                     </Link>

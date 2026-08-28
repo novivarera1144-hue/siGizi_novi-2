@@ -188,12 +188,14 @@ export default function Dashboard({ stats, weeklyScanData, recentActivities }) {
                         <div className="space-y-3">
                             <Link
                                 href={route('admin.kelola-tampilan')}
+                                prefetch={["hover", "mount"]}
                                 className="w-full block text-center rounded-2xl py-3 px-4 font-bold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition duration-150 cursor-pointer shadow-sm"
                             >
                                 EDIT BANNER HOMEPAGE
                             </Link>
                             <Link
                                 href={route('admin.kelola-tampilan')}
+                                prefetch={["hover", "mount"]}
                                 className="w-full block text-center rounded-2xl py-3 px-4 font-bold text-xs tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition duration-150 cursor-pointer shadow-sm"
                             >
                                 KELOLA TIPS GIZI HARIAN
