@@ -9,20 +9,19 @@ putenv('VIEW_COMPILED_PATH=/tmp/views');
 putenv('CACHE_STORE=array');
 putenv('SESSION_DRIVER=cookie');
 
-// 2. Buat folder sementara untuk views compiled
+// 2. Buat folder kompilasi view sementara
 if (!is_dir('/tmp/views')) {
     @mkdir('/tmp/views', 0755, true);
 }
 
-// 3. Muat Autoload & Inisialisasi Aplikasi Laravel
+// 3. Autoload & Inisialisasi Aplikasi Laravel
 require __DIR__ . '/../vendor/autoload.php';
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
-// 4. Set Base Path dan Path Komponen Utama Laravel secara Eksplisit
-$app->useBasePath(realpath(__DIR__ . '/..'));
+// 4. Set Storage Path ke /tmp
 $app->useStoragePath('/tmp');
 
-// 5. Jalankan HTTP Kernel Laravel
+// 5. Jalankan HTTP Kernel Laravel & Inisialisasi Providers
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
