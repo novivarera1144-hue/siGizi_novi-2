@@ -55,12 +55,10 @@ class AdminProfileController extends Controller
      */
     public function destroySession(Request $request, string $sessionId)
     {
-        // Cegah penghapusan sesi perangkat saat ini
         if ($sessionId === $request->session()->getId()) {
             return redirect()->back()->with('error', 'Anda tidak dapat mengeluarkan sesi perangkat yang sedang digunakan.');
         }
 
-        // Hapus sesi spesifik milik user ini
         $deleted = \Illuminate\Support\Facades\DB::table('sessions')
             ->where('id', $sessionId)
             ->where('user_id', $request->user()->id)
@@ -72,6 +70,7 @@ class AdminProfileController extends Controller
 
         return redirect()->back()->with('error', 'Sesi tidak ditemukan atau sudah berakhir.');
     }
+
     /**
      * Update the admin's profile information.
      */
@@ -83,6 +82,7 @@ class AdminProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'avatar' => ['nullable', 'image', 'max:2048'],
+            'remove_avatar' => ['nullable', 'boolean'],
         ]);
 
         $user->fill([
@@ -94,21 +94,27 @@ class AdminProfileController extends Controller
             $user->email_verified_at = null;
         }
 
-        // Handle avatar upload (DIUBAH DARI photo MENJADI avatar)
         if ($request->hasFile('avatar')) {
-            // Delete old photo if it exists
-            if ($user->avatar) {
+            if ($user->avatar && !filter_var($user->avatar, FILTER_VALIDATE_URL)) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            // Store new photo
+            if ($user->photo && !filter_var($user->photo, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            
             $path = $request->file('avatar')->store('profile-photos', 'public');
-            $user->avatar = $path; // <-- Perbaikan di sini
-        } elseif ($request->boolean('remove_avatar')) {
-            // Delete old photo if it exists
-            if ($user->avatar) {
+            $user->avatar = $path;
+            $user->photo = null;
+        } elseif ($request->boolean('remove_avatar') || $request->input('remove_avatar') === 'true' || $request->input('remove_avatar') == 1) {
+            if ($user->avatar && !filter_var($user->avatar, FILTER_VALIDATE_URL)) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $user->avatar = null; // <-- Perbaikan di sini
+            if ($user->photo && !filter_var($user->photo, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            
+            $user->avatar = null;
+            $user->photo = null;
         }
 
         $user->save();

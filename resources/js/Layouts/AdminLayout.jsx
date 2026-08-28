@@ -8,7 +8,7 @@ import {
     Settings
 } from 'lucide-react';
 
-export default function AdminLayout({ children, activePage = 'dashboard', title, subtitle }) {
+export default function AdminLayout({ children, activePage = 'dashboard', title, subtitle, userAvatar }) {
     const user = usePage().props.auth?.user || { name: 'Administrator', email: 'admin@sigizi.com' };
     const { url } = usePage();
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -337,18 +337,33 @@ export default function AdminLayout({ children, activePage = 'dashboard', title,
                         </button>
 
                         {/* User Profile Avatar */}
-                        <Link
-                            href={route('admin.profile.settings')}
-                            prefetch={["hover", "mount"]}
-                            className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-sm shadow-sm transition duration-150 cursor-pointer overflow-hidden"
-                            title="Pengaturan Profil"
-                        >
-                            {user.avatar ? (
-                                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                            ) : (
-                                user.name ? user.name.charAt(0).toUpperCase() : 'A'
-                            )}
-                        </Link>
+                        {(() => {
+                            const defaultAvatar = user.avatar || (user.photo ? (user.photo.startsWith('http') ? user.photo : `/storage/${user.photo}`) : null);
+                            const effectiveAvatar = userAvatar !== undefined ? userAvatar : defaultAvatar;
+                            return (
+                                <Link
+                                    href={route('admin.profile.settings')}
+                                    prefetch={["hover", "mount"]}
+                                    className="w-8 h-8 rounded-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-sm shadow-sm transition duration-150 cursor-pointer overflow-hidden"
+                                    title="Pengaturan Profil"
+                                >
+                                    {effectiveAvatar ? (
+                                        <img
+                                            src={effectiveAvatar}
+                                            alt={user.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                                        />
+                                    ) : null}
+                                    <span
+                                        className="w-full h-full items-center justify-center font-extrabold text-sm"
+                                        style={{ display: effectiveAvatar ? 'none' : 'flex' }}
+                                    >
+                                        {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                                    </span>
+                                </Link>
+                            );
+                        })()}
                     </div>
                 </header>
 

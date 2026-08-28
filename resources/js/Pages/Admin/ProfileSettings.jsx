@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
 export default function ProfileSettings({ sessions = [] }) {
@@ -8,17 +8,40 @@ export default function ProfileSettings({ sessions = [] }) {
     const user = auth?.user || { name: 'Administrator', email: 'admin@sigizi.com', avatar: null };
     const { delete: destroy } = useForm();
 
+    const resolveAvatarUrl = (userData) => {
+        if (!userData) return null;
+        if (userData.avatar) {
+            return userData.avatar.startsWith('http') || userData.avatar.startsWith('/storage/')
+                ? userData.avatar
+                : `/storage/${userData.avatar}`;
+        }
+        if (userData.photo) {
+            return userData.photo.startsWith('http') ? userData.photo : `/storage/${userData.photo}`;
+        }
+        return null;
+    };
+
     // Form data untuk update profil & foto profil
     const profileForm = useForm({
         name: user.name,
         email: user.email,
         avatar: null,
-        remove_avatar: false, // Tambahan flag untuk menghapus foto di backend jika diperlukan
+        remove_avatar: false,
     });
 
     // Preview foto profil lokal
-    const [avatarPreview, setAvatarPreview] = useState(user.avatar || null);
+    const [avatarPreview, setAvatarPreview] = useState(resolveAvatarUrl(user));
     const fileInputRef = useRef(null);
+
+    // Sync avatarPreview secara reaktif ketika data auth.user dari server berubah
+    useEffect(() => {
+        setAvatarPreview(resolveAvatarUrl(auth?.user));
+        profileForm.setData(data => ({
+            ...data,
+            name: auth?.user?.name || data.name,
+            email: auth?.user?.email || data.email,
+        }));
+    }, [auth?.user]);
 
     // Form data untuk update password
     const passwordForm = useForm({
@@ -30,16 +53,13 @@ export default function ProfileSettings({ sessions = [] }) {
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            profileForm.setData('avatar', file);
-            profileForm.setData('remove_avatar', false);
+            profileForm.setData(data => ({ ...data, avatar: file, remove_avatar: false }));
             setAvatarPreview(URL.createObjectURL(file));
         }
     };
 
-    // Fungsi untuk menghapus foto profil
     const handleRemoveAvatar = () => {
-        profileForm.setData('avatar', null);
-        profileForm.setData('remove_avatar', true);
+        profileForm.setData(data => ({ ...data, avatar: null, remove_avatar: true }));
         setAvatarPreview(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -50,7 +70,32 @@ export default function ProfileSettings({ sessions = [] }) {
         e.preventDefault();
         profileForm.post(route('admin.profile.update'), {
             preserveScroll: true,
+            preserveState: true, // Optimasi agar state tidak render ulang dari awal secara berat
             forceFormData: true,
+            onSuccess: (page) => {
+                const freshUser = page.props.auth?.user;
+                setAvatarPreview(resolveAvatarUrl(freshUser));
+                profileForm.setData(data => ({ ...data, avatar: null, remove_avatar: false }));
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: page.props.flash?.success || 'Informasi profil berhasil diperbarui.',
+                    confirmButtonColor: '#1F7A54',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            },
+            onError: (errors) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memperbarui Profil',
+                    text: Object.values(errors)[0] || 'Terjadi kesalahan saat menyimpan profil.',
+                    confirmButtonColor: '#d33',
+                });
+            },
         });
     };
 
@@ -116,6 +161,7 @@ export default function ProfileSettings({ sessions = [] }) {
             activePage="settings"
             title="Pengaturan Profil"
             subtitle="Kelola informasi akun, foto profil, keamanan, dan sesi perangkat administrator siGizi."
+            userAvatar={avatarPreview}
         >
             <Head title="Pengaturan Profil - Admin siGizi" />
 
