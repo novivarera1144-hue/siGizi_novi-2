@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
+use Illuminate\Support\Facades\Log;
+
 class PasswordResetController extends Controller
 {
     /**
@@ -23,29 +25,33 @@ class PasswordResetController extends Controller
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
             'email.exists' => 'Email ini tidak terdaftar di sistem kami.',
         ]);
 
-        // Generate 6 digit random number
-        $otp = sprintf('%06d', mt_rand(0, 999999));
+        // Generate 6-digit random code (100000 - 999999)
+        $otp = sprintf('%06d', random_int(100000, 999999));
 
-        // Save to database with 10 minutes expiry
+        // Save to database with 10 minutes expiry time
         OtpCode::updateOrCreate(
             ['email' => $request->email],
             [
-                'otp_code' => $otp,
+                'otp_code' => (string) $otp,
                 'expires_at' => now()->addMinutes(10),
             ]
         );
 
-        // Send via Laravel Mail
+        // Send via Laravel Mail facade using configured SMTP
         try {
             Mail::to($request->email)->send(new SendOtpMail($otp));
-        } catch (\Exception $e) {
-            // Log the error or handle it, but keep user experience smooth
-            logger()->error('Failed sending OTP mail to ' . $request->email . ': ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Gagal mengirimkan email OTP ke ' . $request->email . ': ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+
             throw ValidationException::withMessages([
-                'email' => ['Gagal mengirimkan email verifikasi. Silakan coba beberapa saat lagi.'],
+                'email' => ['Gagal mengirimkan email verifikasi. Mohon periksa konfigurasi SMTP (MAIL_USERNAME dan MAIL_PASSWORD) di file .env.'],
             ]);
         }
 
