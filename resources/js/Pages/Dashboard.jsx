@@ -183,9 +183,9 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                 </div>
 
                 {/* Progress Nutrisi & Riwayat */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     {/* Left Column: Progress Bars */}
-                    <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between">
+                    <div className="lg:col-span-8 bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-start">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Nutrisi Hari Ini</h2>
                             <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-100/40 tracking-wider">
