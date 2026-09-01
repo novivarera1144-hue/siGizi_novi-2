@@ -156,6 +156,7 @@ export default function ScanPage() {
                     setTimeout(() => {
                         router.post(route('scan.store'), {
                             image: imageFile,
+                            nama_makanan: foodName,
                             food_name: foodName,
                             cooking_method: finalCookingMethod,
                             portion: portion

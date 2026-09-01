@@ -39,15 +39,19 @@ class GeminiService
      *
      * @throws \App\Exceptions\GeminiApiException
      */
-    public function analyzeFood(UploadedFile $image): array
+    public function analyzeFood(UploadedFile $image, ?string $userFoodName = null): array
     {
         if (empty($this->apiKey)) {
             throw new GeminiApiException('GEMINI_API_KEY belum diatur di file .env.');
         }
 
-        // 1. Encode image to base64
         $imageBase64 = base64_encode(file_get_contents($image->getRealPath()));
         $mimeType = $image->getMimeType();
+
+        $promptContext = "Analisis foto makanan ini.";
+        if (!empty($userFoodName)) {
+            $promptContext = "Analisis foto makanan ini yang dinamai oleh pengguna sebagai \"{$userFoodName}\".";
+        }
 
         // 2. Build request body sesuai dokumentasi Google Gemini API
         //    Reference: https://ai.google.dev/gemini-api/docs/text-generation
@@ -165,7 +169,14 @@ class GeminiService
             }
         }
 
-        if (!is_array($data) || !isset($data['nama_makanan'])) {
+        if (!is_array($data)) {
+            Log::warning('Gemini response is not an array', ['data' => $data]);
+            throw new GeminiApiException('AI gagal mengidentifikasi makanan di dalam foto. Coba ganti sudut foto atau ganti gambar.');
+        }
+
+        if (!empty($userFoodName)) {
+            $data['nama_makanan'] = trim($userFoodName);
+        } elseif (!isset($data['nama_makanan'])) {
             Log::warning('Gemini response missing required fields', ['data' => $data]);
             throw new GeminiApiException('AI gagal mengidentifikasi makanan di dalam foto. Coba ganti sudut foto atau ganti gambar.');
         }

@@ -22,6 +22,8 @@ class ScanController extends Controller
         // 1. Validasi input gambar (jpeg/jpg/png, max 10MB)
         $request->validate([
             'image' => 'required|image|mimes:jpeg,jpg,png|max:10240',
+            'nama_makanan' => 'nullable|string|max:255',
+            'food_name' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -29,11 +31,13 @@ class ScanController extends Controller
             $path = $request->file('image')->store('uploads', 'public');
             $imageUrl = asset('storage/' . $path);
 
+            $userFoodName = $request->input('nama_makanan') ?: $request->input('food_name');
+
             // 3. Panggil GeminiService untuk analisis makanan
-            $data = $geminiService->analyzeFood($request->file('image'));
+            $data = $geminiService->analyzeFood($request->file('image'), $userFoodName);
 
             // 4. Format data nutrisi dari response Gemini
-            $foodName = $data['nama_makanan'] ?? 'Makanan Terdeteksi';
+            $foodName = !empty($userFoodName) ? trim($userFoodName) : ($data['nama_makanan'] ?? 'Makanan Terdeteksi');
             $calories = intval($data['total_kalori'] ?? 350);
             $protG = intval($data['protein'] ?? 15);
             $lemakG = intval($data['lemak'] ?? 10);

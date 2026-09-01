@@ -14,9 +14,11 @@ class ScanController extends Controller
 {
     public function store(Request $request, GeminiService $geminiService)
     {
-        // 1. Validasi input gambar (jpeg/jpg/png, max 10MB)
+        // 1. Validasi input gambar DAN nama makanan
         $request->validate([
             'image' => 'required|image|mimes:jpeg,jpg,png|max:10240',
+            'nama_makanan' => 'nullable|string|max:255',
+            'food_name' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -29,11 +31,14 @@ class ScanController extends Controller
             $path = $request->file('image')->store('uploads', 'public');
             $imageUrl = asset('storage/' . $path);
 
-            // 3. Panggil GeminiService untuk analisis makanan
-            $data = $geminiService->analyzeFood($request->file('image'));
+            // Ambil input nama makanan dari user
+            $userFoodName = $request->input('nama_makanan') ?: $request->input('food_name');
+
+            // 3. Panggil GeminiService dengan menyertakan nama makanan pilihan user
+            $data = $geminiService->analyzeFood($request->file('image'), $userFoodName);
 
             // 4. Format data nutrisi dari response Gemini
-            $foodName = $data['nama_makanan'] ?? 'Makanan Terdeteksi';
+            $foodName = !empty($userFoodName) ? trim($userFoodName) : ($data['nama_makanan'] ?? 'Makanan Terdeteksi');
             $calories = intval($data['total_kalori'] ?? 350);
             $protG = intval($data['protein'] ?? 15);
             $lemakG = intval($data['lemak'] ?? 10);
@@ -107,7 +112,6 @@ class ScanController extends Controller
             $userId = auth()->id() ?? 1;
             $now = now()->format('Y-m-d H:i:s');
 
-            // HANYA SIMPAN SEKALI KE SUPABASE (Hapus duplikasi ke Model Lokal)
             $supabase = app(\App\Services\SupabaseService::class);
             
             $supabase->insert('riwayat_scan_makanans', [
