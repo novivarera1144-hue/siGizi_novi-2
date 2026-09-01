@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Exceptions\GeminiApiException;
+use App\Services\GeminiService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use App\Models\RiwayatChatAi;
+use Illuminate\Support\Facades\Auth;
+
+class AiChatController extends Controller
+{
+    /**
+     * Show the AI Assistant chat page.
+     *
+     * @return \Inertia\Response
+     */
+    public function index(Request $request)
+    {
+        $userId = Auth::id() ?? 1;
+        $supabase = app(\App\Services\SupabaseService::class);
+        $chats = $supabase->get('riwayat_chat_ais', [
+            'select' => '*',
+            'user_id' => 'eq.' . $userId,
+            'order' => 'id.asc',
+            'limit' => 50
+        ]);
+
+        return Inertia::render('AiAssistant', [
+            'initialHistory' => $chats
+        ]);
+    }
+
+    /**
+     * Handle an incoming chat message and return AI response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\GeminiService  $geminiService
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function chat(Request $request, GeminiService $geminiService)
+    {
+        $request->validate([
+            'message' => 'required|string|max:2000',
+            'history' => 'sometimes|array',
+            'history.*.role' => 'required_with:history|string|in:user,ai',
+            'history.*.text' => 'required_with:history|string',
+        ]);
+
+        try {
+            $userMessage = $request->input('message');
+
+            $reply = $geminiService->chat(
+                $userMessage,
+                $request->input('history', [])
+            );
+
+            $userId = Auth::id() ?? 1;
+            $now = now()->toIso8601String();
+
+            $supabase = app(\App\Services\SupabaseService::class);
+            $supabase->insert('riwayat_chat_ais', [
+                'user_id'    => $userId,
+                'pesan_user' => $userMessage,
+                'respon_ai'  => $reply,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            try {
+                RiwayatChatAi::create([
+                    'user_id'    => $userId, 
+                    'pesan_user' => $userMessage,
+                    'respon_ai'  => $reply,
+                ]);
+            } catch (\Exception $e) {
+                // Ignore local DB error if any
+            }
+            
+            return response()->json([
+                'success' => true,
+                'reply' => $reply,
+            ]);
+        } catch (GeminiApiException $e) {
+            Log::error('AI Chat Error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'reply' => $e->getMessage() . ' 🙏',
+                'error' => $e->getMessage(),
+            ], 500);
+        } catch (\Exception $e) {
+            Log::error('AI Chat Unexpected Error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'reply' => 'Terjadi kesalahan sistem. Silakan coba beberapa saat lagi.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+}
