@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react';
 export default function Welcome({ auth, laravelVersion, phpVersion, testimonials: dbTestimonials = [], homeSettings = null }) {
     const [darkMode, setDarkMode] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isLoaded, setIsLoaded] = useState(false);
+    // Check if preloader has already been shown in this browser session
+    const [isLoaded, setIsLoaded] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return sessionStorage.getItem('hasSeenPreloader') === 'true';
+        }
+        return false;
+    });
 
     // Synchronize theme with local storage & document class
     useEffect(() => {
@@ -34,6 +40,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
 
     // Preload and decode ALL page assets before rendering the page content
     useEffect(() => {
+        // Skip preloader if already shown in this browser session
+        if (sessionStorage.getItem('hasSeenPreloader') === 'true') {
+            setIsLoaded(true);
+            return;
+        }
+
         const heroBg = homeSettings?.hero_image
             ? (homeSettings.hero_image.startsWith('http') || homeSettings.hero_image.startsWith('/storage/') || homeSettings.hero_image.startsWith('/images/')
                 ? homeSettings.hero_image
@@ -105,6 +117,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 setLoadProgress(100);
                 setTimeout(() => {
                     if (isMounted) {
+                        sessionStorage.setItem('hasSeenPreloader', 'true');
                         setIsLoaded(true);
                     }
                 }, 250);
@@ -114,6 +127,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
         // Safety fallback timer if network hangs indefinitely (12s)
         const safetyTimer = setTimeout(() => {
             if (isMounted) {
+                sessionStorage.setItem('hasSeenPreloader', 'true');
                 setIsLoaded(true);
             }
         }, 12000);
