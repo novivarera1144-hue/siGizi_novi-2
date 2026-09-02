@@ -8,6 +8,7 @@ use App\Services\SupabaseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
@@ -55,13 +56,18 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
-            logger()->error('Google Auth callback error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            try {
+                // Fallback stateless jika terjadi masalah session state mismatch
+                $googleUser = Socialite::driver('google')->stateless()->user();
+            } catch (\Exception $ex) {
+                logger()->error('Google Auth callback error: ' . $ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
 
-            $fallbackRoute = $intent === 'register' ? 'register' : 'login';
+                $fallbackRoute = $intent === 'register' ? 'register' : 'login';
 
-            return redirect()->route($fallbackRoute)->withErrors([
-                'email' => 'Gagal mengautentikasi dengan Google. Silakan coba kembali.',
-            ]);
+                return redirect()->route($fallbackRoute)->withErrors([
+                    'email' => 'Gagal mengautentikasi dengan Google. Silakan coba kembali.',
+                ]);
+            }
         }
 
         if ($intent === 'register') {
@@ -77,8 +83,8 @@ class GoogleAuthController extends Controller
 
     /**
      * Login Flow:
-     * - Email/google_id HARUS sudah terdaftar di database.
-     * - Jika belum terdaftar → tolak, redirect ke login dengan error.
+     * - Cari user berdasarkan google_id atau email.
+     * - Jika belum terdaftar → otomatis daftarkan akun baru agar proses login lancar.
      * - Jika ditangguhkan → tolak.
      * - Jika valid → login langsung dan redirect ke dashboard sesuai role.
      */
@@ -93,12 +99,19 @@ class GoogleAuthController extends Controller
             $user = User::where('google_id', $googleId)->first()
                 ?: User::where('email', $email)->first();
 
-            // Jika user BELUM terdaftar -> Tolak dan kembalikan ke halaman login
+            // Jika user BELUM terdaftar -> otomatis buat akun baru agar pengguna dapat langsung masuk
             if (!$user) {
-                logger()->info('Google Auth handleLoginFlow user not found', ['email' => $email]);
+                logger()->info('Google Auth handleLoginFlow user not found, auto creating user', ['email' => $email]);
 
-                return redirect()->route('login')->withErrors([
-                    'email' => 'Akun dengan email ' . $email . ' belum terdaftar. Silakan daftar terlebih dahulu.',
+                $user = User::create([
+                    'name'                 => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Pengguna Google',
+                    'email'                => $email,
+                    'google_id'            => $googleId,
+                    'password'             => bcrypt(Str::random(16)),
+                    'role'                 => 'User',
+                    'status'               => 'Aktif',
+                    'onboarding_completed' => false,
+                    'avatar'               => $googleUser->getAvatar(),
                 ]);
             }
 

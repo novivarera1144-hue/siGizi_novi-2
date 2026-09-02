@@ -37,6 +37,8 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 
     // Google OAuth — Login Flow
+    Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogleLogin']);
+    Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogleLogin']);
     Route::get('auth/google/login', [GoogleAuthController::class, 'redirectToGoogleLogin'])
         ->name('google.login');
 
