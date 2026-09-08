@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Camera, Pencil, ChevronRight, Target, Bell, ShieldCheck, Star, LogOut, X, Eye, EyeOff, ChevronLeft, Send, Trash2, Clock, Sparkles, Flame, Beef, Droplets, Wheat, TrendingDown, TrendingUp, Minus, ChevronDown } from 'lucide-react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
+import { Camera, Pencil, ChevronRight, Target, Bell, ShieldCheck, Star, LogOut, X, Eye, EyeOff, ChevronLeft, Send, Trash2, Clock, Sparkles, Flame, Beef, Droplets, Wheat, TrendingDown, TrendingUp, Minus, ChevronDown, CheckCircle2, XCircle, Lock, RefreshCw, KeyRound } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function Edit({ auth, flash }) {
     const user = auth.user;
@@ -56,6 +57,7 @@ export default function Edit({ auth, flash }) {
                 phone: user.phone || '',
             });
             setPhotoPreview(user.photo ? `/storage/${user.photo}` : null);
+            setTwoFactor(Boolean(user.two_factor_enabled));
         }
     }, [user]);
 
@@ -183,8 +185,36 @@ export default function Edit({ auth, flash }) {
     const fmt = (n) => n.toLocaleString('id-ID');
 
     // Security states
-    const [showPassword, setShowPassword] = useState(false);
-    const [twoFactor, setTwoFactor] = useState(false);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [twoFactor, setTwoFactor] = useState(Boolean(user?.two_factor_enabled));
+    const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
+    const [twoFactorCode, setTwoFactorCode] = useState('');
+    const [twoFactorLoading, setTwoFactorLoading] = useState(false);
+    const [twoFactorError, setTwoFactorError] = useState('');
+    const [twoFactorCountdown, setTwoFactorCountdown] = useState(0);
+    const [twoFactorDebugCode, setTwoFactorDebugCode] = useState('');
+
+    // Timer effect untuk countdown kirim ulang OTP 2FA
+    useEffect(() => {
+        if (twoFactorCountdown > 0) {
+            const timer = setTimeout(() => setTwoFactorCountdown(twoFactorCountdown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [twoFactorCountdown]);
+
+    // Password validation real-time rules
+    const newPassword = passwordForm.data.password || '';
+    const confirmPassword = passwordForm.data.password_confirmation || '';
+    const currentPassword = passwordForm.data.current_password || '';
+
+    const hasMinLength = newPassword.length >= 8;
+    const hasLetter = /[a-zA-Z]/.test(newPassword);
+    const hasNumber = /[0-9]/.test(newPassword);
+    const isNewPasswordValid = hasMinLength && hasLetter && hasNumber;
+    const isConfirmMatching = confirmPassword.length > 0 && newPassword === confirmPassword;
+    const isPasswordFormReady = currentPassword.trim().length > 0 && isNewPasswordValid && isConfirmMatching;
 
     // Review states
     const [rating, setRating] = useState(0);
@@ -266,10 +296,20 @@ export default function Edit({ auth, flash }) {
 
     const handleUpdatePassword = (e) => {
         e.preventDefault();
+        if (!isPasswordFormReady) return;
+
         passwordForm.put(route('password.update'), {
             preserveScroll: true,
             onSuccess: () => {
                 passwordForm.reset();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Kata sandi berhasil diperbarui.',
+                    confirmButtonColor: '#1F7A54',
+                    background: document.documentElement.classList.contains('dark') ? '#09170F' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#111827',
+                });
             },
             onError: (errors) => {
                 if (errors.password) {
@@ -278,8 +318,132 @@ export default function Edit({ auth, flash }) {
                 if (errors.current_password) {
                     passwordForm.reset('current_password');
                 }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memperbarui Kata Sandi',
+                    text: Object.values(errors)[0] || 'Periksa kembali data yang Anda masukkan.',
+                    confirmButtonColor: '#d33',
+                    background: document.documentElement.classList.contains('dark') ? '#09170F' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#111827',
+                });
             }
         });
+    };
+
+    const handleOpenTwoFactorModal = () => {
+        setTwoFactorCode('');
+        setTwoFactorError('');
+        setTwoFactorLoading(true);
+        setShowTwoFactorModal(true);
+
+        router.post(route('profile.two-factor.send'), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: (page) => {
+                setTwoFactorLoading(false);
+                setTwoFactorCountdown(60);
+                const debugOtp = page.props.flash?.two_factor_debug_otp;
+                if (debugOtp) {
+                    setTwoFactorDebugCode(debugOtp);
+                }
+            },
+            onError: () => {
+                setTwoFactorLoading(false);
+                setTwoFactorError('Gagal mengirimkan kode verifikasi. Coba lagi.');
+            }
+        });
+    };
+
+    const handleResendTwoFactorCode = () => {
+        if (twoFactorCountdown > 0) return;
+        setTwoFactorLoading(true);
+        setTwoFactorError('');
+
+        router.post(route('profile.two-factor.send'), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: (page) => {
+                setTwoFactorLoading(false);
+                setTwoFactorCountdown(60);
+                const debugOtp = page.props.flash?.two_factor_debug_otp;
+                if (debugOtp) {
+                    setTwoFactorDebugCode(debugOtp);
+                }
+            },
+            onError: () => {
+                setTwoFactorLoading(false);
+                setTwoFactorError('Gagal mengirim ulang kode verifikasi.');
+            }
+        });
+    };
+
+    const handleVerifyAndEnableTwoFactor = (e) => {
+        if (e) e.preventDefault();
+        if (twoFactorCode.length !== 6) {
+            setTwoFactorError('Masukkan 6 digit kode verifikasi.');
+            return;
+        }
+
+        setTwoFactorLoading(true);
+        setTwoFactorError('');
+
+        router.post(route('profile.two-factor.enable'), { code: twoFactorCode }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setTwoFactorLoading(false);
+                setTwoFactor(true);
+                setShowTwoFactorModal(false);
+                setTwoFactorCode('');
+                Swal.fire({
+                    icon: 'success',
+                    title: '2FA Diaktifkan!',
+                    text: 'Autentikasi 2 Langkah berhasil diaktifkan dan disinkronkan ke database Supabase.',
+                    confirmButtonColor: '#1F7A54',
+                    background: document.documentElement.classList.contains('dark') ? '#09170F' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#111827',
+                });
+            },
+            onError: (errs) => {
+                setTwoFactorLoading(false);
+                setTwoFactorError(errs.code || 'Kode verifikasi salah atau kedaluwarsa.');
+            }
+        });
+    };
+
+    const handleToggleTwoFactor = () => {
+        if (!twoFactor) {
+            handleOpenTwoFactorModal();
+        } else {
+            Swal.fire({
+                title: 'Nonaktifkan 2FA?',
+                text: 'Lapisan perlindungan keamanan ekstra akan dinonaktifkan dari akun Anda.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#9CA3AF',
+                confirmButtonText: 'Ya, Nonaktifkan',
+                cancelButtonText: 'Batal',
+                background: document.documentElement.classList.contains('dark') ? '#09170F' : '#ffffff',
+                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#111827',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.post(route('profile.two-factor.disable'), {}, {
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setTwoFactor(false);
+                            Swal.fire({
+                                icon: 'success',
+                                title: '2FA Dinonaktifkan',
+                                text: 'Autentikasi 2 Langkah telah dinonaktifkan di Supabase dan lokal.',
+                                confirmButtonColor: '#1F7A54',
+                                background: document.documentElement.classList.contains('dark') ? '#09170F' : '#ffffff',
+                                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#111827',
+                            });
+                        }
+                    });
+                }
+            });
+        }
     };
 
     const handleSaveReview = (e) => {
@@ -426,9 +590,18 @@ export default function Edit({ auth, flash }) {
     const renderKeamananView = () => (
         <div className="max-w-2xl mx-auto animate-in slide-in-from-right-4 duration-300">
             <button onClick={() => setActiveView('main')} className="flex items-center gap-2 text-gray-500 dark:text-emerald-500/80 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium mb-6 transition">
-                <ChevronLeft size={20} /> Keamanan Akun
+                <ChevronLeft size={20} /> Kembali ke Profil
             </button>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Keamanan Akun</h2>
+
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Keamanan Akun</h2>
+                    <p className="text-sm text-gray-500 dark:text-emerald-500/70 mt-1">Kelola kata sandi akun dan lapisan perlindungan verifikasi dua langkah Anda.</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100/80 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheck size={24} />
+                </div>
+            </div>
 
             {flash?.success && (
                 <div className="p-4 mb-6 bg-emerald-50 border border-emerald-200/60 dark:bg-[#102A1C]/50 dark:border-[#1E4D34]/50 text-emerald-800 dark:text-emerald-300 rounded-2xl flex items-start gap-3 shadow-sm transition-all duration-300">
@@ -439,89 +612,321 @@ export default function Edit({ auth, flash }) {
                 </div>
             )}
 
-            <form onSubmit={handleUpdatePassword}>
-                <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 mb-6">
-                    <h3 className="font-bold text-gray-900 dark:text-white text-center mb-6">Ubah Kata Sandi</h3>
+            {/* --- FORM 1: UBAH KATA SANDI --- */}
+            <form onSubmit={handleUpdatePassword} className="mb-8">
+                <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <KeyRound size={20} />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900 dark:text-white">Ubah Kata Sandi</h3>
+                            <p className="text-xs text-gray-500 dark:text-emerald-500/70">Perbarui kata sandi Anda secara berkala untuk menjaga akun tetap aman.</p>
+                        </div>
+                    </div>
 
-                    <div className="space-y-5 max-w-md mx-auto">
+                    <div className="space-y-5">
+                        {/* Kata Sandi Saat Ini */}
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Kata Sandi Saat Ini</label>
                             <div className="relative">
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showCurrentPassword ? "text" : "password"}
                                     value={passwordForm.data.current_password}
                                     onChange={(e) => passwordForm.setData('current_password', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none"
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none transition"
                                     placeholder="••••••••"
                                     required
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                                     className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
                                 >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                             {passwordForm.errors.current_password && (
                                 <p className="text-rose-500 text-xs mt-1.5 font-medium">{passwordForm.errors.current_password}</p>
                             )}
                         </div>
+
+                        {/* Kata Sandi Baru */}
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Kata Sandi Baru</label>
-                            <input
-                                type="password"
-                                value={passwordForm.data.password}
-                                onChange={(e) => passwordForm.setData('password', e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none"
-                                placeholder="••••••••"
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={passwordForm.data.password}
+                                    onChange={(e) => passwordForm.setData('password', e.target.value)}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none transition"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
+                                >
+                                    {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                             {passwordForm.errors.password && (
                                 <p className="text-rose-500 text-xs mt-1.5 font-medium">{passwordForm.errors.password}</p>
                             )}
+
+                            {/* Checklist Indikator Kriteria Kata Sandi Real-Time */}
+                            <div className="mt-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-[#07170E] border border-gray-100 dark:border-emerald-950/60 space-y-2">
+                                <p className="text-[11px] font-bold text-gray-500 dark:text-emerald-400/80 uppercase tracking-wider">Kriteria Kata Sandi Baru:</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5">
+                                    <div className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${hasMinLength ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-400 dark:text-emerald-900/70'}`}>
+                                        {hasMinLength ? <CheckCircle2 size={15} className="shrink-0 text-emerald-500" /> : <div className="w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-emerald-900/60 shrink-0" />}
+                                        <span>Min. 8 karakter</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${hasLetter ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-400 dark:text-emerald-900/70'}`}>
+                                        {hasLetter ? <CheckCircle2 size={15} className="shrink-0 text-emerald-500" /> : <div className="w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-emerald-900/60 shrink-0" />}
+                                        <span>Setidaknya 1 huruf</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${hasNumber ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-400 dark:text-emerald-900/70'}`}>
+                                        {hasNumber ? <CheckCircle2 size={15} className="shrink-0 text-emerald-500" /> : <div className="w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-emerald-900/60 shrink-0" />}
+                                        <span>Setidaknya 1 angka</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        {/* Konfirmasi Kata Sandi Baru */}
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Konfirmasi Kata Sandi Baru</label>
-                            <input
-                                type="password"
-                                value={passwordForm.data.password_confirmation}
-                                onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none"
-                                placeholder="••••••••"
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    value={passwordForm.data.password_confirmation}
+                                    onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0C1E14] border border-transparent dark:border-emerald-900/50 focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0C1E14] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-700 focus:ring-0 rounded-xl text-sm outline-none transition"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
+                                >
+                                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                             {passwordForm.errors.password_confirmation && (
                                 <p className="text-rose-500 text-xs mt-1.5 font-medium">{passwordForm.errors.password_confirmation}</p>
+                            )}
+
+                            {/* Status Kecocokan Real-Time */}
+                            {confirmPassword.length > 0 && (
+                                <div className="mt-2">
+                                    {isConfirmMatching ? (
+                                        <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 animate-in fade-in duration-200">
+                                            <CheckCircle2 size={14} /> Kata sandi cocok
+                                        </p>
+                                    ) : (
+                                        <p className="text-xs font-semibold text-rose-500 dark:text-rose-400 flex items-center gap-1.5 animate-in fade-in duration-200">
+                                            <XCircle size={14} /> Konfirmasi kata sandi belum cocok
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Tombol Simpan Kata Sandi */}
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                disabled={!isPasswordFormReady || passwordForm.processing}
+                                className={`w-full py-3.5 font-bold rounded-2xl transition shadow-sm flex items-center justify-center gap-2 ${
+                                    isPasswordFormReady && !passwordForm.processing
+                                        ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 cursor-pointer shadow-emerald-500/20'
+                                        : 'bg-gray-200 dark:bg-emerald-950/40 text-gray-400 dark:text-emerald-900/60 cursor-not-allowed'
+                                }`}
+                            >
+                                {passwordForm.processing ? (
+                                    <>
+                                        <svg className="animate-spin h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        <span>Menyimpan Kata Sandi...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Lock size={16} />
+                                        <span>Perbarui Kata Sandi</span>
+                                    </>
+                                )}
+                            </button>
+                            {!isPasswordFormReady && (newPassword.length > 0 || confirmPassword.length > 0 || currentPassword.length > 0) && (
+                                <p className="text-[11px] text-center text-gray-400 dark:text-emerald-800/80 mt-2 font-medium">
+                                    Lengkapi semua kriteria kata sandi baru dan pastikan konfirmasi cocok untuk menyimpan.
+                                </p>
                             )}
                         </div>
                     </div>
                 </div>
+            </form>
 
-                <div className="bg-white dark:bg-[#09170F] p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 mb-8 flex items-center justify-between">
-                    <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">Autentikasi 2 Langkah</h4>
-                        <p className="text-sm text-gray-500 dark:text-emerald-500/80 mt-1 max-w-sm">Tambahkan lapisan keamanan ekstra ke akun Anda dengan verifikasi dua langkah.</p>
+            {/* --- KARTU 2: AUTENTIKASI 2 LANGKAH (2FA) --- */}
+            <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${twoFactor ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-emerald-950/40 dark:text-emerald-600/70'}`}>
+                            <ShieldCheck size={22} />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2.5 flex-wrap">
+                                <h4 className="font-bold text-gray-900 dark:text-white text-base">Autentikasi 2 Langkah (2FA)</h4>
+                                {twoFactor ? (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-[#20D080] border border-emerald-200 dark:border-emerald-800/50">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#20D080] animate-pulse"></span>
+                                        AKTIF
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gray-100 dark:bg-[#07170E] text-gray-500 dark:text-emerald-700 border border-gray-200 dark:border-emerald-900/30">
+                                        NONAKTIF
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-emerald-500/80 mt-1 max-w-md leading-relaxed">
+                                Tambahkan perlindungan ganda pada akun siGizi Anda. Saat aktif, verifikasi kode 6-digit diperlukan untuk melindungi akses akun dari aktivitas yang tidak dikenal.
+                            </p>
+                            <p className="text-[11px] text-gray-400 dark:text-emerald-700/80 mt-1.5">
+                                Status keamanan disinkronkan secara langsung ke database Supabase.
+                            </p>
+                        </div>
                     </div>
-                    <button type="button" onClick={() => setTwoFactor(!twoFactor)} className={`w-12 h-6 rounded-full transition-colors relative shrink-0 ${twoFactor ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-emerald-950'}`}>
-                        <div className={`w-4 h-4 rounded-full bg-white dark:bg-slate-900 absolute top-1 shadow-sm transition-transform ${twoFactor ? 'translate-x-7' : 'translate-x-1'}`}></div>
-                    </button>
+
+                    {/* Fungsional Toggle Switch */}
+                    <div className="flex items-center sm:self-center">
+                        <button
+                            type="button"
+                            onClick={handleToggleTwoFactor}
+                            className={`w-14 h-7 rounded-full transition-all duration-300 relative shrink-0 cursor-pointer p-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 ${twoFactor ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-[#0C1E14] border border-gray-300 dark:border-emerald-900/50'}`}
+                            title={twoFactor ? "Klik untuk menonaktifkan 2FA" : "Klik untuk mengaktifkan 2FA"}
+                        >
+                            <div className={`w-6 h-6 rounded-full bg-white dark:bg-slate-950 shadow-md transition-transform duration-300 flex items-center justify-center ${twoFactor ? 'translate-x-7' : 'translate-x-0'}`}>
+                                {twoFactor && <div className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-[#20D080]"></div>}
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    // Modal Verifikasi 2FA Fungsional
+    const renderTwoFactorModal = () => (
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-[#09170F] border border-gray-100 dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-2xl animate-in zoom-in-95 duration-200">
+                <button
+                    type="button"
+                    onClick={() => {
+                        setShowTwoFactorModal(false);
+                        setTwoFactorCode('');
+                        setTwoFactorError('');
+                    }}
+                    className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition"
+                >
+                    <X size={20} />
+                </button>
+
+                <div className="flex flex-col items-center text-center mb-6">
+                    <div className="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-emerald-600 dark:text-[#20D080] mb-4 shadow-sm">
+                        <ShieldCheck size={32} />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Verifikasi Autentikasi 2 Langkah</h3>
+                    <p className="text-xs text-gray-500 dark:text-emerald-400/80 mt-1.5 leading-relaxed max-w-xs">
+                        Masukkan kode verifikasi 6 digit yang dikirimkan ke email terdaftar Anda: <span className="font-semibold text-gray-800 dark:text-emerald-300">{user?.email}</span>
+                    </p>
                 </div>
 
-                <button
-                    type="submit"
-                    disabled={passwordForm.processing}
-                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold rounded-2xl transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                    {passwordForm.processing && (
-                        <svg className="animate-spin h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                    )}
-                    <span>Perbarui Kata Sandi</span>
-                </button>
-            </form>
+                <form onSubmit={handleVerifyAndEnableTwoFactor} className="space-y-5">
+                    <div>
+                        <label className="block text-[11px] font-extrabold text-center text-gray-400 dark:text-emerald-600 uppercase tracking-widest mb-2">
+                            KODE VERIFIKASI (6 DIGIT)
+                        </label>
+                        <input
+                            type="text"
+                            maxLength={6}
+                            value={twoFactorCode}
+                            onChange={(e) => {
+                                const val = e.target.value.replace(/[^0-9]/g, '');
+                                setTwoFactorCode(val);
+                                setTwoFactorError('');
+                            }}
+                            placeholder="••••••"
+                            autoFocus
+                            className="w-full text-center tracking-[0.4em] font-mono text-2xl py-3 px-4 bg-gray-50 dark:bg-[#0C1E14] border border-gray-200 dark:border-emerald-900/60 focus:border-emerald-500 dark:focus:border-[#20D080] focus:bg-white dark:focus:bg-[#07170E] text-gray-900 dark:text-white rounded-2xl outline-none transition font-bold placeholder:tracking-normal placeholder:text-gray-300 dark:placeholder:text-emerald-800"
+                        />
+                        {twoFactorError && (
+                            <p className="text-rose-500 text-xs text-center mt-2 font-medium flex items-center justify-center gap-1">
+                                <XCircle size={14} /> {twoFactorError}
+                            </p>
+                        )}
+                        {twoFactorDebugCode && (
+                            <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-900/40 text-center">
+                                <span className="text-[11px] text-emerald-800 dark:text-emerald-400 font-semibold">
+                                    Kode Verifikasi (Uji Coba): <code className="bg-emerald-200/50 dark:bg-emerald-900/80 px-2 py-0.5 rounded text-xs font-mono font-bold tracking-widest">{twoFactorDebugCode}</code>
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Resend & Timer */}
+                    <div className="flex items-center justify-between text-xs pt-1 text-gray-500 dark:text-emerald-500/70">
+                        <span>Tidak menerima kode?</span>
+                        <button
+                            type="button"
+                            onClick={handleResendTwoFactorCode}
+                            disabled={twoFactorCountdown > 0 || twoFactorLoading}
+                            className="font-bold text-emerald-600 dark:text-[#20D080] hover:underline disabled:opacity-50 disabled:no-underline flex items-center gap-1 cursor-pointer"
+                        >
+                            <RefreshCw size={12} className={twoFactorLoading ? "animate-spin" : ""} />
+                            {twoFactorCountdown > 0 ? `Kirim Ulang (${twoFactorCountdown}s)` : 'Kirim Ulang Kode'}
+                        </button>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-3 pt-3">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setShowTwoFactorModal(false);
+                                setTwoFactorCode('');
+                                setTwoFactorError('');
+                            }}
+                            className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-[#0C1E14] dark:hover:bg-emerald-950/60 text-gray-700 dark:text-gray-300 font-bold rounded-xl text-sm transition"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={twoFactorCode.length !== 6 || twoFactorLoading}
+                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold rounded-xl text-sm transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            {twoFactorLoading ? (
+                                <>
+                                    <svg className="animate-spin h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                    <span>Memverifikasi...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <ShieldCheck size={16} />
+                                    <span>Verifikasi & Aktifkan</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 
@@ -971,6 +1376,9 @@ export default function Edit({ auth, flash }) {
                     </form>
                 </div>
             )}
+
+            {/* --- MODAL VERIFIKASI 2FA --- */}
+            {showTwoFactorModal && renderTwoFactorModal()}
 
         </AuthenticatedLayout>
     );

@@ -123,6 +123,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/profile/goals', [ProfileController::class, 'updateGoals'])->name('profile.goals.update');
         Route::post('/profile/testimonial', [TestimonialController::class, 'store'])->name('profile.testimonial.store');
 
+        // 2FA Routes (User Biasa)
+        Route::post('/profile/two-factor/send-code', [\App\Http\Controllers\TwoFactorController::class, 'sendCode'])->name('profile.two-factor.send');
+        Route::post('/profile/two-factor/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('profile.two-factor.enable');
+        Route::post('/profile/two-factor/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('profile.two-factor.disable');
+
         // Scan Routes
         Route::get('/scan', function () {
             return Inertia::render('ScanPage');
