@@ -41,6 +41,8 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
                 'googleData' => fn () => $request->session()->get('googleData'),
+                'two_factor_debug_otp' => fn () => $request->session()->get('two_factor_debug_otp'),
+                'status' => fn () => $request->session()->get('status'),
             ],
             'googleData' => fn () => $request->session()->get('googleData') ?? $request->session()->get('google_register_data'),
             'status' => fn () => $request->session()->get('status'),
