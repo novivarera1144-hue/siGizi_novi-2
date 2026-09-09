@@ -1,8 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, ChevronDown, Bot, Sparkles } from 'lucide-react';
+import { Send, ChevronDown, Bot, Sparkles, Copy, Check } from 'lucide-react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // ─── Bot Avatar Component ─────────────────────────────────────────────────────
 function BotAvatar({ size = 'md' }) {
@@ -37,11 +39,90 @@ function TypingIndicator() {
 
 // ─── Chat Bubble Components ────────────────────────────────────────────────────
 function AiBubble({ text }) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
     return (
-        <div className="flex items-end gap-3 max-w-[85%] animate-fade-in">
+        <div className="flex items-start sm:items-end gap-3 max-w-[92%] sm:max-w-[85%] animate-fade-in group">
             <BotAvatar size="sm" />
-            <div className="bg-emerald-50/80 dark:bg-[#0C1E14] border border-emerald-100/80 dark:border-emerald-900/40 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
-                <p className="text-sm text-gray-800 dark:text-emerald-100 leading-relaxed whitespace-pre-wrap">{text}</p>
+            <div className="relative bg-emerald-50/90 dark:bg-[#0C1E14] border border-emerald-100/90 dark:border-emerald-900/50 rounded-2xl rounded-tl-sm sm:rounded-tl-2xl sm:rounded-bl-sm px-4 sm:px-5 py-3.5 sm:py-4 shadow-sm transition-all">
+                <div className="text-sm text-gray-800 dark:text-emerald-50 leading-relaxed break-words">
+                    <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                            p: ({ node, ...props }) => <p className="mb-2.5 last:mb-0 leading-relaxed" {...props} />,
+                            strong: ({ node, ...props }) => <strong className="font-bold text-emerald-950 dark:text-emerald-200" {...props} />,
+                            em: ({ node, ...props }) => <em className="italic text-gray-700 dark:text-emerald-200" {...props} />,
+                            h1: ({ node, ...props }) => <h1 className="text-base sm:text-lg font-bold text-emerald-950 dark:text-emerald-100 mt-3 mb-1.5 first:mt-0 pb-1 border-b border-emerald-200/50 dark:border-emerald-900/50" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-sm sm:text-base font-bold text-emerald-900 dark:text-emerald-200 mt-3 mb-1.5 first:mt-0" {...props} />,
+                            h3: ({ node, ...props }) => <h3 className="text-sm font-bold text-emerald-800 dark:text-emerald-300 mt-2.5 mb-1 first:mt-0" {...props} />,
+                            h4: ({ node, ...props }) => <h4 className="text-xs sm:text-sm font-semibold text-emerald-800 dark:text-emerald-300 mt-2 mb-1 first:mt-0" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-4 sm:ml-5 space-y-1.5 my-2.5 text-gray-800 dark:text-emerald-100" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-4 sm:ml-5 space-y-1.5 my-2.5 text-gray-800 dark:text-emerald-100" {...props} />,
+                            li: ({ node, ...props }) => <li className="leading-relaxed pl-0.5" {...props} />,
+                            hr: ({ node, ...props }) => <hr className="my-3 border-emerald-200/70 dark:border-emerald-900/70" {...props} />,
+                            blockquote: ({ node, ...props }) => (
+                                <blockquote className="border-l-3 border-emerald-500 bg-emerald-100/40 dark:bg-emerald-950/40 pl-3 pr-2 py-1.5 rounded-r-lg my-2 text-xs sm:text-sm text-emerald-900 dark:text-emerald-200 italic" {...props} />
+                            ),
+                            code: ({ node, inline, className, children, ...props }) => {
+                                return inline ? (
+                                    <code className="px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 font-mono text-xs font-medium" {...props}>
+                                        {children}
+                                    </code>
+                                ) : (
+                                    <pre className="p-3 rounded-xl bg-slate-900 text-emerald-300 font-mono text-xs overflow-x-auto my-2.5 border border-slate-800">
+                                        <code {...props}>{children}</code>
+                                    </pre>
+                                );
+                            },
+                            table: ({ node, ...props }) => (
+                                <div className="overflow-x-auto my-3 rounded-xl border border-emerald-200/80 dark:border-emerald-900/60 shadow-xs">
+                                    <table className="min-w-full divide-y divide-emerald-200/70 dark:divide-emerald-900/70 text-xs" {...props} />
+                                </div>
+                            ),
+                            thead: ({ node, ...props }) => <thead className="bg-emerald-100/70 dark:bg-emerald-950/70 font-semibold" {...props} />,
+                            th: ({ node, ...props }) => <th className="px-3 py-2 text-left font-bold text-emerald-950 dark:text-emerald-200" {...props} />,
+                            td: ({ node, ...props }) => <td className="px-3 py-2 border-t border-emerald-100/60 dark:border-emerald-900/40" {...props} />,
+                            a: ({ node, ...props }) => (
+                                <a
+                                    className="text-emerald-600 dark:text-emerald-400 font-semibold underline underline-offset-2 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    {...props}
+                                />
+                            ),
+                        }}
+                    >
+                        {text}
+                    </ReactMarkdown>
+                </div>
+
+                {/* Copy Button */}
+                <div className="flex justify-end items-center gap-2 mt-2 pt-1.5 border-t border-emerald-100/60 dark:border-emerald-900/30">
+                    <button
+                        onClick={handleCopy}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700/80 dark:text-emerald-400/80 hover:text-emerald-900 dark:hover:text-emerald-200 transition-colors"
+                        title="Salin Pesan"
+                    >
+                        {copied ? (
+                            <>
+                                <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Tersalin!</span>
+                            </>
+                        ) : (
+                            <>
+                                <Copy className="w-3 h-3" />
+                                <span>Salin</span>
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );
