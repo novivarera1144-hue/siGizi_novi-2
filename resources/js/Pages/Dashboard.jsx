@@ -13,16 +13,19 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
         return 'Selamat malam';
     };
 
-    // Helper Icon SVG & Background Color sesuai Nutrisi
+    // Helper Icon SVG & Background Color sesuai Nutrisi (Presisi sesuai desain)
     const getNutriTheme = (title) => {
         const t = (title || '').toLowerCase();
 
         if (t.includes('kalori') || t.includes('calor')) {
             return {
                 label: 'KALORI HARI INI',
-                bg: 'bg-orange-500',
+                cardBg: 'bg-[#E4866A] border-[#D47458] dark:bg-[#7D3826] dark:border-[#9C4B36]',
+                labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+                dividerBorder: 'border-black/10 dark:border-white/15',
+                bg: 'bg-[#C9664B] shadow-sm',
                 icon: (
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9.879z" />
                     </svg>
@@ -33,9 +36,12 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
         if (t.includes('protein')) {
             return {
                 label: 'PROTEIN HARI INI',
-                bg: 'bg-blue-500',
+                cardBg: 'bg-[#97C3F8] border-[#81B3EE] dark:bg-[#1E4373] dark:border-[#2B5B99]',
+                labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+                dividerBorder: 'border-black/10 dark:border-white/15',
+                bg: 'bg-[#4B93EA] shadow-sm',
                 icon: (
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 )
@@ -45,9 +51,12 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
         if (t.includes('lemak') || t.includes('fat')) {
             return {
                 label: 'LEMAK HARI INI',
-                bg: 'bg-amber-500',
+                cardBg: 'bg-[#F8DA89] border-[#E9C772] dark:bg-[#7A5B18] dark:border-[#9C7723]',
+                labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+                dividerBorder: 'border-black/10 dark:border-white/15',
+                bg: 'bg-[#EBAE34] shadow-sm',
                 icon: (
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
                     </svg>
                 )
@@ -57,9 +66,12 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
         if (t.includes('karbo') || t.includes('carb')) {
             return {
                 label: 'KARBOHIDRAT HARI INI',
-                bg: 'bg-emerald-500',
+                cardBg: 'bg-[#8AD5BF] border-[#74C5AD] dark:bg-[#1E5C49] dark:border-[#2C7D64]',
+                labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+                dividerBorder: 'border-black/10 dark:border-white/15',
+                bg: 'bg-[#45BA99] shadow-sm',
                 icon: (
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m9-9H3m15.364-6.364l-12.728 12.728m0-12.728l12.728 12.728" />
                     </svg>
                 )
@@ -68,7 +80,10 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
 
         return {
             label: `${(title || 'NUTRISI').toUpperCase()} HARI INI`,
-            bg: 'bg-emerald-600',
+            cardBg: 'bg-white border-gray-100 dark:bg-[#122017] dark:border-[#1a2e22]',
+            labelColor: 'text-gray-900 dark:text-white font-extrabold',
+            dividerBorder: 'border-gray-100 dark:border-[#1a2e22]/80',
+            bg: 'bg-[#1F7A54]',
             icon: (
                 <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
@@ -138,41 +153,41 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                         const currentValueDisplay = `${rawValue || '0'} ${displayUnit}`;
 
                         return (
-                            <div key={idx} className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between space-y-4">
+                            <div key={idx} className={`${theme.cardBg} p-6 rounded-3xl border shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-all duration-300`}>
                                 {/* Top Section */}
                                 <div className="flex items-start space-x-3">
-                                    <div className={`w-11 h-11 rounded-2xl ${theme.bg} flex items-center justify-center shrink-0 shadow-sm`}>
+                                    <div className={`w-11 h-11 rounded-full ${theme.bg} flex items-center justify-center shrink-0`}>
                                         {theme.icon}
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-bold text-gray-400 dark:text-emerald-400/80 uppercase tracking-wider block">
+                                        <span className={`text-[10px] ${theme.labelColor} uppercase tracking-wider block`}>
                                             {theme.label}
                                         </span>
-                                        <div className="text-xl font-extrabold text-gray-900 dark:text-white mt-0.5">
+                                        <div className="text-2xl font-extrabold text-slate-950 dark:text-white mt-0.5">
                                             {currentValueDisplay}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Rincian Target & Total */}
-                                <div className="space-y-2 pt-3 border-t border-gray-100 dark:border-[#1a2e22]/80">
+                                <div className={`space-y-2 pt-3 border-t ${theme.dividerBorder}`}>
                                     <div className="flex justify-between items-center text-xs">
-                                        <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Target per hari:</span>
-                                        <span className="font-bold text-gray-700 dark:text-emerald-200">
+                                        <span className="text-slate-800/80 dark:text-slate-200/80 font-semibold">Target per hari:</span>
+                                        <span className="font-extrabold text-slate-950 dark:text-white">
                                             {stat.dailyTarget || stat.target || '-'}
                                         </span>
                                     </div>
 
                                     <div className="flex justify-between items-center text-xs">
-                                        <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total sementara:</span>
-                                        <span className="font-extrabold text-[#1F7A54] dark:text-emerald-400">
+                                        <span className="text-slate-800/80 dark:text-slate-200/80 font-semibold">Total sementara:</span>
+                                        <span className="font-extrabold text-slate-950 dark:text-white">
                                             {stat.total_sementara || '-'}
                                         </span>
                                     </div>
 
                                     <div className="flex justify-between items-center text-xs">
-                                        <span className="text-gray-400 dark:text-emerald-100/50 font-medium">Total target:</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">
+                                        <span className="text-slate-800/80 dark:text-slate-200/80 font-semibold">Total target:</span>
+                                        <span className="font-extrabold text-slate-950 dark:text-white">
                                             {stat.totalTarget || '-'}
                                         </span>
                                     </div>
