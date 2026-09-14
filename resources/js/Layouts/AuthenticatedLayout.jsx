@@ -1,5 +1,19 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
+import {
+    LayoutDashboard,
+    Camera,
+    BarChart3,
+    History,
+    Sparkles,
+    User,
+    LogOut,
+    Menu,
+    X,
+    Search,
+    Sun,
+    Moon
+} from 'lucide-react';
 
 export default function AuthenticatedLayout({ children }) {
     const { auth, url } = usePage().props;
@@ -7,6 +21,7 @@ export default function AuthenticatedLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+    // Close mobile drawer on page navigation
     useEffect(() => {
         setSidebarOpen(false);
     }, [url]);
@@ -102,56 +117,32 @@ export default function AuthenticatedLayout({ children }) {
     const menuItems = [
         {
             name: 'Dashboard',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
-                </svg>
-            ),
+            icon: LayoutDashboard,
             route: 'dashboard',
         },
         {
             name: 'Scan Makanan',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            ),
+            icon: Camera,
             route: 'scan',
         },
         {
             name: 'Lap. Mingguan',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-            ),
+            icon: BarChart3,
             route: 'laporan.mingguan',
         },
         {
             name: 'Riwayat Scan',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            ),
+            icon: History,
             route: 'riwayat',
         },
         {
             name: 'AI Assistant',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                </svg>
-            ),
+            icon: Sparkles,
             route: 'ai.assistant',
         },
         {
             name: 'Profil',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-            ),
+            icon: User,
             route: 'profile.edit',
         },
     ];
@@ -175,110 +166,117 @@ export default function AuthenticatedLayout({ children }) {
 
             {/* Sidebar Navigation */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 transform lg:transform-none lg:opacity-100 transition-all duration-300 flex flex-col justify-between shadow-sm ${sidebarOpen
-                        ? 'translate-x-0 opacity-100'
-                        : '-translate-x-full lg:translate-x-0'
-                    }`}
+                className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 transform transition-transform duration-300 ease-in-out flex flex-col justify-between shadow-lg lg:shadow-none ${
+                    sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                }`}
             >
-                <div>
-                    <div className="h-24 flex items-center justify-between px-6 border-b border-gray-50 dark:border-emerald-900/20 relative">
-                        <Link href="/" prefetch={['hover', 'mount']} className="flex items-center">
-                            <img src="/images/logo-sigizi.png" alt="Logo siGizi" className="w-[140px] h-auto object-contain" />
-                        </Link>
+                <div className="flex flex-col h-full justify-between">
+                    <div>
+                        {/* Sidebar Header */}
+                        <div className="h-20 sm:h-24 flex items-center justify-between px-6 border-b border-gray-50 dark:border-emerald-900/20 relative">
+                            <Link href="/" prefetch={['hover', 'mount']} className="flex items-center">
+                                <img src="/images/logo-sigizi.png" alt="Logo siGizi" className="w-[130px] sm:w-[140px] h-auto object-contain" />
+                            </Link>
 
-                        <button
-                            onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden p-1.5 rounded-lg text-gray-600 hover:bg-gray-50 dark:text-emerald-400 dark:hover:bg-emerald-950/40 transition-colors"
-                        >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div className="px-4 py-6 space-y-1.5 overflow-y-auto max-h-[calc(100vh-140px)] scroll-smooth custom-scrollbar">
-                        <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-widest block mb-4">
-                            Pengguna
-                        </span>
-
-                        {menuItems.map((item, idx) => {
-                            const isCurrent = checkIsActive(item.route);
-
-                            return (
-                                <Link
-                                    key={idx}
-                                    href={item.route !== '#' ? route(item.route) : '#'}
-                                    prefetch={item.route !== '#' ? ['hover', 'mount'] : undefined}
-                                    className={`relative w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isCurrent
-                                            ? 'bg-[#1F7A54] text-white dark:bg-emerald-500/20 dark:text-emerald-300 font-bold shadow-md shadow-[#1F7A54]/20'
-                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/70 dark:text-emerald-300/80 dark:hover:text-emerald-100 dark:hover:bg-emerald-900/20'
-                                        }`}
-                                >
-                                    {item.icon}
-                                    <span>{item.name}</span>
-                                </Link>
-                            );
-                        })}
-
-                        <div className="pt-4 border-t border-gray-50 dark:border-emerald-900/20 mt-4">
                             <button
-                                onClick={handleLogout}
-                                disabled={isLoggingOut}
-                                className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all duration-200 cursor-pointer ${
-                                    isLoggingOut ? 'opacity-55 cursor-not-allowed' : ''
-                                }`}
+                                onClick={() => setSidebarOpen(false)}
+                                className="lg:hidden p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-emerald-400 dark:hover:bg-emerald-950/40 transition-colors"
+                                aria-label="Tutup Menu"
                             >
-                                {isLoggingOut ? (
-                                    <svg className="animate-spin h-5 w-5 text-rose-500" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                    </svg>
-                                ) : (
-                                    <svg className="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                )}
-                                <span>{isLoggingOut ? 'Keluar...' : 'Keluar'}</span>
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
+
+                        {/* Menu Items List */}
+                        <div className="px-4 py-6 space-y-1.5 overflow-y-auto max-h-[calc(100vh-180px)] scroll-smooth custom-scrollbar">
+                            <span className="px-3 text-[10px] font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-widest block mb-3">
+                                PENGGUNA
+                            </span>
+
+                            {menuItems.map((item, idx) => {
+                                const isCurrent = checkIsActive(item.route);
+                                const Icon = item.icon;
+
+                                return (
+                                    <Link
+                                        key={idx}
+                                        href={item.route !== '#' ? route(item.route) : '#'}
+                                        prefetch={item.route !== '#' ? ['hover', 'mount'] : undefined}
+                                        className={`relative w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                                            isCurrent
+                                                ? 'bg-[#1F7A54] text-white dark:bg-emerald-500/20 dark:text-emerald-300 font-bold shadow-md shadow-[#1F7A54]/20'
+                                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/70 dark:text-emerald-300/80 dark:hover:text-emerald-100 dark:hover:bg-emerald-900/20'
+                                        }`}
+                                    >
+                                        <Icon className={`w-5 h-5 shrink-0 ${isCurrent ? 'text-white dark:text-emerald-300' : 'text-gray-500 dark:text-emerald-400/80'}`} />
+                                        <span className="truncate">{item.name}</span>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Bottom Sidebar Actions (Keluar) */}
+                    <div className="p-4 border-t border-gray-50 dark:border-emerald-900/20">
+                        <button
+                            onClick={handleLogout}
+                            disabled={isLoggingOut}
+                            className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all duration-200 cursor-pointer ${
+                                isLoggingOut ? 'opacity-55 cursor-not-allowed' : ''
+                            }`}
+                        >
+                            {isLoggingOut ? (
+                                <svg className="animate-spin h-5 w-5 text-rose-500 shrink-0" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                </svg>
+                            ) : (
+                                <LogOut className="w-5 h-5 text-rose-500 shrink-0" />
+                            )}
+                            <span className="truncate">{isLoggingOut ? 'Keluar...' : 'Keluar'}</span>
+                        </button>
                     </div>
                 </div>
             </aside>
 
+            {/* Mobile Drawer Overlay Backdrop */}
             {sidebarOpen && (
                 <div
                     onClick={() => setSidebarOpen(false)}
-                    className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity"
-                ></div>
+                    className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xs lg:hidden transition-opacity duration-300"
+                    aria-hidden="true"
+                />
             )}
 
-            {/* Main Content Layout */}
-            <div className="flex-1 lg:pl-64 flex flex-col min-h-screen bg-white dark:bg-[#07110B]">
+            {/* Main Content Layout Container */}
+            <div className="flex-1 lg:pl-64 flex flex-col min-h-screen bg-white dark:bg-[#07110B] transition-all">
 
-                {/* Header */}
-                <header className="h-14 bg-white border-b border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20 transition-colors duration-300">
-                    <div className="flex items-center space-x-4">
+                {/* Top Header */}
+                <header className="h-16 bg-white/95 backdrop-blur-md border-b border-gray-100 dark:bg-[#08160E]/95 dark:border-emerald-900/30 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20 transition-colors duration-300">
+                    <div className="flex items-center space-x-3 sm:space-x-4">
+                        {/* Hamburger Button (Mobile Drawer Toggle) */}
                         <button
-                            onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-2 rounded-lg bg-gray-50/50 dark:bg-emerald-950/40 lg:hidden text-gray-700 dark:text-emerald-300 hover:bg-gray-100 flex items-center space-x-2"
+                            onClick={() => setSidebarOpen((prev) => !prev)}
+                            className="p-2 rounded-xl bg-gray-50 dark:bg-emerald-950/40 border border-gray-200/80 dark:border-emerald-900/40 lg:hidden text-gray-700 dark:text-emerald-300 hover:bg-gray-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer"
+                            aria-label="Toggle Navigation Menu"
                         >
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
+                            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
 
+                        {/* Breadcrumbs */}
                         <div className="flex items-center space-x-2 text-xs font-semibold text-gray-400 dark:text-emerald-500">
                             <span className="hidden sm:inline">siGizi</span>
                             <span className="hidden sm:inline">&gt;</span>
-                            <span className="text-gray-700 dark:text-emerald-400 font-bold text-sm sm:text-xs">
+                            <span className="text-gray-800 dark:text-emerald-300 font-bold text-sm sm:text-xs">
                                 {currentPageTitle}
                             </span>
                         </div>
                     </div>
 
-                    <div className="flex items-center space-x-4">
+                    {/* Right Header Actions */}
+                    <div className="flex items-center space-x-3 sm:space-x-4">
 
-                        {/* Search */}
+                        {/* Quick Search Input */}
                         <div className="relative hidden md:block" ref={searchRef}>
                             <div className="relative">
                                 <input
@@ -290,11 +288,10 @@ export default function AuthenticatedLayout({ children }) {
                                     className="w-48 lg:w-64 bg-gray-50/70 border border-gray-200 dark:border-emerald-900/45 dark:bg-[#0D2217] rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-gray-700 dark:text-emerald-100 placeholder-gray-400 dark:placeholder-emerald-400/50 focus:outline-none focus:border-gray-400 dark:focus:border-emerald-400 transition-all shadow-sm"
                                 />
 
-                                <svg className="w-4 h-4 text-gray-400 dark:text-emerald-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                                <Search className="w-4 h-4 text-gray-400 dark:text-emerald-400 absolute left-3 top-2.5" />
                             </div>
 
+                            {/* Search Results Dropdown */}
                             {isSearching && (
                                 <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0B1E13] border border-gray-100 dark:border-emerald-900/40 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                                     <div className="px-3 py-1.5 border-b border-gray-50 dark:border-emerald-900/30 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
@@ -329,20 +326,22 @@ export default function AuthenticatedLayout({ children }) {
                             )}
                         </div>
 
-                        {/* Dark Mode */}
+                        {/* Dark / Light Mode Toggle Button */}
                         <button
                             onClick={toggleDarkMode}
-                            className="p-2 rounded-full text-gray-600 hover:text-gray-900 dark:text-amber-300 transition-colors bg-gray-50 dark:bg-emerald-950/40 border border-gray-200/70 dark:border-emerald-900/40 shadow-sm cursor-pointer"
+                            className="p-2 rounded-xl text-amber-500 dark:text-amber-300 transition-colors bg-gray-50 dark:bg-emerald-950/40 border border-gray-200/70 dark:border-emerald-900/40 shadow-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-emerald-900/40 flex items-center justify-center"
+                            title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                            aria-label="Toggle Theme Mode"
                         >
-                            {darkMode ? '☀️' : '🌙'}
+                            {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-700" />}
                         </button>
 
-                        {/* Profile Initial / Photo */}
+                        {/* User Profile Avatar / Initial */}
                         {user && (
                             <Link
                                 href={route('profile.edit')}
                                 prefetch={['hover', 'mount']}
-                                className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 dark:bg-[#1F7A54] dark:text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer border border-gray-300/60 dark:border-transparent overflow-hidden"
+                                className="w-9 h-9 rounded-full bg-gray-200 text-gray-700 dark:bg-[#1F7A54] dark:text-white flex items-center justify-center font-extrabold text-sm shadow-sm cursor-pointer border border-gray-300/60 dark:border-transparent overflow-hidden hover:opacity-90 transition-opacity"
                             >
                                 {user.avatar || user.photo ? (
                                     <img
@@ -358,30 +357,30 @@ export default function AuthenticatedLayout({ children }) {
                     </div>
                 </header>
 
-                {/* Main Content */}
+                {/* Main Content Body */}
                 <main className="flex-1 p-4 sm:p-8 pb-24 lg:pb-8 bg-white dark:bg-[#07110B]">
                     {children}
                 </main>
 
-                {/* Bottom Navigation (Mobile) */}
-                <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 dark:bg-[#08160E] dark:border-emerald-900/30 px-2 py-2 flex items-center justify-around shadow-lg">
+                {/* Mobile Bottom Navigation Toolbar */}
+                <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-100 dark:bg-[#08160E]/95 dark:border-emerald-900/30 px-2 py-1.5 flex items-center justify-around shadow-lg">
                     {menuItems.map((item, idx) => {
                         const isCurrent = checkIsActive(item.route);
+                        const Icon = item.icon;
 
                         return (
                             <Link
                                 key={idx}
                                 href={item.route !== '#' ? route(item.route) : '#'}
                                 prefetch={item.route !== '#' ? ['hover', 'mount'] : undefined}
-                                className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${isCurrent
+                                className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
+                                    isCurrent
                                         ? 'text-[#1F7A54] dark:text-emerald-400 font-bold'
                                         : 'text-gray-400 dark:text-emerald-300/60 hover:text-gray-600 dark:hover:text-emerald-200'
-                                    }`}
+                                }`}
                             >
-                                <div className="w-5 h-5 mb-1 flex items-center justify-center">
-                                    {item.icon}
-                                </div>
-                                <span className="text-[10px] leading-none">
+                                <Icon className="w-5 h-5 mb-0.5" />
+                                <span className="text-[10px] leading-none whitespace-nowrap">
                                     {item.name}
                                 </span>
                             </Link>

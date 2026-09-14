@@ -511,17 +511,17 @@ export default function Edit({ auth, flash }) {
             </div>
 
             {/* --- Kartu Target Kesehatan --- */}
-            <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 mb-8 transition-colors">
+            <div className="bg-[#EBF4F0] dark:bg-[#0E281A] p-6 md:p-8 rounded-3xl shadow-sm border border-emerald-100/60 dark:border-emerald-900/40 mb-8 transition-colors">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                        <div className="w-10 h-10 rounded-full bg-emerald-100/70 dark:bg-emerald-950/80 flex items-center justify-center text-emerald-700 dark:text-emerald-300">
                             <Target size={20} />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Target Kesehatan</h3>
                     </div>
                     <button
                         onClick={() => setShowGoalSettingModal(true)}
-                        className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
+                        className="text-sm font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300"
                     >
                         Edit
                     </button>
@@ -529,28 +529,28 @@ export default function Edit({ auth, flash }) {
 
                 {/* Grid Info Target */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Tujuan</p>
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Tujuan</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">{user?.weight_goal || 'Belum Diatur'}</p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Durasi Program</p>
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Durasi Program</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.duration_weeks || 12} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">minggu</span></p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Target Kalori</p>
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Target Kalori</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{fmt(getCalorieTarget())} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kkal/hari</span></p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Berat Badan</p>
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Berat Badan</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.weight || '-'} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kg</span></p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Tinggi Badan</p>
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Tinggi Badan</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.height || '-'} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">cm</span></p>
                     </div>
-                    <div className="bg-gray-50 dark:bg-[#0C1E14] p-3.5 sm:p-4 rounded-2xl border border-gray-100 dark:border-emerald-900/40">
-                        <p className="text-[10px] sm:text-xs text-gray-400 dark:text-emerald-600/80 font-semibold uppercase tracking-wider mb-1">Berat Target</p>
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Berat Target</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.target_weight || '-'} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kg</span></p>
                     </div>
                 </div>
@@ -578,10 +578,16 @@ export default function Edit({ auth, flash }) {
                     <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Beri Ulasan & Rating</p></div>
                     <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
                 </button>
-                <button onClick={() => setShowDeleteAccountModal(true)} className="w-full p-5 flex items-center gap-4 bg-red-50/50 dark:bg-red-950/20 hover:bg-red-50 dark:hover:bg-red-950/40 transition text-left group">
-                    <div className="w-10 h-10 rounded-full bg-white dark:bg-red-950/50 flex items-center justify-center text-red-500 shrink-0 shadow-sm border border-red-100 dark:border-red-900/40 group-hover:scale-105 transition-transform"><Trash2 size={18} /></div>
-                    <div className="flex-grow"><p className="font-bold text-red-600 dark:text-red-400">Hapus Akun</p></div>
-                    <ChevronRight size={20} className="text-red-300 dark:text-red-800" />
+
+                {/* ── MENU HAPUS AKUN DENGAN BACKGROUND MERAH MENONJOL ── */}
+                <button onClick={() => setShowDeleteAccountModal(true)} className="w-full p-5 flex items-center gap-4 bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 transition text-left group shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-white/20 dark:bg-white/20 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                        <Trash2 size={18} />
+                    </div>
+                    <div className="flex-grow">
+                        <p className="font-bold text-white tracking-wide">Hapus Akun</p>
+                    </div>
+                    <ChevronRight size={20} className="text-white/70 group-hover:text-white transition" />
                 </button>
             </div>
         </div>
@@ -740,11 +746,10 @@ export default function Edit({ auth, flash }) {
                             <button
                                 type="submit"
                                 disabled={!isPasswordFormReady || passwordForm.processing}
-                                className={`w-full py-3.5 font-bold rounded-2xl transition shadow-sm flex items-center justify-center gap-2 ${
-                                    isPasswordFormReady && !passwordForm.processing
-                                        ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 cursor-pointer shadow-emerald-500/20'
-                                        : 'bg-gray-200 dark:bg-emerald-950/40 text-gray-400 dark:text-emerald-900/60 cursor-not-allowed'
-                                }`}
+                                className={`w-full py-3.5 font-bold rounded-2xl transition shadow-sm flex items-center justify-center gap-2 ${isPasswordFormReady && !passwordForm.processing
+                                    ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 cursor-pointer shadow-emerald-500/20'
+                                    : 'bg-gray-200 dark:bg-emerald-950/40 text-gray-400 dark:text-emerald-900/60 cursor-not-allowed'
+                                    }`}
                             >
                                 {passwordForm.processing ? (
                                     <>
@@ -1089,7 +1094,6 @@ export default function Edit({ auth, flash }) {
                                         { id: 'Menaikkan Berat Badan', label: 'Menaikkan Berat Badan', desc: 'Surplus kalori & tambah massa', icon: <TrendingUp size={18} /> },
                                         { id: 'Meninggikan Badan', label: 'Meninggikan Badan', desc: 'Fokus postur & pertumbuhan tinggi', icon: <Sparkles size={18} /> },
                                     ].map((item) => {
-                                        // Asumsi goalsForm.data.weight_goal berupa array di state parent (misal: ['Menurunkan Berat Badan', 'Meninggikan Badan'])
                                         const currentGoals = Array.isArray(goalsForm.data.weight_goal) ? goalsForm.data.weight_goal : [];
                                         const isSelected = currentGoals.includes(item.id);
 
@@ -1223,7 +1227,6 @@ export default function Edit({ auth, flash }) {
                                     <ProfileNutrientCard icon={<Wheat size={14} />} label="Karbohidrat" daily={goalNutrition.carbs} dailyUnit="g/hari" total={goalTotals.carbs} totalUnit="g total" accent="emerald" />
                                 </div>
 
-                                {/* Weight Journey (Hanya muncul jika tujuan menyangkut turun/naik berat badan) */}
                                 {((Array.isArray(goalsForm.data.weight_goal) && (goalsForm.data.weight_goal.includes('Menurunkan Berat Badan') || goalsForm.data.weight_goal.includes('Menaikkan Berat Badan'))) || (!Array.isArray(goalsForm.data.weight_goal) && (goalsForm.data.weight_goal === 'Menurunkan Berat Badan' || goalsForm.data.weight_goal === 'Menaikkan Berat Badan'))) && parseFloat(goalsForm.data.weight) > 0 && parseFloat(goalsForm.data.target_weight) > 0 && (
                                     <div className="flex items-center justify-center gap-3 pt-2 border-t border-emerald-100 dark:border-emerald-900/30">
                                         <div className="text-center">
@@ -1369,8 +1372,10 @@ export default function Edit({ auth, flash }) {
                             <button type="button" onClick={() => setShowDeleteAccountModal(false)} className="flex-1 py-3.5 bg-white dark:bg-transparent border border-gray-200 dark:border-emerald-900/60 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-emerald-950/40 transition">
                                 Batal
                             </button>
-                            <button type="submit" disabled={deleteAccountForm.processing} className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow-sm">
-                                Hapus Akun Saya
+
+                            {/* TOMBOL AKSI HAPUS AKUN DENGAN BACKGROUND MERAH MENONJOL */}
+                            <button type="submit" disabled={deleteAccountForm.processing} className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white font-bold rounded-xl transition shadow-sm cursor-pointer disabled:opacity-50">
+                                {deleteAccountForm.processing ? 'Menghapus...' : 'Hapus Akun Saya'}
                             </button>
                         </div>
                     </form>

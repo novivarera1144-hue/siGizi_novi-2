@@ -123,7 +123,7 @@ export default function Dashboard({ auth, stats, progressNutrients, recentHistor
                             DASHBOARD
                         </span>
                         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                            {getGreeting()}, {user?.name ?? 'User'} 👏
+                            {getGreeting()}, {user?.name ?? 'User'} 👋👋
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-emerald-100/60 font-medium mt-1">
                             {todayFormatted}
