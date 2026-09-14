@@ -19,10 +19,9 @@ export default function ScanPage() {
 
     // State untuk Modal Kamera Webcam
     const [isWebcamOpen, setIsWebcamOpen] = useState(false);
-    const [facingMode, setFacingMode] = useState('environment'); // 'environment' = belakang, 'user' = depan
+    const [facingMode, setFacingMode] = useState('environment');
     const videoRef = useRef(null);
     const mediaStreamRef = useRef(null);
-
     const fileInputRef = useRef(null);
 
     // Dynamic scan status text during simulation
@@ -40,10 +39,13 @@ export default function ScanPage() {
         }
     }, [scanProgress, isScanning]);
 
-    // Handle File Drop & Selection
+    // Handle File Drop & Selection dengan Cleanup URL Object
     const handleFile = (file) => {
         if (file && file.type.startsWith('image/')) {
             setImageFile(file);
+            if (imagePreview) {
+                URL.revokeObjectURL(imagePreview);
+            }
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
             setScanError(null);
@@ -75,12 +77,10 @@ export default function ScanPage() {
         }
     };
 
-    // Buka Webcam dengan dukungan dynamic facingMode
     const openWebcam = async (mode = facingMode) => {
         setIsWebcamOpen(true);
         setScanError(null);
 
-        // Hentikan stream sebelumnya jika ada (untuk fitur ganti kamera)
         if (mediaStreamRef.current) {
             mediaStreamRef.current.getTracks().forEach(track => track.stop());
         }
@@ -96,18 +96,16 @@ export default function ScanPage() {
             }
         } catch (err) {
             setIsWebcamOpen(false);
-            setScanError('Tidak dapat mengakses kamera. Pastikan izin kamera diizinkan oleh browser.');
+            setScanError('Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan pada peramban Anda.');
         }
     };
 
-    // Fungsi untuk Switch Kamera Depan/Belakang
     const switchCamera = () => {
         const newMode = facingMode === 'user' ? 'environment' : 'user';
         setFacingMode(newMode);
         openWebcam(newMode);
     };
 
-    // Tutup Webcam
     const closeWebcam = () => {
         if (mediaStreamRef.current) {
             mediaStreamRef.current.getTracks().forEach(track => track.stop());
@@ -115,7 +113,6 @@ export default function ScanPage() {
         setIsWebcamOpen(false);
     };
 
-    // Ambil Foto dari Webcam
     const captureWebcam = () => {
         const video = videoRef.current;
         if (!video) return;
@@ -135,7 +132,6 @@ export default function ScanPage() {
         }, 'image/jpeg', 0.9);
     };
 
-    // Simulate AI Scan and POST to ScanController with additional fields
     const startAnalysis = () => {
         if (!imagePreview || !imageFile) return;
         if (!foodName.trim()) {
@@ -176,6 +172,9 @@ export default function ScanPage() {
     };
 
     const resetImage = () => {
+        if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+        }
         setImagePreview(null);
         setImageFile(null);
         setScanError(null);
@@ -190,8 +189,7 @@ export default function ScanPage() {
             <Head title="Scan Makanan - siGizi" />
 
             <div className="max-w-4xl mx-auto space-y-6">
-
-                {/* Header Title & Stepper */}
+                {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 tracking-widest uppercase block mb-1">
@@ -205,7 +203,6 @@ export default function ScanPage() {
                         </p>
                     </div>
 
-                    {/* Stepper Indicator */}
                     <div className="flex items-center space-x-2 bg-gray-100 dark:bg-[#122017] p-1.5 rounded-2xl border border-gray-200 dark:border-[#1a2e22]">
                         <span className="px-3 py-1.5 bg-[#1F7A54] dark:bg-emerald-500 text-white dark:text-black text-xs font-bold rounded-xl shadow-sm">
                             1. Upload & Detail
@@ -235,8 +232,6 @@ export default function ScanPage() {
 
                 {/* Main Card Container */}
                 <div className="bg-white dark:bg-[#122017] rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm p-6 sm:p-8 space-y-6">
-
-                    {/* Drag & Drop Area */}
                     <div
                         onDragEnter={handleDrag}
                         onDragOver={handleDrag}
@@ -247,7 +242,7 @@ export default function ScanPage() {
                     >
                         {imagePreview ? (
                             <div className="w-full h-full relative group">
-                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                <img src={imagePreview} alt="Pratinjau Makanan" className="w-full h-full object-cover" />
                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <button
                                         type="button"
@@ -276,29 +271,25 @@ export default function ScanPage() {
                         )}
                     </div>
 
-                    {/* Action Buttons Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-
-                        {/* Upload Button */}
                         <button
                             type="button"
                             onClick={() => fileInputRef.current.click()}
-                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
+                            className="py-3.5 px-4 bg-[#1F7A54] hover:bg-[#186847] text-white dark:bg-[#1F7A54] dark:hover:bg-[#186847] font-bold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 cursor-pointer transition-all"
                         >
-                            <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                             </svg>
                             <span>Unggah Foto</span>
                         </button>
 
-                        {/* Camera Button */}
                         <button
                             type="button"
                             onClick={() => openWebcam('environment')}
-                            className="py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 dark:bg-[#182b1f] dark:hover:bg-[#1f3a2a] dark:text-white font-bold text-sm rounded-2xl border border-gray-200 dark:border-[#244230] flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
+                            className="py-3.5 px-4 bg-[#1F7A54] hover:bg-[#186847] text-white dark:bg-[#1F7A54] dark:hover:bg-[#186847] font-bold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 cursor-pointer transition-all"
                         >
-                            <svg className="w-5 h-5 text-gray-500 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
@@ -306,7 +297,6 @@ export default function ScanPage() {
                         </button>
                     </div>
 
-                    {/* Form Detail Makanan Tambahan */}
                     {imagePreview && (
                         <div className="pt-6 border-t border-gray-100 dark:border-[#1a2e22] space-y-5 animate-fade-in">
                             <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
@@ -396,7 +386,7 @@ export default function ScanPage() {
                 </div>
             </div>
 
-            {/* Modal Live Webcam dengan Tombol Switch Kamera */}
+            {/* Modal Live Webcam */}
             {isWebcamOpen && (
                 <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                     <div className="w-full max-w-xl bg-white dark:bg-[#122017] rounded-3xl p-6 border border-gray-200 dark:border-[#1a2e22] shadow-2xl space-y-4 text-center">
@@ -408,7 +398,6 @@ export default function ScanPage() {
                             <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover"></video>
                         </div>
                         <div className="flex justify-between items-center pt-2">
-                            {/* Tombol Ganti Kamera */}
                             <button
                                 onClick={switchCamera}
                                 className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-white rounded-xl font-bold text-sm flex items-center gap-2 transition"
