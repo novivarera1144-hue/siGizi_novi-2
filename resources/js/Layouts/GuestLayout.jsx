@@ -39,13 +39,19 @@ export default function GuestLayout({ children, title, subtitle }) {
             {/* AREA UTAMA DI TENGAH */}
             <div className="w-full flex flex-col items-center pt-3 pb-12 px-4">
 
-                {/* LOGO BESAR DI TENGAH - Ukuran Jauh Lebih Besar (w-32 h-32) */}
+                {/* LOGO DI TENGAH - Menonjol & Glow Saat Hover (Tanpa Shimmer) */}
                 <div className="mb-4 flex flex-col items-center">
-                    <img
-                        src="/images/logo-sigizi.png"
-                        alt="Logo siGizi"
-                        className="w-[290px] h-auto object-contain"
-                    />
+                    <Link
+                        href="/"
+                        prefetch={["hover", "mount"]}
+                        className="group inline-flex items-center justify-center px-3 py-1.5 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 active:scale-95 cursor-pointer"
+                    >
+                        <img
+                            src="/images/logo-sigizi.png"
+                            alt="Logo siGizi"
+                            className="w-48 sm:w-56 h-auto object-contain transition-all duration-300 filter group-hover:drop-shadow-[0_8px_16px_rgba(31,122,84,0.35)] dark:group-hover:drop-shadow-[0_8px_16px_rgba(52,211,153,0.35)] group-hover:brightness-105"
+                        />
+                    </Link>
                 </div>
 
                 {/* JUDUL DAN SUBJUDUL DI BAWAH LOGO */}

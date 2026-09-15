@@ -105,49 +105,58 @@ export default function Login({ status, canResetPassword }) {
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="text-gray-500 font-semibold hover:text-[#1F7A54] dark:text-[#52B788]/90 dark:hover:text-emerald-400 transition-colors duration-200"
+                            className="relative overflow-hidden inline-block px-2 py-0.5 rounded-md font-semibold text-gray-500 dark:text-[#52B788]/90 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-[#182b1f] transition-all duration-300 transform hover:scale-105 group"
                         >
-                            Lupa password?
+                            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/50 dark:via-white/20 to-transparent pointer-events-none"></div>
+                            <span className="relative z-10">Lupa password?</span>
                         </Link>
                     )}
                 </div>
 
-                {/* Submit Action Button */}
+                {/* Submit Action Button (MASUK) */}
                 <div className="pt-2">
                     <PrimaryButton
                         disabled={processing}
-                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-200 ${processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+                        className={`relative overflow-hidden w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/20 transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl group ${processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
                             }`}
                     >
-                        {processing ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <span>Sedang Masuk...</span>
-                            </>
-                        ) : (
-                            'Masuk'
-                        )}
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-10"></div>
+
+                        <span className="relative z-20 flex items-center justify-center">
+                            {processing ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Sedang Masuk...</span>
+                                </>
+                            ) : (
+                                'Masuk'
+                            )}
+                        </span>
                     </PrimaryButton>
                 </div>
 
+                {/* Google Button (Divider "atau" terpisah di luar efek hover tombol) */}
                 <GoogleButton
                     text="Masuk dengan Google"
                     dividerPosition="top"
                     dividerText="atau"
                     action="login"
+                    className="relative overflow-hidden transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg group"
+                    shimmerClassName="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent pointer-events-none z-10"
                 />
 
                 {/* Footer Link to Register */}
-                <div className="text-center text-xs text-gray-500 dark:text-[#52B788]/80 pt-4">
-                    Belum punya akun?{' '}
+                <div className="flex items-center justify-center space-x-1.5 text-xs text-gray-500 dark:text-[#52B788]/80 pt-4">
+                    <span>Belum punya akun?</span>
                     <Link
                         href={route('register')}
-                        className="font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 transition-colors duration-200"
+                        className="relative overflow-hidden px-2 py-0.5 rounded-md font-bold text-[#1F7A54] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-[#182b1f] transition-all duration-300 transform hover:scale-105 group"
                     >
-                        Daftar sekarang
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/50 dark:via-white/20 to-transparent pointer-events-none"></div>
+                        <span className="relative z-10">Daftar sekarang</span>
                     </Link>
                 </div>
             </form>

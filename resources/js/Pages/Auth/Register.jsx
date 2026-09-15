@@ -83,6 +83,8 @@ export default function Register({ googleData: propGoogleData, errors: propError
                         dividerPosition="bottom"
                         dividerText="atau isi form"
                         action="register"
+                        className="relative overflow-hidden transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg group"
+                        shimmerClassName="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent pointer-events-none z-10"
                     />
                 )}
 
@@ -123,9 +125,8 @@ export default function Register({ googleData: propGoogleData, errors: propError
                         name="email"
                         value={data.email}
                         readOnly={!!googleData?.email}
-                        className={`mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm ${
-                            googleData?.email ? 'opacity-80 cursor-not-allowed bg-emerald-100/50 dark:bg-emerald-900/30' : ''
-                        }`}
+                        className={`mt-1.5 block w-full px-4 py-3 rounded-xl border border-emerald-100 bg-[#EFF7F4] text-gray-800 placeholder-gray-400 focus:border-[#1F7A54] focus:ring-[#1F7A54] dark:bg-[#101F17] dark:border-[#1E4530] dark:text-emerald-100 dark:placeholder-emerald-300/30 dark:focus:border-emerald-400 dark:focus:ring-emerald-400 transition-all duration-200 shadow-sm text-sm ${googleData?.email ? 'opacity-80 cursor-not-allowed bg-emerald-100/50 dark:bg-emerald-900/30' : ''
+                            }`}
                         placeholder="budi@email.com"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
@@ -186,32 +187,36 @@ export default function Register({ googleData: propGoogleData, errors: propError
                 <div className="pt-2">
                     <PrimaryButton
                         disabled={processing}
-                        className={`w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md transition-all duration-200 ${
-                            processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
-                        }`}
+                        className={`relative overflow-hidden w-full bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#42A85F] dark:hover:bg-[#34914F] py-3.5 rounded-xl justify-center font-bold text-sm text-white shadow-md shadow-[#1F7A54]/25 transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl group ${processing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+                            }`}
                     >
-                        {processing ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <span>Sedang Mendaftarkan...</span>
-                            </>
-                        ) : (
-                            'Daftar'
-                        )}
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-10"></div>
+
+                        <span className="relative z-20 flex items-center justify-center">
+                            {processing ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Sedang Mendaftarkan...</span>
+                                </>
+                            ) : (
+                                'Daftar'
+                            )}
+                        </span>
                     </PrimaryButton>
                 </div>
 
                 {/* Footer Link to Login */}
-                <div className="text-center text-xs text-gray-500 dark:text-[#52B788]/80 pt-2">
-                    Sudah memiliki akun?{' '}
+                <div className="flex items-center justify-center space-x-1.5 text-xs text-gray-500 dark:text-[#52B788]/80 pt-4">
+                    <span>Sudah memiliki akun?</span>
                     <Link
                         href={route('login')}
-                        className="font-bold text-[#1F7A54] hover:text-[#186041] dark:text-emerald-400 transition-colors duration-200"
+                        className="relative overflow-hidden px-2 py-0.5 rounded-md font-bold text-[#1F7A54] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-[#182b1f] transition-all duration-300 transform hover:scale-105 group"
                     >
-                        Masuk sekarang
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/50 dark:via-white/20 to-transparent pointer-events-none"></div>
+                        <span className="relative z-10">Masuk sekarang</span>
                     </Link>
                 </div>
             </form>
