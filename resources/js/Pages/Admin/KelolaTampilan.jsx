@@ -3,6 +3,34 @@ import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
+// Custom CSS keyframes for Kelola Tampilan animations
+const kelolaTampilanAnimStyles = `
+@keyframes ktFadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ktSlideInLeft {
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes ktShimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+}
+@keyframes ktPulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0px rgba(31,122,84,0.15); }
+    50% { box-shadow: 0 0 0 6px rgba(31,122,84,0.08); }
+}
+@keyframes ktIconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1) rotate(3deg); }
+}
+@keyframes ktCountUp {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+}
+`;
+
 export default function KelolaTampilan({ settings, testimonials = [], stats }) {
     const { flash } = usePage().props;
 
@@ -195,25 +223,29 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
         );
     };
 
-    // Stat cards data array untuk mengurangi duplikasi markup
+    // Stat cards data array — colorful backgrounds like user dashboard
     const statCards = [
         {
-            label: 'Total Ulasan',
+            label: 'TOTAL ULASAN',
             value: totalReviews,
             sub: 'Total masuk',
-            iconBg: 'bg-amber-50 dark:bg-amber-950/50',
-            iconColor: 'text-amber-600 dark:text-amber-400',
+            cardBg: 'bg-[#F8DA89] border-[#E9C772] dark:bg-[#7A5B18] dark:border-[#9C7723]',
+            labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+            dividerBorder: 'border-black/10 dark:border-white/15',
+            iconBg: 'bg-[#EBAE34] shadow-sm',
             icon: (
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             ),
             iconFill: true,
         },
         {
-            label: 'Ditampilkan',
+            label: 'DITAMPILKAN',
             value: displayedReviewsCount,
             sub: 'Aktif di beranda',
-            iconBg: 'bg-emerald-50 dark:bg-emerald-950/50',
-            iconColor: 'text-[#1F7A54] dark:text-emerald-400',
+            cardBg: 'bg-[#8AD5BF] border-[#74C5AD] dark:bg-[#1E5C49] dark:border-[#2C7D64]',
+            labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+            dividerBorder: 'border-black/10 dark:border-white/15',
+            iconBg: 'bg-[#45BA99] shadow-sm',
             icon: (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             ),
@@ -221,11 +253,13 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
             strokeWidth: 3,
         },
         {
-            label: 'Disembunyikan',
+            label: 'DISEMBUNYIKAN',
             value: hiddenReviewsCount,
             sub: 'Non-aktif',
-            iconBg: 'bg-gray-100 dark:bg-gray-800',
-            iconColor: 'text-gray-600 dark:text-gray-300',
+            cardBg: 'bg-[#E4866A] border-[#D47458] dark:bg-[#7D3826] dark:border-[#9C4B36]',
+            labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+            dividerBorder: 'border-black/10 dark:border-white/15',
+            iconBg: 'bg-[#C9664B] shadow-sm',
             icon: (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
             ),
@@ -233,11 +267,13 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
             strokeWidth: 2.5,
         },
         {
-            label: 'Rating',
+            label: 'RATING',
             value: averageRating,
             sub: 'Skala 5',
-            iconBg: 'bg-emerald-50 dark:bg-emerald-950/50',
-            iconColor: 'text-[#1F7A54] dark:text-emerald-400',
+            cardBg: 'bg-[#97C3F8] border-[#81B3EE] dark:bg-[#1E4373] dark:border-[#2B5B99]',
+            labelColor: 'text-slate-950 dark:text-slate-100 font-extrabold',
+            dividerBorder: 'border-black/10 dark:border-white/15',
+            iconBg: 'bg-[#4B93EA] shadow-sm',
             icon: (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             ),
@@ -254,7 +290,10 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
         >
             <Head title="Kelola Tampilan - Admin" />
 
-            <div className="w-full overflow-x-hidden space-y-4 pb-24">
+            {/* Inject custom animation keyframes */}
+            <style>{kelolaTampilanAnimStyles}</style>
+
+            <div className="w-full overflow-x-hidden space-y-5 pb-24">
 
                 {/* NOTIFICATION MESSAGES */}
                 {flash?.success && (
@@ -266,45 +305,69 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                     </div>
                 )}
 
-                {/* 1. STAT CARDS */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+                {/* 1. STAT CARDS — colorful like user dashboard */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                     {statCards.map((card, idx) => (
                         <div
                             key={idx}
-                            className="bg-white dark:bg-[#122017] p-2.5 rounded-2xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex items-center justify-between gap-1.5 min-w-0"
+                            className={`${card.cardBg} group relative p-5 rounded-3xl border shadow-sm flex flex-col justify-between space-y-3 overflow-hidden transform transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl cursor-default`}
+                            style={{ animation: `ktFadeInUp 0.5s ease-out ${0.1 * idx}s both` }}
                         >
-                            <div className="min-w-0 space-y-0.5">
-                                <p className="text-[9px] sm:text-xs font-bold text-gray-400 dark:text-emerald-100/60 uppercase tracking-tight truncate">
-                                    {card.label}
-                                </p>
-                                <h3 className="text-sm sm:text-xl font-extrabold text-gray-900 dark:text-white leading-tight">
-                                    {card.value}
-                                </h3>
-                                <p className="text-[9px] sm:text-[11px] font-semibold text-gray-400 dark:text-emerald-100/50 truncate">
-                                    {card.sub}
-                                </p>
-                            </div>
-                            <div className={`w-7 h-7 sm:w-10 sm:h-10 rounded-xl ${card.iconBg} flex items-center justify-center ${card.iconColor} shrink-0`}>
-                                <svg
-                                    className="w-3.5 h-3.5 sm:w-5 sm:h-5"
-                                    fill={card.iconFill ? 'currentColor' : 'none'}
-                                    viewBox={card.iconFill ? '0 0 20 20' : '0 0 24 24'}
-                                    stroke={card.iconFill ? undefined : 'currentColor'}
-                                    strokeWidth={card.iconFill ? undefined : card.strokeWidth}
+                            {/* Shimmer overlay on hover */}
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none z-0" />
+
+                            <div className="flex items-start space-x-3 relative z-10">
+                                <div
+                                    className={`w-11 h-11 rounded-full ${card.iconBg} flex items-center justify-center shrink-0 transform transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110`}
+                                    style={{ animation: `ktIconBounce 3s ease-in-out ${0.5 * idx}s infinite` }}
                                 >
-                                    {card.icon}
-                                </svg>
+                                    <svg
+                                        className="w-5 h-5 text-white"
+                                        fill={card.iconFill ? 'currentColor' : 'none'}
+                                        viewBox={card.iconFill ? '0 0 20 20' : '0 0 24 24'}
+                                        stroke={card.iconFill ? undefined : 'currentColor'}
+                                        strokeWidth={card.iconFill ? undefined : card.strokeWidth}
+                                    >
+                                        {card.icon}
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span className={`text-[10px] ${card.labelColor} uppercase tracking-wider block`}>
+                                        {card.label}
+                                    </span>
+                                    <div
+                                        className="text-2xl font-extrabold text-slate-950 dark:text-white mt-0.5"
+                                        style={{ animation: `ktCountUp 0.6s ease-out ${0.15 * idx + 0.2}s both` }}
+                                    >
+                                        {card.value}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={`pt-2 border-t ${card.dividerBorder} relative z-10`}>
+                                <span className="text-[10px] font-semibold text-slate-800/80 dark:text-slate-200/80">
+                                    {card.sub}
+                                </span>
                             </div>
                         </div>
                     ))}
                 </div>
 
                 {/* 2. MANAJEMEN BERANDA — Hero Section */}
-                <form onSubmit={submitHero} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
-                    <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
-                        <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
+                <form
+                    onSubmit={submitHero}
+                    className="group/card relative bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4 overflow-hidden transform transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8 hover:border-emerald-200/50 dark:hover:border-emerald-800/40"
+                    style={{ animation: 'ktFadeInUp 0.5s ease-out 0.5s both' }}
+                >
+                    {/* Subtle left accent bar */}
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#1F7A54] to-emerald-400 rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+
+                    <div className="flex items-center space-x-2.5 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/60 dark:to-emerald-950/40 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/card:scale-110 group-hover/card:rotate-3">
+                            <svg className="w-4 h-4 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </div>
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Manajemen Beranda — Hero Section</h2>
                     </div>
 
@@ -317,7 +380,7 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                             value={heroForm.data.hero_headline}
                             onChange={(e) => heroForm.setData('hero_headline', e.target.value)}
                             placeholder="Contoh: Kenali Gizi Makananmu Dalam Detik"
-                            className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2.5 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] transition-all"
+                            className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2.5 px-3 text-xs sm:text-sm font-semibold text-gray-800 dark:text-white focus:outline-none focus:border-[#1F7A54] focus:ring-4 focus:ring-[#1F7A54]/10 transition-all duration-300 hover:border-[#1F7A54]/40"
                             required
                         />
                         {heroForm.errors.hero_headline && (
@@ -388,18 +451,28 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                     <button
                         type="submit"
                         disabled={heroForm.processing}
-                        className="w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-sm block mx-auto disabled:opacity-50"
+                        className="group/btn relative w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg hover:shadow-emerald-500/25 block mx-auto disabled:opacity-50 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] overflow-hidden"
                     >
-                        {heroForm.processing ? 'Menyimpan...' : 'Simpan Perubahan Beranda'}
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                        <span className="relative z-10">{heroForm.processing ? 'Menyimpan...' : 'Simpan Perubahan Beranda'}</span>
                     </button>
                 </form>
 
                 {/* 3. PENGATURAN HALAMAN TENTANG KAMI */}
-                <form onSubmit={submitAbout} className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
-                    <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
-                        <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                <form
+                    onSubmit={submitAbout}
+                    className="group/card relative bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4 overflow-hidden transform transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/8 hover:border-blue-200/50 dark:hover:border-blue-800/40"
+                    style={{ animation: 'ktFadeInUp 0.5s ease-out 0.65s both' }}
+                >
+                    {/* Subtle left accent bar */}
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+
+                    <div className="flex items-center space-x-2.5 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-50 dark:from-blue-900/60 dark:to-cyan-950/40 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/card:scale-110 group-hover/card:rotate-3">
+                            <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Pengaturan Halaman Tentang Kami</h2>
                     </div>
 
@@ -534,18 +607,27 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                     <button
                         type="submit"
                         disabled={aboutForm.processing}
-                        className="w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-sm block mx-auto disabled:opacity-50"
+                        className="group/btn relative w-full sm:w-auto bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white rounded-xl py-2.5 px-6 font-semibold text-xs sm:text-sm transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg hover:shadow-emerald-500/25 block mx-auto disabled:opacity-50 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] overflow-hidden"
                     >
-                        {aboutForm.processing ? 'Menyimpan...' : 'Simpan Perubahan Tentang Kami'}
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                        <span className="relative z-10">{aboutForm.processing ? 'Menyimpan...' : 'Simpan Perubahan Tentang Kami'}</span>
                     </button>
                 </form>
 
                 {/* 4. MODERASI RATING & TESTIMONI */}
-                <div className="bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
-                    <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
-                        <svg className="w-5 h-5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
+                <div
+                    className="group/card relative bg-white dark:bg-[#122017] p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4 overflow-hidden transform transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/8 hover:border-amber-200/50 dark:hover:border-amber-800/40"
+                    style={{ animation: 'ktFadeInUp 0.5s ease-out 0.8s both' }}
+                >
+                    {/* Subtle left accent bar */}
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500 to-orange-400 rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+
+                    <div className="flex items-center space-x-2.5 border-b border-gray-100 dark:border-emerald-950/40 pb-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-900/60 dark:to-orange-950/40 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/card:scale-110 group-hover/card:rotate-3">
+                            <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </div>
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Moderasi Rating & Testimoni</h2>
                     </div>
 
@@ -559,13 +641,13 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                                     <th className="py-3 px-2 sm:px-4 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100 dark:divide-emerald-950/20">
+                            <tbody className="divide-y divide-gray-100 dark:divide-emerald-950/25">
                                 {reviews.length > 0 ? (
-                                    reviews.map((review) => (
+                                    reviews.map((review, rIdx) => (
                                         <tr
                                             key={review.id}
-                                            className={`hover:bg-gray-50/50 dark:hover:bg-[#182b1f]/20 transition-colors text-xs sm:text-sm ${!review.visible ? 'opacity-60' : ''
-                                                }`}
+                                            className={`hover:bg-gray-50/80 dark:hover:bg-[#182b1f]/30 transition-all duration-200 text-xs sm:text-sm ${!review.visible ? 'opacity-60' : ''}`}
+                                            style={{ animation: `ktFadeInUp 0.4s ease-out ${0.05 * rIdx}s both` }}
                                         >
                                             <td className="py-3.5 px-2 sm:px-4">
                                                 <div className="flex flex-col">
@@ -587,8 +669,8 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                                                     <button
                                                         type="button"
                                                         onClick={() => handleSetReviewVisibility(review.id, true, review.visible)}
-                                                        className={`rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-semibold cursor-pointer transition duration-150 shadow-sm ${review.visible
-                                                            ? 'bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white'
+                                                        className={`rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm transform hover:scale-105 active:scale-95 ${review.visible
+                                                            ? 'bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white shadow-emerald-500/20'
                                                             : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-500 dark:text-emerald-300 hover:bg-[#1F7A54] hover:text-white'
                                                             }`}
                                                     >
@@ -597,8 +679,8 @@ export default function KelolaTampilan({ settings, testimonials = [], stats }) {
                                                     <button
                                                         type="button"
                                                         onClick={() => handleSetReviewVisibility(review.id, false, review.visible)}
-                                                        className={`rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-semibold cursor-pointer transition duration-150 ${!review.visible
-                                                            ? 'bg-gray-700 text-white hover:bg-gray-800'
+                                                        className={`rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-semibold cursor-pointer transition-all duration-300 transform hover:scale-105 active:scale-95 ${!review.visible
+                                                            ? 'bg-gray-700 text-white hover:bg-gray-800 shadow-sm'
                                                             : 'bg-gray-100 dark:bg-emerald-950/60 text-gray-600 dark:text-emerald-300 hover:bg-gray-200 dark:hover:bg-emerald-900/60'
                                                             }`}
                                                     >

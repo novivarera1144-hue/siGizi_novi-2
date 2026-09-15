@@ -2,6 +2,21 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 
+const psAnimStyles = `
+    @keyframes psFadeInUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes psSlideInRight {
+        from { opacity: 0; transform: translateX(16px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes psShimmer {
+        0%   { background-position: -200% center; }
+        100% { background-position:  200% center; }
+    }
+`;
+
 export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhubung (Aktif)', admins = [], flash = {} }) {
     const { data, setData, put, processing, errors } = useForm({
         app_name: settings.app_name || 'siGizi',
@@ -160,6 +175,7 @@ export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhub
             subtitle="Konfigurasi parameter inti, keamanan, dan notifikasi platform siGizi."
         >
             <Head title="Pengaturan Sistem - Admin" />
+            <style>{psAnimStyles}</style>
 
             {/* TOAST NOTIFICATION */}
             {(toastMessage || flash.success || flash.error) && (
@@ -173,10 +189,14 @@ export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhub
                 </div>
             )}
 
-            <form onSubmit={handleSubmitSettings} className="space-y-8 max-w-4xl pb-10">
+            <form onSubmit={handleSubmitSettings} className="space-y-8 max-w-4xl pb-10" style={{ animation: 'psFadeInUp 0.4s ease-out both' }}>
 
                 {/* CARD 1: APLIKASI */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
+                <div
+                    className="group/card relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8 hover:border-emerald-100 dark:hover:border-emerald-900/50"
+                    style={{ animation: 'psFadeInUp 0.5s ease-out 0.1s both' }}
+                >
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-400 to-[#1F7A54] rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                     <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-6 uppercase tracking-wider">APLIKASI</h2>
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
@@ -237,7 +257,11 @@ export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhub
                 </div>
 
                 {/* CARD 2: KEAMANAN */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
+                <div
+                    className="group/card relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8 hover:border-emerald-100 dark:hover:border-emerald-900/50"
+                    style={{ animation: 'psFadeInUp 0.5s ease-out 0.2s both' }}
+                >
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 to-blue-600 rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                     <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-6 uppercase tracking-wider">KEAMANAN</h2>
                     <div className="space-y-6">
                         <ToggleSwitch
@@ -270,7 +294,10 @@ export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhub
                 </div>
 
                 {/* CARD 3: KELOLA AKUN ADMIN (SINKRON DATABASE) */}
-                <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
+                <div
+                    className="group/card relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8"
+                    style={{ animation: 'psFadeInUp 0.5s ease-out 0.3s both' }}
+                >
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">KELOLA AKUN ADMIN</h2>
                         <button
@@ -298,8 +325,12 @@ export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhub
                                         <td colSpan="4" className="py-4 text-center text-gray-400">Belum ada akun admin terdaftar di database.</td>
                                     </tr>
                                 ) : (
-                                    admins.map((admin) => (
-                                        <tr key={admin.id} className="hover:bg-gray-50/50 dark:hover:bg-[#16291e]/40 transition-colors">
+                                    admins.map((admin, rowIdx) => (
+                                        <tr
+                                            key={admin.id}
+                                            className="hover:bg-emerald-50/50 dark:hover:bg-[#16291e]/40 transition-all duration-200"
+                                            style={{ animation: `psFadeInUp 0.4s ease-out ${0.05 * rowIdx + 0.35}s both` }}
+                                        >
                                             <td className="py-3.5 px-4 font-bold text-gray-800 dark:text-emerald-200">{admin.name}</td>
                                             <td className="py-3.5 px-4 text-gray-500 dark:text-emerald-100/60">{admin.email}</td>
                                             <td className="py-3.5 px-4">
@@ -346,7 +377,10 @@ export default function PengaturanSistem({ settings = {}, geminiStatus = 'Terhub
                 </div>
 
                 {/* ZONA BERBAHAYA */}
-                <div className="bg-red-50/50 dark:bg-red-950/10 p-6 rounded-3xl border border-red-100 dark:border-red-900/30 shadow-sm mt-6">
+                <div
+                    className="bg-red-50/50 dark:bg-red-950/10 p-6 rounded-3xl border border-red-100 dark:border-red-900/30 shadow-sm mt-6 transition-all duration-300 hover:shadow-md hover:border-red-200 dark:hover:border-red-800/40"
+                    style={{ animation: 'psFadeInUp 0.5s ease-out 0.5s both' }}
+                >
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div className="flex items-start gap-4">
                             <div className="p-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl shrink-0">

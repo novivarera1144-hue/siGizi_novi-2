@@ -14,24 +14,19 @@ export default function KelolaPengguna({ initialUsers }) {
         { id: 5, name: "Novi Aulia", email: "novi@sigizi.com", role: "Admin", status: "Aktif", statusColor: "text-[#1F7A54] bg-emerald-100 dark:bg-[#34D399]/20 dark:text-[#34D399]" },
     ]);
 
-    // Sinkronisasi state lokal dengan props yang diperbarui dari server (Inertia reload)
     useEffect(() => {
         if (initialUsers) {
             setUsers(initialUsers);
         }
     }, [initialUsers]);
 
-    // State untuk Modal Edit
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
 
-    // State untuk Modal Tambah Pengguna Baru
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Pengguna' });
 
-    // Fungsi Toggle Status Aktif / Ditangguhkan
     const handleToggleStatus = (id) => {
-        // Optimistic UI update
         setUsers(prev => prev.map(u => {
             if (u.id === id) {
                 const isAktif = u.status === 'Aktif';
@@ -46,7 +41,6 @@ export default function KelolaPengguna({ initialUsers }) {
             return u;
         }));
 
-        // Kirim request PATCH via Inertia dengan partial reload (hanya memuat ulang 'initialUsers')
         router.patch(
             route('admin.users.toggle-suspend', { id }),
             {},
@@ -57,7 +51,6 @@ export default function KelolaPengguna({ initialUsers }) {
         );
     };
 
-    // Handler Edit
     const handleOpenEdit = (user) => {
         setSelectedUser({ ...user });
         setIsEditModalOpen(true);
@@ -70,7 +63,6 @@ export default function KelolaPengguna({ initialUsers }) {
         setSelectedUser(null);
     };
 
-    // Handler Tambah Pengguna Baru
     const handleAddUser = (e) => {
         e.preventDefault();
         const newEntry = {
@@ -88,11 +80,9 @@ export default function KelolaPengguna({ initialUsers }) {
         setIsAddModalOpen(false);
     };
 
-    // Pagination State & Logic
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    // Reset page to 1 when filters change
     useEffect(() => {
         setCurrentPage(1);
     }, [searchQuery, roleFilter]);
@@ -122,23 +112,25 @@ export default function KelolaPengguna({ initialUsers }) {
                 {/* Control bar */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
                     <div className="flex flex-1 flex-col sm:flex-row gap-3">
-                        <div className="relative flex-1">
+                        {/* Search Input dengan animasi interaktif (expand width & smooth ring) */}
+                        <div className="relative flex-1 group">
                             <input
                                 type="text"
                                 placeholder="Cari nama atau email..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2.5 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 focus:outline-none focus:border-[#1F7A54]"
+                                className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2.5 pl-9 pr-4 text-xs font-semibold text-gray-600 dark:text-emerald-100 placeholder-gray-400 focus:outline-none focus:border-[#1F7A54] focus:ring-4 focus:ring-[#1F7A54]/15 transition-all duration-300 hover:border-[#1F7A54]/50 hover:shadow-sm"
                             />
-                            <svg className="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <svg className="w-4 h-4 text-gray-400 absolute left-3 top-3 transition-all duration-300 group-hover:scale-110 group-focus-within:text-[#1F7A54] group-focus-within:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
 
+                        {/* Role Filter Select */}
                         <select
                             value={roleFilter}
                             onChange={(e) => setRoleFilter(e.target.value)}
-                            className="bg-gray-50 dark:bg-[#07130C] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2.5 px-4 text-xs font-bold text-gray-600 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] cursor-pointer"
+                            className="bg-gray-50 dark:bg-[#07130C] border border-gray-100 dark:border-[#1a2e22] rounded-xl py-2.5 px-4 text-xs font-bold text-gray-600 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-4 focus:ring-[#1F7A54]/15 transition-all duration-300 hover:border-[#1F7A54]/60 hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-xs"
                         >
                             <option value="Semua">Semua Peran</option>
                             <option value="Pengguna">Pengguna</option>
@@ -146,11 +138,12 @@ export default function KelolaPengguna({ initialUsers }) {
                         </select>
                     </div>
 
+                    {/* Tombol Tambah Pengguna */}
                     <button
                         onClick={() => setIsAddModalOpen(true)}
-                        className="py-2.5 px-4 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl transition duration-150 flex items-center justify-center space-x-1.5 cursor-pointer"
+                        className="py-2.5 px-4 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-sm hover:shadow-md flex items-center justify-center space-x-1.5 cursor-pointer"
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="w-4 h-4 transition-transform duration-300 hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
                         <span>Tambah Pengguna</span>
@@ -169,10 +162,14 @@ export default function KelolaPengguna({ initialUsers }) {
                                 <th className="py-3 px-2 sm:px-4 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-emerald-950/20">
+                        <tbody className="divide-y divide-gray-100 dark:divide-emerald-950/25">
                             {paginatedUsers.length > 0 ? (
-                                paginatedUsers.map((u) => (
-                                    <tr key={u.id} className="hover:bg-gray-50/50 dark:hover:bg-[#182b1f]/20 transition-colors text-xs sm:text-sm">
+                                paginatedUsers.map((u, idx) => (
+                                    <tr
+                                        key={u.id}
+                                        className="hover:bg-gray-50/80 dark:hover:bg-[#182b1f]/30 transition-all duration-200 text-xs sm:text-sm animate-fadeIn"
+                                        style={{ animationDelay: `${idx * 50}ms` }}
+                                    >
                                         <td className="py-3.5 px-2 sm:px-4 font-bold text-gray-900 dark:text-white">
                                             <div className="flex flex-col">
                                                 <span className="font-semibold text-gray-900 dark:text-white">{u.name}</span>
@@ -182,7 +179,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                         <td className="py-3.5 px-4 text-gray-500 dark:text-emerald-100/60 font-medium hidden md:table-cell">{u.email}</td>
                                         <td className="py-3.5 px-2 sm:px-4 font-semibold text-gray-700 dark:text-emerald-100/80">{u.role}</td>
                                         <td className="py-3.5 px-2 sm:px-4">
-                                            <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-extrabold rounded-full ${u.statusColor}`}>
+                                            <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-extrabold rounded-full transition-all duration-300 ${u.statusColor}`}>
                                                 {u.status}
                                             </span>
                                         </td>
@@ -190,13 +187,13 @@ export default function KelolaPengguna({ initialUsers }) {
                                             <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-1.5 sm:gap-3">
                                                 <button
                                                     onClick={() => handleOpenEdit(u)}
-                                                    className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 hover:underline cursor-pointer"
+                                                    className="text-xs font-bold text-[#1F7A54] dark:text-emerald-400 hover:scale-105 transition-transform duration-200 hover:underline cursor-pointer"
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
                                                     onClick={() => handleToggleStatus(u.id)}
-                                                    className={`text-xs font-bold hover:underline cursor-pointer ${u.status === 'Aktif' ? 'text-red-500' : 'text-[#1F7A54] dark:text-emerald-400'
+                                                    className={`text-xs font-bold hover:scale-105 transition-transform duration-200 hover:underline cursor-pointer ${u.status === 'Aktif' ? 'text-red-500' : 'text-[#1F7A54] dark:text-emerald-400'
                                                         }`}
                                                 >
                                                     {u.status === 'Aktif' ? 'Tangguhkan' : 'Aktifkan'}
@@ -216,52 +213,49 @@ export default function KelolaPengguna({ initialUsers }) {
                     </table>
                 </div>
 
-                {/* Pagination Controls */}
+                {/* Pagination Controls dengan animasi interaktif menyeluruh */}
                 {totalPages > 1 && (
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-100 dark:border-[#1a2e22]/50">
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-100 dark:border-[#1a2e22]/50 animate-fadeIn">
                         <div className="text-[11px] sm:text-xs text-gray-500 dark:text-emerald-100/50 font-medium">
                             Menampilkan <span className="font-semibold text-gray-800 dark:text-emerald-300">{startIndex + 1}</span>-
                             <span className="font-semibold text-gray-800 dark:text-emerald-300">{startIndex + paginatedUsers.length}</span> dari{" "}
                             <span className="font-semibold text-gray-800 dark:text-emerald-300">{totalItems}</span> pengguna
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            {/* Previous Button */}
+                        <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                            {/* Previous Button dengan efek geser halus */}
                             <button
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                 disabled={safeCurrentPage === 1}
-                                className={`w-8 h-8 text-sm font-extrabold transition flex items-center justify-center ${
-                                    safeCurrentPage === 1
+                                className={`w-8 h-8 text-sm font-extrabold transition-all duration-300 flex items-center justify-center rounded-xl ${safeCurrentPage === 1
                                         ? 'text-gray-300 dark:text-emerald-950/40 cursor-not-allowed'
-                                        : 'text-[#1F7A54] dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 cursor-pointer'
-                                }`}
+                                        : 'text-[#1F7A54] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:scale-110 active:scale-95 cursor-pointer shadow-2xs'
+                                    }`}
                             >
                                 ←
                             </button>
 
-                            {/* Page Numbers */}
+                            {/* Page Numbers dengan animasi scale bounce & glowing transition */}
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                 <button
                                     key={page}
                                     onClick={() => setCurrentPage(page)}
-                                    className={`w-8 h-8 rounded-full text-xs font-bold transition flex items-center justify-center cursor-pointer ${
-                                        page === safeCurrentPage
-                                            ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07]'
-                                            : 'text-slate-600 dark:text-emerald-200 hover:bg-gray-100 dark:hover:bg-emerald-950/30'
-                                    }`}
+                                    className={`w-8 h-8 rounded-full text-xs font-bold transition-all duration-300 transform flex items-center justify-center cursor-pointer shadow-2xs ${page === safeCurrentPage
+                                            ? 'bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07] scale-110 shadow-md font-extrabold ring-2 ring-[#1F7A54]/20'
+                                            : 'text-slate-600 dark:text-emerald-200 hover:bg-gray-100 dark:hover:bg-emerald-950/40 hover:scale-115 active:scale-95'
+                                        }`}
                                 >
                                     {page}
                                 </button>
                             ))}
 
-                            {/* Next Button */}
+                            {/* Next Button dengan efek geser halus */}
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                 disabled={safeCurrentPage === totalPages}
-                                className={`w-8 h-8 text-sm font-extrabold transition flex items-center justify-center ${
-                                    safeCurrentPage === totalPages
+                                className={`w-8 h-8 text-sm font-extrabold transition-all duration-300 flex items-center justify-center rounded-xl ${safeCurrentPage === totalPages
                                         ? 'text-gray-300 dark:text-emerald-950/40 cursor-not-allowed'
-                                        : 'text-[#1F7A54] dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 cursor-pointer'
-                                }`}
+                                        : 'text-[#1F7A54] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:scale-110 active:scale-95 cursor-pointer shadow-2xs'
+                                    }`}
                             >
                                 →
                             </button>
@@ -272,13 +266,13 @@ export default function KelolaPengguna({ initialUsers }) {
 
             {/* MODAL TAMBAH PENGGUNA */}
             {isAddModalOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-xl">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+                    <div className="bg-white dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-xl animate-scaleIn">
                         <div className="flex justify-between items-center border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                             <h3 className="text-base font-bold text-gray-800 dark:text-white">Tambah Pengguna Baru</h3>
                             <button
                                 onClick={() => setIsAddModalOpen(false)}
-                                className="text-gray-400 hover:text-gray-600 dark:hover:text-white text-sm font-bold cursor-pointer"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-white text-sm font-bold cursor-pointer transition-transform hover:rotate-90 duration-200"
                             >
                                 ✕
                             </button>
@@ -294,7 +288,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                     placeholder="Contoh: Andi Pratama"
                                     value={newUser.name}
                                     onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54]"
+                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-300"
                                     required
                                 />
                             </div>
@@ -308,7 +302,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                     placeholder="Contoh: andi@gmail.com"
                                     value={newUser.email}
                                     onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54]"
+                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-300"
                                     required
                                 />
                             </div>
@@ -320,7 +314,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                 <select
                                     value={newUser.role}
                                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54]"
+                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-300"
                                 >
                                     <option value="Pengguna">Pengguna</option>
                                     <option value="Admin">Admin</option>
@@ -331,13 +325,13 @@ export default function KelolaPengguna({ initialUsers }) {
                                 <button
                                     type="button"
                                     onClick={() => setIsAddModalOpen(false)}
-                                    className="px-4 py-2 bg-gray-100 dark:bg-[#1a2e22] hover:bg-gray-200 text-gray-600 dark:text-emerald-200 text-xs font-bold rounded-xl transition cursor-pointer"
+                                    className="px-4 py-2 bg-gray-100 dark:bg-[#1a2e22] hover:bg-gray-200 text-gray-600 dark:text-emerald-200 text-xs font-bold rounded-xl transition duration-200 hover:scale-105 cursor-pointer"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl transition shadow-sm cursor-pointer"
+                                    className="px-4 py-2 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl transition duration-200 hover:scale-105 shadow-sm cursor-pointer"
                                 >
                                     Simpan Pengguna
                                 </button>
@@ -349,13 +343,13 @@ export default function KelolaPengguna({ initialUsers }) {
 
             {/* MODAL EDIT PENGGUNA */}
             {isEditModalOpen && selectedUser && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-xl">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+                    <div className="bg-white dark:bg-[#122017] border border-gray-100 dark:border-[#1a2e22] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-xl animate-scaleIn">
                         <div className="flex justify-between items-center border-b border-gray-100 dark:border-emerald-950/40 pb-3">
                             <h3 className="text-base font-bold text-gray-800 dark:text-white">Edit Pengguna</h3>
                             <button
                                 onClick={() => setIsEditModalOpen(false)}
-                                className="text-gray-400 hover:text-gray-600 dark:hover:text-white text-sm font-bold cursor-pointer"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-white text-sm font-bold cursor-pointer transition-transform hover:rotate-90 duration-200"
                             >
                                 ✕
                             </button>
@@ -370,7 +364,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                     type="text"
                                     value={selectedUser.name}
                                     onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54]"
+                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-300"
                                     required
                                 />
                             </div>
@@ -383,7 +377,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                     type="email"
                                     value={selectedUser.email}
                                     onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54]"
+                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-300"
                                     required
                                 />
                             </div>
@@ -395,7 +389,7 @@ export default function KelolaPengguna({ initialUsers }) {
                                 <select
                                     value={selectedUser.role}
                                     onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54]"
+                                    className="w-full bg-gray-50 dark:bg-[#07130C] border border-gray-200 dark:border-[#1a2e22] rounded-xl py-2 px-3 text-xs font-semibold text-gray-700 dark:text-emerald-100 focus:outline-none focus:border-[#1F7A54] focus:ring-2 focus:ring-[#1F7A54]/20 transition-all duration-300"
                                 >
                                     <option value="Pengguna">Pengguna</option>
                                     <option value="Admin">Admin</option>
@@ -406,13 +400,13 @@ export default function KelolaPengguna({ initialUsers }) {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditModalOpen(false)}
-                                    className="px-4 py-2 bg-gray-100 dark:bg-[#1a2e22] hover:bg-gray-200 text-gray-600 dark:text-emerald-200 text-xs font-bold rounded-xl transition cursor-pointer"
+                                    className="px-4 py-2 bg-gray-100 dark:bg-[#1a2e22] hover:bg-gray-200 text-gray-600 dark:text-emerald-200 text-xs font-bold rounded-xl transition duration-200 hover:scale-105 cursor-pointer"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl transition shadow-sm cursor-pointer"
+                                    className="px-4 py-2 bg-[#1F7A54] hover:bg-[#186041] dark:bg-[#34D399] dark:hover:bg-emerald-500 text-white dark:text-[#040C07] text-xs font-bold rounded-xl transition duration-200 hover:scale-105 shadow-sm cursor-pointer"
                                 >
                                     Simpan Perubahan
                                 </button>

@@ -3,6 +3,21 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
+const pfAnimStyles = `
+    @keyframes pfFadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pfSlideInLeft {
+        from { opacity: 0; transform: translateX(-20px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pfAvatarPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(31,122,84,0.3); }
+        50%       { box-shadow: 0 0 0 8px rgba(31,122,84,0); }
+    }
+`;
+
 export default function ProfileSettings({ sessions = [] }) {
     const { auth, flash } = usePage().props;
     const user = auth?.user || { name: 'Administrator', email: 'admin@sigizi.com', avatar: null };
@@ -164,6 +179,7 @@ export default function ProfileSettings({ sessions = [] }) {
             userAvatar={avatarPreview}
         >
             <Head title="Pengaturan Profil - Admin siGizi" />
+            <style>{pfAnimStyles}</style>
 
             <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
                 {/* NOTIFICATION MESSAGES */}
@@ -187,20 +203,29 @@ export default function ProfileSettings({ sessions = [] }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* LEFT PANEL: PROFILE CARD & OVERVIEW */}
-                    <div className="md:col-span-1 space-y-6">
-                        <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm text-center">
+                    <div className="md:col-span-1 space-y-6" style={{ animation: 'pfSlideInLeft 0.5s ease-out 0.1s both' }}>
+                        <div className="group/pcard relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm text-center overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
+                            <span className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent dark:from-emerald-950/20 dark:to-transparent opacity-0 group-hover/pcard:opacity-100 transition-opacity duration-300" />
                             <div className="relative w-24 h-24 mx-auto mb-4">
                                 {avatarPreview ? (
-                                    <img src={avatarPreview} alt="Foto Profil" className="w-24 h-24 rounded-full object-cover shadow-md mx-auto" />
+                                    <img
+                                        src={avatarPreview}
+                                        alt="Foto Profil"
+                                        className="w-24 h-24 rounded-full object-cover shadow-md mx-auto transition-transform duration-300 group-hover/pcard:scale-105"
+                                        style={{ animation: 'pfAvatarPulse 2.5s ease-in-out infinite' }}
+                                    />
                                 ) : (
-                                    <div className="w-24 h-24 rounded-full bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-3xl shadow-md mx-auto">
+                                    <div
+                                        className="w-24 h-24 rounded-full bg-[#1F7A54] dark:bg-[#34D399] text-white dark:text-[#040C07] flex items-center justify-center font-extrabold text-3xl shadow-md mx-auto transition-transform duration-300 group-hover/pcard:scale-105"
+                                        style={{ animation: 'pfAvatarPulse 2.5s ease-in-out infinite' }}
+                                    >
                                         {profileForm.data.name ? profileForm.data.name.charAt(0).toUpperCase() : 'A'}
                                     </div>
                                 )}
                             </div>
-                            <h3 className="text-base font-extrabold text-gray-900 dark:text-white truncate">{profileForm.data.name}</h3>
-                            <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold truncate mt-0.5">{profileForm.data.email}</p>
-                            <div className="mt-4 inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                            <h3 className="text-base font-extrabold text-gray-900 dark:text-white truncate relative z-10">{profileForm.data.name}</h3>
+                            <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold truncate mt-0.5 relative z-10">{profileForm.data.email}</p>
+                            <div className="mt-4 inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-wider relative z-10">
                                 Administrator
                             </div>
                         </div>
@@ -209,7 +234,11 @@ export default function ProfileSettings({ sessions = [] }) {
                     {/* RIGHT PANEL: EDIT FORMS & ADVANCED FEATURES */}
                     <div className="md:col-span-2 space-y-8">
                         {/* FORM 1: INFORMASI PROFIL & UPLOAD FOTO PROFIL */}
-                        <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
+                        <div
+                            className="group/card relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8"
+                            style={{ animation: 'pfFadeInUp 0.5s ease-out 0.15s both' }}
+                        >
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-400 to-[#1F7A54] rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-2 uppercase tracking-wider">Informasi Profil & Foto Profil</h2>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold mb-6">Perbarui informasi profil dasar, email, dan unggah foto profil admin.</p>
 
@@ -292,7 +321,11 @@ export default function ProfileSettings({ sessions = [] }) {
                         </div>
 
                         {/* FORM 2: UPDATE PASSWORD */}
-                        <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm">
+                        <div
+                            className="group/card relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8"
+                            style={{ animation: 'pfFadeInUp 0.5s ease-out 0.25s both' }}
+                        >
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 to-blue-600 rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-2 uppercase tracking-wider">Perbarui Kata Sandi</h2>
                             <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold mb-6">Pastikan akun Anda menggunakan kata sandi yang kuat dan aman.</p>
 
@@ -360,7 +393,11 @@ export default function ProfileSettings({ sessions = [] }) {
                         </div>
 
                         {/* FITUR: MANAJEMEN SESI / PERANGKAT AKTIF */}
-                        <div className="bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4">
+                        <div
+                            className="group/card relative bg-white dark:bg-[#122017] p-6 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm space-y-4 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/8"
+                            style={{ animation: 'pfFadeInUp 0.5s ease-out 0.35s both' }}
+                        >
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-orange-500 rounded-l-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <div>
                                 <h2 className="text-sm font-extrabold text-gray-900 dark:text-white mb-1 uppercase tracking-wider">Perangkat Aktif & Sesi Browser</h2>
                                 <p className="text-xs text-gray-400 dark:text-emerald-100/40 font-semibold">Kelola dan akhiri sesi aktif Anda di browser atau perangkat lain.</p>
@@ -369,7 +406,11 @@ export default function ProfileSettings({ sessions = [] }) {
                             <div className="space-y-3 pt-2">
                                 {sessions.length > 0 ? (
                                     sessions.map((session, i) => (
-                                        <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#071A0E] rounded-2xl border border-gray-100 dark:border-[#1a2e22]">
+                                        <div
+                                            key={i}
+                                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#071A0E] rounded-2xl border border-gray-100 dark:border-[#1a2e22] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                                            style={{ animation: `pfFadeInUp 0.4s ease-out ${0.08 * i + 0.4}s both` }}
+                                        >
                                             <div className="flex items-center gap-3">
                                                 <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                     {session.os === 'macOS' || session.os === 'Windows' || session.os === 'Linux' ? (
