@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 
-export default function About({ aboutSettings = null }) {
+export default function About({ auth, aboutSettings = null }) {
     // State untuk mengatur dark mode
     const [darkMode, setDarkMode] = useState(false);
 
@@ -36,8 +36,7 @@ export default function About({ aboutSettings = null }) {
             <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#071A0E] transition-colors duration-300 flex flex-col justify-between">
 
                 {/* Navbar */}
-                <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} activePage="about" />
-
+                <Navbar auth={auth} darkMode={darkMode} toggleDarkMode={toggleDarkMode} activePage="about" />
 
                 {/* Konten Utama */}
                 <main className="flex-grow py-16">

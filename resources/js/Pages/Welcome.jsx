@@ -327,7 +327,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
                 {/* Navbar/Header */}
                 <Navbar auth={auth} darkMode={darkMode} toggleDarkMode={toggleDarkMode} activePage="home" />
 
-
                 {/* Hero Section */}
                 <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16">
                     <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">

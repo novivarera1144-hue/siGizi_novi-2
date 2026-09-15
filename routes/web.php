@@ -32,7 +32,7 @@ Route::get('/', function () {
         'testimonials' => $testimonials,
         'homeSettings' => $settings,
     ]);
-});
+})->name('home');
 
 // Route halaman Tentang Kami
 Route::get('/tentang-kami', function () {
