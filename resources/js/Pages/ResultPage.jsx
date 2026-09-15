@@ -1,6 +1,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 
+const resAnimStyles = `
+    @keyframes resFadeInUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes resShimmerSweep {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(200%); }
+    }
+`;
+
 export default function ResultPage({ data }) {
     // Fallback dummy values jika prop data belum dikirim dari controller
     const foodName = data?.name || "Ayam Goreng Crispy (Paha Bawah)";
@@ -38,6 +49,8 @@ export default function ResultPage({ data }) {
         <AuthenticatedLayout>
             <Head title="Hasil Analisis - siGizi" />
 
+            <style>{resAnimStyles}</style>
+
             <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
 
                 {/* Top Section: Breadcrumb / Search & Step Indicators */}
@@ -68,12 +81,12 @@ export default function ResultPage({ data }) {
                     </div>
 
                     {/* Step Pill Indicator */}
-                    <div className="flex items-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-xs font-bold bg-gray-100 dark:bg-[#122017] p-1 sm:p-1.5 rounded-full border border-gray-200 dark:border-[#1a2e22] max-w-full overflow-x-auto whitespace-nowrap">
-                        <span className="px-3 py-1 text-gray-400 dark:text-emerald-100/40">1. Upload</span>
-                        <span className="text-gray-300 dark:text-emerald-900">&gt;</span>
-                        <span className="px-3 py-1 text-gray-400 dark:text-emerald-100/40">2. AI Analisis</span>
-                        <span className="text-gray-300 dark:text-emerald-900">&gt;</span>
-                        <span className="px-3 py-1 bg-gray-900 dark:bg-emerald-500 text-white dark:text-black rounded-full shadow-sm">
+                    <div className="flex items-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-xs font-bold bg-gray-100 dark:bg-[#122017] p-1.5 rounded-2xl border border-gray-200 dark:border-[#1a2e22] max-w-full overflow-x-auto whitespace-nowrap">
+                        <span className="px-3 py-1.5 text-gray-400 dark:text-emerald-100/40 font-medium">1. Upload</span>
+                        <span className="text-gray-400 dark:text-emerald-100/30 text-xs">›</span>
+                        <span className="px-3 py-1.5 text-gray-400 dark:text-emerald-100/40 font-medium">2. AI Analisis</span>
+                        <span className="text-gray-400 dark:text-emerald-100/30 text-xs">›</span>
+                        <span className="px-3 py-1.5 bg-[#1F7A54] dark:bg-emerald-500 text-white dark:text-black text-xs font-bold rounded-xl shadow-sm">
                             3. Hasil
                         </span>
                     </div>
@@ -119,22 +132,25 @@ export default function ResultPage({ data }) {
                     </div>
 
                     {/* SISI KANAN (Kalori, Diagram, & Rekomendasi) */}
-                    <div className="w-full md:w-7/12 flex flex-col gap-6">
-                        {/* Calorie & Nutrients Card */}
-                        <div className="bg-white dark:bg-[#122017] p-6 sm:p-8 rounded-3xl border border-gray-100 dark:border-[#1a2e22] shadow-sm flex flex-col justify-between flex-1">
-                            <div className="space-y-6">
+                    <div className="w-full md:w-7/12 flex flex-col gap-6" style={{ animation: 'resFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both', animationDelay: '0.15s' }}>
+                        {/* Calorie & Nutrients Card — Differentiated Color Background */}
+                        <div className="relative group overflow-hidden bg-gradient-to-br from-[#E4F4EC] via-[#ECF7F2] to-[#F4FAF7] dark:from-[#0E281A] dark:via-[#0A1F14] dark:to-[#12241A] p-6 sm:p-8 rounded-3xl border-2 border-[#B6DEC9] dark:border-[#1E4D35] shadow-md flex flex-col justify-between flex-1 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/10">
+                            {/* Shimmer Effect */}
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 dark:via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+
+                            <div className="space-y-6 relative z-10">
                                 <div>
-                                    <span className="text-[10px] font-extrabold text-gray-400 dark:text-emerald-100/40 uppercase tracking-widest block">
+                                    <span className="text-[10px] font-extrabold text-[#1F7A54] dark:text-emerald-400 uppercase tracking-widest block mb-1">
                                         Hasil Analisis Nutrisi
                                     </span>
                                     <h3 className="text-5xl sm:text-6xl font-extrabold text-gray-900 dark:text-white mt-1 tracking-tight flex items-baseline">
-                                        {calories} <span className="text-xl font-bold text-gray-400 dark:text-emerald-100/50 ml-2">kkal</span>
+                                        {calories} <span className="text-xl font-bold text-gray-500 dark:text-emerald-200/60 ml-2">kkal</span>
                                     </h3>
-                                    <p className="text-[10px] text-gray-400 dark:text-emerald-100/40 font-semibold mt-0.5">Total kalori per porsi</p>
+                                    <p className="text-[10px] text-gray-500 dark:text-emerald-200/50 font-semibold mt-0.5">Total kalori per porsi</p>
                                 </div>
 
                                 {/* Progress Bars */}
-                                <div className="space-y-4">
+                                <div className="space-y-4 bg-white/70 dark:bg-[#07130C]/60 p-4 rounded-2xl border border-emerald-100/80 dark:border-emerald-900/40 shadow-xs backdrop-blur-xs">
                                     {nutrients.map((nutri, idx) => (
                                         <div key={idx} className="space-y-1.5">
                                             <div className="flex justify-between text-xs font-bold text-gray-700 dark:text-emerald-100/90">
@@ -143,9 +159,9 @@ export default function ResultPage({ data }) {
                                                     <span className={`${nutri.textColor}`}>{nutri.current}g</span> / {nutri.target}g
                                                 </span>
                                             </div>
-                                            <div className="w-full bg-gray-100 dark:bg-[#0b140e] rounded-full h-2 overflow-hidden">
+                                            <div className="w-full bg-gray-100 dark:bg-[#0b140e] rounded-full h-2.5 overflow-hidden border border-gray-200/40 dark:border-[#1a2e22]">
                                                 <div
-                                                    className={`${nutri.barColor} h-full rounded-full`}
+                                                    className={`${nutri.barColor} h-full rounded-full transition-all duration-700`}
                                                     style={{ width: `${nutri.pct}%` }}
                                                 ></div>
                                             </div>
@@ -154,27 +170,27 @@ export default function ResultPage({ data }) {
                                 </div>
                             </div>
 
-                            <div className="space-y-4 mt-6">
+                            <div className="space-y-4 mt-6 relative z-10">
                                 {/* Badge Tag */}
-                                <div className="inline-flex items-center space-x-2 px-3.5 py-2 bg-gray-50 dark:bg-[#14281d] text-gray-800 dark:text-emerald-400 text-xs font-bold rounded-xl border border-gray-200 dark:border-emerald-800/40 w-fit">
-                                    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-emerald-700 dark:bg-emerald-500 text-white dark:text-black text-xs font-bold rounded-xl shadow-xs w-fit">
+                                    <svg className="w-4 h-4 shrink-0 text-white dark:text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span className="truncate">{badge}</span>
                                 </div>
 
-                                {/* Gram Details Grid */}
+                                {/* Gram Details Grid with Vivid Color Cards */}
                                 <div className="grid grid-cols-3 gap-3">
                                     {nutrients.map((nutri, idx) => (
-                                        <div key={idx} className={`${nutri.name === 'Protein' ? 'bg-blue-50/50 dark:bg-[#162536] border-blue-100 dark:border-blue-900/30' :
-                                                nutri.name === 'Lemak' ? 'bg-amber-50/50 dark:bg-[#282115] border-amber-100 dark:border-amber-900/30' :
-                                                    'bg-emerald-50/50 dark:bg-[#14281d] border-emerald-100 dark:border-emerald-900/30'
-                                            } p-3 rounded-xl text-center border`}>
-                                            <p className={`text-base font-extrabold ${nutri.name === 'Protein' ? 'text-blue-600 dark:text-blue-400' :
-                                                    nutri.name === 'Lemak' ? 'text-amber-600 dark:text-amber-400' :
-                                                        'text-emerald-600 dark:text-emerald-400'
+                                        <div key={idx} className={`${nutri.name === 'Protein' ? 'bg-blue-100/80 dark:bg-[#162D44] border-blue-200 dark:border-blue-800/60 shadow-xs' :
+                                                nutri.name === 'Lemak' ? 'bg-amber-100/80 dark:bg-[#362B16] border-amber-200 dark:border-amber-800/60 shadow-xs' :
+                                                    'bg-emerald-100/80 dark:bg-[#133624] border-emerald-200 dark:border-emerald-800/60 shadow-xs'
+                                            } p-3 rounded-2xl text-center border transform hover:-translate-y-0.5 transition-transform duration-200`}>
+                                            <p className={`text-base font-extrabold ${nutri.name === 'Protein' ? 'text-blue-700 dark:text-blue-300' :
+                                                    nutri.name === 'Lemak' ? 'text-amber-700 dark:text-amber-300' :
+                                                        'text-emerald-700 dark:text-emerald-300'
                                                 }`}>{nutri.current}g</p>
-                                            <p className="text-[10px] text-gray-400 dark:text-emerald-100/40 font-bold uppercase mt-0.5">{nutri.name}</p>
+                                            <p className="text-[10px] text-gray-700 dark:text-slate-200 font-bold uppercase tracking-wider mt-0.5">{nutri.name}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -222,7 +238,7 @@ export default function ResultPage({ data }) {
                     </Link>
                     <Link
                         href={route('dashboard')}
-                        className="flex-1 sm:flex-initial sm:ml-auto px-8 py-3.5 bg-gray-900 hover:bg-gray-800 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-black text-white font-extrabold text-sm rounded-xl text-center shadow-lg transition-all"
+                        className="flex-1 sm:flex-initial sm:ml-auto px-8 py-3.5 bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-black text-white font-extrabold text-sm rounded-xl text-center shadow-lg transition-all"
                     >
                         Lihat Riwayat
                     </Link>
