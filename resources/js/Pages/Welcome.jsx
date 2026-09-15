@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import Navbar from '@/Components/Navbar';
 
 export default function Welcome({ auth, laravelVersion, phpVersion, testimonials: dbTestimonials = [], homeSettings = null }) {
     const [darkMode, setDarkMode] = useState(false);
@@ -324,124 +325,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion, testimonials
             <div className="min-h-screen bg-white text-gray-800 transition-colors duration-300 dark:bg-zinc-950 dark:text-zinc-100 font-sans animate-in fade-in duration-300">
 
                 {/* Navbar/Header */}
-                <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/80 transition-colors duration-300 dark:bg-zinc-950/95 dark:border-zinc-900/80">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-between h-16 sm:h-20">
+                <Navbar auth={auth} darkMode={darkMode} toggleDarkMode={toggleDarkMode} activePage="home" />
 
-                            {/* Logo siGizi */}
-                            <div className="flex-shrink-0 flex items-center">
-                                <Link href="/" prefetch={["hover", "mount"]} className="flex items-center group py-1">
-                                    <img
-                                        src="/images/logo-sigizi.png"
-                                        alt="siGizi Logo"
-                                        className="h-20 sm:h-24 w-auto max-w-none object-contain group-hover:scale-105 transition-transform duration-200"
-                                    />
-                                </Link>
-                            </div>
-
-                            {/* Center Navigation Links */}
-                            <nav className="hidden md:flex items-center space-x-8">
-                                <Link href="/" prefetch={["hover", "mount"]} className="text-[#1F7A54] dark:text-emerald-400 font-bold border-b-2 border-[#1F7A54] pb-1">Home</Link>
-                                <Link href="/tentang-kami" prefetch={["hover", "mount"]} className="text-gray-800 dark:text-zinc-100 hover:text-[#1F7A54] dark:hover:text-emerald-400 font-semibold transition-colors duration-200">Tentang Kami</Link>
-                            </nav>
-                            {/* Right Actions: Auth buttons + Dark mode toggle */}
-                            <div className="hidden md:flex items-center space-x-4">
-                                {auth?.user ? (
-                                    <Link href={route('dashboard')} prefetch={["hover", "mount"]} className="px-5 py-2 rounded-full border border-[#1F7A54] text-[#1F7A54] hover:bg-[#1F7A54]/5 font-semibold text-sm transition-all duration-200">
-                                        Dashboard
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link href={route('login')} prefetch={["hover", "mount"]} className="px-5 py-2 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:border-[#1F7A54] dark:hover:border-emerald-500 font-semibold text-sm transition-all duration-200">
-                                            Login
-                                        </Link>
-                                        <Link href={route('register')} prefetch={["hover", "mount"]} className="px-5 py-2 rounded-full bg-[#1F7A54] text-white hover:bg-[#186041] font-semibold text-sm shadow-md shadow-[#1F7A54]/20 transition-all duration-200">
-                                            Register
-                                        </Link>
-                                    </>
-                                )}
-
-                                {/* Dark mode Toggle */}
-                                <button
-                                    onClick={toggleDarkMode}
-                                    className="p-2 rounded-full bg-gray-100 dark:bg-zinc-900 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors duration-200"
-                                    aria-label="Toggle Dark Mode"
-                                >
-                                    {darkMode ? (
-                                        // Sun Icon
-                                        <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                        </svg>
-                                    ) : (
-                                        // Moon Icon
-                                        <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                        </svg>
-                                    )}
-                                </button>
-                            </div>
-
-                            {/* Mobile menu button */}
-                            <div className="flex items-center space-x-3 md:hidden">
-                                <button
-                                    onClick={toggleDarkMode}
-                                    className="p-2 rounded-full bg-gray-100 dark:bg-zinc-900 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors duration-200"
-                                    aria-label="Toggle Dark Mode"
-                                >
-                                    {darkMode ? (
-                                        <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                        </svg>
-                                    ) : (
-                                        <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                        </svg>
-                                    )}
-                                </button>
-
-                                <button
-                                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                    className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-900 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors duration-200"
-                                    aria-label="Open Menu"
-                                >
-                                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        {mobileMenuOpen ? (
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                        ) : (
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                                        )}
-                                    </svg>
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    {/* Mobile Navigation Drawer */}
-                    {mobileMenuOpen && (
-                        <div className="md:hidden px-4 pt-2 pb-6 border-t border-gray-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 transition-colors duration-300">
-                            <div className="flex flex-col space-y-4">
-                                <Link href="/" prefetch={["hover", "mount"]} className="text-[#1F7A54] dark:text-emerald-400 font-bold py-2">Home</Link>
-                                <Link href="/tentang-kami" prefetch={["hover", "mount"]} className="text-gray-800 dark:text-zinc-100 font-semibold py-2 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Tentang Kami</Link>
-                                <hr className="border-gray-100 dark:border-zinc-900" />
-                                {auth?.user ? (
-                                    <Link href={route('dashboard')} prefetch={["hover", "mount"]} className="w-full text-center py-2.5 rounded-full border border-[#1F7A54] text-[#1F7A54] font-semibold text-sm">
-                                        Dashboard
-                                    </Link>
-                                ) : (
-                                    <div className="flex flex-col space-y-3 pt-2">
-                                        <Link href={route('login')} prefetch={["hover", "mount"]} className="w-full text-center py-2.5 rounded-full border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-gray-200 font-semibold text-sm">
-                                            Login
-                                        </Link>
-                                        <Link href={route('register')} prefetch={["hover", "mount"]} className="w-full text-center py-2.5 rounded-full bg-[#1F7A54] text-white font-semibold text-sm">
-                                            Register
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </header>
 
                 {/* Hero Section */}
                 <section className="relative overflow-hidden min-h-[calc(100vh-72px)] flex items-center bg-zinc-950 py-12 lg:py-16">

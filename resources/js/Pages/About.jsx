@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
+import Navbar from '@/Components/Navbar';
 
 export default function About({ aboutSettings = null }) {
     // State untuk mengatur dark mode
@@ -35,63 +36,8 @@ export default function About({ aboutSettings = null }) {
             <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#071A0E] transition-colors duration-300 flex flex-col justify-between">
 
                 {/* Navbar */}
-                <nav className="bg-white/80 dark:bg-[#092213]/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-[#133A22] transition-colors duration-300">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex justify-between h-16 items-center">
+                <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} activePage="about" />
 
-                            {/* Logo siGizi */}
-                            <Link href="/" prefetch={["hover", "mount"]} className="flex items-center">
-                                <img
-                                    src="/images/logo-sigizi.png"
-                                    alt="Logo siGizi"
-                                    className="h-[85px] w-auto object-contain"
-                                />
-                            </Link>
-
-                            {/* Navigation Links */}
-                            <div className="hidden md:flex items-center space-x-8">
-                                <Link href="/" prefetch={["hover", "mount"]} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1F7A54] dark:hover:text-emerald-400 transition-colors">Home</Link>
-                                <Link href="/tentang-kami" prefetch={["hover", "mount"]} className="text-sm font-bold text-[#1F7A54] dark:text-emerald-400 border-b-2 border-[#1F7A54] pb-1">Tentang Kami</Link>
-                            </div>
-
-                            {/* Auth Buttons & Dark Mode Toggle (Disesuaikan dengan Home) */}
-                            <div className="flex items-center space-x-3">
-                                <Link
-                                    href="/login"
-                                    prefetch={["hover", "mount"]}
-                                    className="px-5 py-2 text-sm font-bold text-gray-700 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 border border-gray-300 dark:border-emerald-800/60 hover:border-emerald-500 bg-transparent rounded-full transition-all"
-                                >
-                                    Login
-                                </Link>
-
-                                <Link
-                                    href="/register"
-                                    prefetch={["hover", "mount"]}
-                                    className="px-5 py-2 text-sm font-bold text-white bg-[#1F7A54] hover:bg-[#186041] dark:bg-emerald-600 dark:hover:bg-emerald-700 rounded-full transition-all shadow-sm"
-                                >
-                                    Register
-                                </Link>
-
-                                <button
-                                    onClick={toggleDarkMode}
-                                    className="p-2.5 rounded-full bg-gray-100 dark:bg-gray-800/50 text-amber-500 dark:text-amber-400 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-all cursor-pointer ml-1"
-                                    aria-label="Toggle Dark Mode"
-                                >
-                                    {darkMode ? (
-                                        <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.343l.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
-                                        </svg>
-                                    ) : (
-                                        <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                        </svg>
-                                    )}
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                </nav>
 
                 {/* Konten Utama */}
                 <main className="flex-grow py-16">
