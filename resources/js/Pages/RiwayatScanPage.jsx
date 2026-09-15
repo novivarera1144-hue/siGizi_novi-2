@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, ChevronRight, AlertCircle, ImageIcon } from 'lucide-react';
+import { Search, ChevronRight, AlertCircle, ImageIcon, X } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
@@ -86,30 +86,43 @@ export default function RiwayatScanPage({ scanHistory }) {
 
                     {/* --- FILTER & PENCARIAN --- */}
                     <div className="space-y-6">
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Search className="h-5 w-5 text-gray-400 dark:text-emerald-600/70" />
+                        {/* --- KOLOM PENCARIAN LEBIH MENONJOL & INTERAKTIF --- */}
+                        <div className="relative group">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-transform duration-300 group-focus-within:scale-110">
+                                <Search className="h-5 w-5 text-[#1F7A54] dark:text-emerald-400 font-bold" />
                             </div>
                             <input
                                 type="text"
-                                placeholder="Cari makanan..."
+                                placeholder="Cari riwayat makanan..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-[#122017] border border-gray-200 dark:border-[#1a2e22] rounded-2xl text-sm focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#122017] focus:ring-4 focus:ring-[#1F7A54]/10 dark:focus:ring-emerald-500/10 transition-all outline-none text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-600/70 shadow-sm"
+                                className="w-full pl-12 pr-10 py-4 bg-white dark:bg-[#122017] border-2 border-gray-200 dark:border-emerald-900/60 rounded-2xl text-sm font-medium focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#122017] focus:ring-4 focus:ring-[#1F7A54]/15 dark:focus:ring-emerald-500/15 transition-all duration-300 outline-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-emerald-600/70 shadow-md hover:border-[#1F7A54]/50 dark:hover:border-emerald-700"
                             />
+                            {/* Tombol Clear (X) Muncul Saat Mengetik */}
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:text-emerald-500/70 dark:hover:text-emerald-400 transition-colors"
+                                >
+                                    <X className="w-5 h-5 bg-gray-100 dark:bg-[#0b140e] rounded-full p-0.5" />
+                                </button>
+                            )}
                         </div>
 
+                        {/* --- TOMBOL FILTER DENGAN ANIMASI HOVER LIFT & SHIMMER --- */}
                         <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
-                                    className={`px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${activeTab === tab
-                                        ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/20 dark:bg-emerald-500 dark:text-slate-950 dark:shadow-none'
-                                        : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 shadow-sm dark:bg-[#122017] dark:text-emerald-100/70 dark:border-[#1a2e22] dark:hover:bg-[#182b1f]'
+                                    className={`relative overflow-hidden px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] active:scale-95 group ${activeTab === tab
+                                            ? 'bg-[#1F7A54] text-white shadow-md shadow-[#1F7A54]/20 dark:bg-emerald-500 dark:text-slate-950 dark:shadow-none'
+                                            : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 shadow-sm dark:bg-[#122017] dark:text-emerald-100/70 dark:border-[#1a2e22] dark:hover:bg-[#182b1f]'
                                         }`}
                                 >
-                                    {tab}
+                                    {/* Efek Kilau / Shimmer saat Kursor Mendekati Tombol */}
+                                    <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none z-10"></div>
+                                    <span className="relative z-20">{tab}</span>
                                 </button>
                             ))}
                         </div>

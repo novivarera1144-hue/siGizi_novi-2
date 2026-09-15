@@ -273,27 +273,32 @@ export default function ScanPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+
+                        {/* Tombol Unggah Foto dengan Animasi Shimmer & Hover Lift */}
                         <button
                             type="button"
                             onClick={() => fileInputRef.current.click()}
-                            className="py-3.5 px-4 bg-[#1F7A54] hover:bg-[#186847] text-white dark:bg-[#1F7A54] dark:hover:bg-[#186847] font-bold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 cursor-pointer transition-all"
+                            className="relative overflow-hidden py-3.5 px-4 bg-[#1F7A54] hover:bg-[#186847] text-white dark:bg-[#1F7A54] dark:hover:bg-[#186847] font-bold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 cursor-pointer transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg group"
                         >
-                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-10"></div>
+                            <svg className="w-5 h-5 text-white relative z-20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                             </svg>
-                            <span>Unggah Foto</span>
+                            <span className="relative z-20">Unggah Foto</span>
                         </button>
 
+                        {/* Tombol Buka Kamera dengan Animasi Shimmer & Hover Lift */}
                         <button
                             type="button"
                             onClick={() => openWebcam('environment')}
-                            className="py-3.5 px-4 bg-[#1F7A54] hover:bg-[#186847] text-white dark:bg-[#1F7A54] dark:hover:bg-[#186847] font-bold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 cursor-pointer transition-all"
+                            className="relative overflow-hidden py-3.5 px-4 bg-[#1F7A54] hover:bg-[#186847] text-white dark:bg-[#1F7A54] dark:hover:bg-[#186847] font-bold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 cursor-pointer transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg group"
                         >
-                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-10"></div>
+                            <svg className="w-5 h-5 text-white relative z-20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            <span>Buka Kamera</span>
+                            <span className="relative z-20">Buka Kamera</span>
                         </button>
                     </div>
 

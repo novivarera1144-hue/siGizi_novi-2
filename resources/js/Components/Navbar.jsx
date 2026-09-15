@@ -1,273 +1,167 @@
+import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Sun, Moon, Menu, X, ArrowRight } from 'lucide-react';
 
 export default function Navbar({ auth, darkMode, toggleDarkMode, activePage = 'home' }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    // Dynamic path detection if activePage is not explicitly passed
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    const currentActive = activePage !== 'home' 
-        ? activePage 
-        : (currentPath.startsWith('/login') 
-            ? 'login' 
-            : currentPath.startsWith('/register') 
-                ? 'register' 
-                : currentPath.startsWith('/tentang-kami') 
-                    ? 'about' 
-                    : 'home');
-
-    const isLoginActive = currentActive === 'login';
-    const isRegisterActive = currentActive === 'register';
+    const navLinks = [
+        { name: 'Beranda', href: route('home'), key: 'home' },
+        { name: 'Tentang Kami', href: route('about'), key: 'about' },
+        { name: 'Artikel & Fitur', href: `${route('home')}#fitur`, key: 'fitur' },
+        { name: 'Kontak', href: `${route('home')}#kontak`, key: 'kontak' },
+    ];
 
     return (
-        <header className="sticky top-0 z-50 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100/80 dark:border-zinc-900/80 transition-colors duration-300 shadow-sm">
+        <header className="sticky top-0 z-50 bg-white/90 dark:bg-[#09170F]/90 backdrop-blur-md border-b border-gray-100 dark:border-emerald-950/80 transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16 sm:h-20">
-
-                    {/* Logo siGizi */}
-                    <div className="flex-shrink-0 flex items-center">
-                        <Link href="/" prefetch={["hover", "mount"]} className="flex items-center group py-1">
+                <div className="flex items-center justify-between h-20">
+                    {/* Brand Logo with lift & glow animation */}
+                    <Link href={route('home')} className="flex items-center gap-3 group">
+                        <div className="relative overflow-hidden p-1 rounded-2xl transition-transform duration-300 transform group-hover:scale-105 group-hover:-translate-y-0.5">
                             <img
                                 src="/images/logo-sigizi.png"
                                 alt="siGizi Logo"
-                                className="h-16 sm:h-20 w-auto max-w-none object-contain transition-all duration-300 group-hover:scale-105 transform hover:drop-shadow-md"
+                                className="h-10 w-auto object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-110"
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = '/logo-sigizi.png';
+                                }}
                             />
-                        </Link>
-                    </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xl font-black tracking-tight text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                siGizi<span className="text-emerald-600 dark:text-[#20D080]">.</span>
+                            </span>
+                            <span className="text-[10px] font-semibold text-gray-400 dark:text-emerald-500/80 -mt-1 tracking-wider uppercase">
+                                Nutrisi & Kesehatan
+                            </span>
+                        </div>
+                    </Link>
 
-                    {/* Center Navigation Links: Home & Tentang Kami */}
-                    <nav className="hidden md:flex items-center space-x-2 lg:space-x-4">
-                        {/* 1. Menu Navigasi: Home */}
-                        <Link
-                            href="/"
-                            prefetch={["hover", "mount"]}
-                            className={`relative group overflow-hidden px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-105 active:scale-95 flex items-center justify-center ${
-                                currentActive === 'home'
-                                    ? 'text-[#1F7A54] dark:text-emerald-400 bg-[#1F7A54]/10 dark:bg-emerald-500/15 shadow-sm'
-                                    : 'text-gray-700 dark:text-zinc-200 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:bg-emerald-50/70 dark:hover:bg-zinc-900/80'
-                            }`}
-                        >
-                            {/* Shimmer Effect (Kilau Berjalan Saat Hover) */}
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-400/30 dark:via-emerald-400/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                            
-                            <span className="relative z-10">Home</span>
-
-                            {/* Dynamic Glow Line Indicator */}
-                            <span
-                                className={`absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-[#1F7A54] dark:bg-emerald-400 transition-all duration-300 ${
-                                    currentActive === 'home'
-                                        ? 'w-1/2'
-                                        : 'w-0 group-hover:w-2/3'
-                                }`}
-                            />
-                        </Link>
-
-                        {/* 1. Menu Navigasi: Tentang Kami */}
-                        <Link
-                            href="/tentang-kami"
-                            prefetch={["hover", "mount"]}
-                            className={`relative group overflow-hidden px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-105 active:scale-95 flex items-center justify-center ${
-                                currentActive === 'about'
-                                    ? 'text-[#1F7A54] dark:text-emerald-400 bg-[#1F7A54]/10 dark:bg-emerald-500/15 shadow-sm'
-                                    : 'text-gray-700 dark:text-zinc-200 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:bg-emerald-50/70 dark:hover:bg-zinc-900/80'
-                            }`}
-                        >
-                            {/* Shimmer Effect (Kilau Berjalan Saat Hover) */}
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-400/30 dark:via-emerald-400/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-
-                            <span className="relative z-10">Tentang Kami</span>
-
-                            {/* Dynamic Glow Line Indicator */}
-                            <span
-                                className={`absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-[#1F7A54] dark:bg-emerald-400 transition-all duration-300 ${
-                                    currentActive === 'about'
-                                        ? 'w-1/2'
-                                        : 'w-0 group-hover:w-2/3'
-                                }`}
-                            />
-                        </Link>
+                    {/* Desktop Navigation Links */}
+                    <nav className="hidden md:flex items-center gap-1 bg-gray-50/80 dark:bg-[#0C1E14]/80 p-1.5 rounded-full border border-gray-100 dark:border-emerald-900/40">
+                        {navLinks.map((link) => {
+                            const isActive = activePage === link.key;
+                            return (
+                                <Link
+                                    key={link.key}
+                                    href={link.href}
+                                    className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 relative ${
+                                        isActive
+                                            ? 'bg-emerald-600 dark:bg-[#20D080] text-white dark:text-slate-950 shadow-sm shadow-emerald-500/20'
+                                            : 'text-gray-600 dark:text-emerald-400/80 hover:text-emerald-600 dark:hover:text-emerald-300 hover:bg-white/60 dark:hover:bg-emerald-950/40'
+                                    }`}
+                                >
+                                    {link.name}
+                                </Link>
+                            );
+                        })}
                     </nav>
 
-                    {/* Right Actions: Login, Register & Dark Mode Toggle */}
-                    <div className="hidden md:flex items-center space-x-3">
-                        {auth?.user ? (
-                            <Link
-                                href="/dashboard"
-                                prefetch={["hover", "mount"]}
-                                className="relative group overflow-hidden px-6 py-2.5 rounded-full border-2 border-[#1F7A54] text-[#1F7A54] dark:border-emerald-400 dark:text-emerald-400 font-bold text-sm transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 hover:bg-[#1F7A54]/10 dark:hover:bg-emerald-400/10 hover:shadow-lg hover:shadow-[#1F7A54]/20 active:scale-95 flex items-center justify-center"
+                    {/* Right Actions (Dark mode toggle & Auth buttons) */}
+                    <div className="hidden md:flex items-center gap-3">
+                        {/* Dark Mode Toggle */}
+                        {toggleDarkMode && (
+                            <button
+                                onClick={toggleDarkMode}
+                                className="w-10 h-10 rounded-full bg-gray-100 dark:bg-[#0C1E14] border border-gray-200 dark:border-emerald-800/60 flex items-center justify-center text-gray-600 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 hover:scale-110 active:scale-95 transition-all duration-300 shadow-sm"
+                                title={darkMode ? 'Mode Terang' : 'Mode Gelap'}
                             >
-                                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-[#1F7A54]/20 dark:via-emerald-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                                <span className="relative z-10">Dashboard</span>
-                            </Link>
-                        ) : (
-                            <>
-                                {/* 2. Tombol Login */}
-                                <Link
-                                    href="/login"
-                                    prefetch={["hover", "mount"]}
-                                    className={`relative group overflow-hidden px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95 flex items-center justify-center ${
-                                        isLoginActive
-                                            ? 'bg-gradient-to-r from-[#1F7A54] to-[#165a3e] dark:from-emerald-600 dark:to-emerald-500 text-white shadow-md shadow-[#1F7A54]/30 dark:shadow-emerald-600/30 hover:shadow-xl hover:shadow-[#1F7A54]/50 dark:hover:shadow-emerald-500/50'
-                                            : 'border-2 border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-100 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:border-[#1F7A54] dark:hover:border-emerald-400 bg-white/80 dark:bg-zinc-900/80 hover:bg-emerald-50/60 dark:hover:bg-zinc-800 hover:shadow-lg hover:shadow-[#1F7A54]/20 dark:hover:shadow-emerald-500/20'
-                                    }`}
-                                >
-                                    {/* Shimmer Effect (Kilau Berjalan Saat Hover) */}
-                                    <span className={`absolute inset-0 w-full h-full bg-gradient-to-r from-transparent ${
-                                        isLoginActive ? 'via-white/40' : 'via-[#1F7A54]/25 dark:via-emerald-400/30'
-                                    } to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none`} />
-                                    <span className="relative z-10">Login</span>
-                                </Link>
-
-                                {/* 3. Tombol Register */}
-                                <Link
-                                    href="/register"
-                                    prefetch={["hover", "mount"]}
-                                    className={`relative group overflow-hidden px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95 flex items-center justify-center ${
-                                        isRegisterActive || (!isLoginActive && !isRegisterActive)
-                                            ? 'bg-gradient-to-r from-[#1F7A54] to-[#165a3e] dark:from-emerald-600 dark:to-emerald-500 text-white shadow-md shadow-[#1F7A54]/30 dark:shadow-emerald-600/30 hover:shadow-xl hover:shadow-[#1F7A54]/50 dark:hover:shadow-emerald-500/50'
-                                            : 'border-2 border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-100 hover:text-[#1F7A54] dark:hover:text-emerald-400 hover:border-[#1F7A54] dark:hover:border-emerald-400 bg-white/80 dark:bg-zinc-900/80 hover:bg-emerald-50/60 dark:hover:bg-zinc-800 hover:shadow-lg hover:shadow-[#1F7A54]/20 dark:hover:shadow-emerald-500/20'
-                                    }`}
-                                >
-                                    {/* Shimmer Effect (Kilau Berjalan Saat Hover) */}
-                                    <span className={`absolute inset-0 w-full h-full bg-gradient-to-r from-transparent ${
-                                        isRegisterActive || (!isLoginActive && !isRegisterActive) ? 'via-white/40' : 'via-[#1F7A54]/25 dark:via-emerald-400/30'
-                                    } to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none`} />
-                                    <span className="relative z-10">Register</span>
-                                </Link>
-                            </>
+                                {darkMode ? <Sun size={18} className="text-amber-400 animate-spin-slow" /> : <Moon size={18} />}
+                            </button>
                         )}
 
-                        {/* 4. Tombol ikon Mode Gelap (Dark Mode) */}
-                        <button
-                            onClick={toggleDarkMode}
-                            className="relative group overflow-hidden p-2.5 rounded-full bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-amber-400 hover:text-[#1F7A54] dark:hover:text-amber-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all duration-300 transform hover:-translate-y-1 hover:scale-110 hover:shadow-lg hover:shadow-amber-500/25 dark:hover:shadow-amber-400/30 active:scale-90 flex items-center justify-center cursor-pointer"
-                            aria-label="Toggle Dark Mode"
-                        >
-                            {/* Shimmer Effect (Kilau Berjalan Saat Hover) */}
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-amber-400/30 dark:via-amber-300/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-
-                            <span className="relative z-10 transform group-hover:rotate-45 transition-transform duration-500 ease-out flex items-center justify-center">
-                                {darkMode ? (
-                                    /* Sun Icon */
-                                    <svg className="w-5 h-5 text-amber-400 fill-current" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                    </svg>
-                                ) : (
-                                    /* Moon Icon */
-                                    <svg className="w-5 h-5 text-gray-700 group-hover:text-[#1F7A54] fill-current" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                    </svg>
-                                )}
-                            </span>
-                        </button>
+                        {/* Auth Buttons */}
+                        {auth?.user ? (
+                            <Link
+                                href={route('dashboard')}
+                                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 rounded-full text-xs font-extrabold shadow-sm hover:shadow-lg hover:shadow-emerald-500/20 transition-all duration-300 transform hover:-translate-y-0.5"
+                            >
+                                <span>Dashboard</span>
+                                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+                            </Link>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href={route('login')}
+                                    className="px-4 py-2 text-xs font-bold text-gray-700 dark:text-emerald-300 hover:text-emerald-600 dark:hover:text-white transition"
+                                >
+                                    Masuk
+                                </Link>
+                                <Link
+                                    href={route('register')}
+                                    className="group inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 rounded-full text-xs font-extrabold shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                                >
+                                    <span>Daftar Gratis</span>
+                                </Link>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Mobile Menu Button & Dark Mode Toggle */}
-                    <div className="flex items-center space-x-3 md:hidden">
-                        <button
-                            onClick={toggleDarkMode}
-                            className="relative group overflow-hidden p-2 rounded-full bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-amber-400 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all duration-300 transform hover:scale-105"
-                            aria-label="Toggle Dark Mode"
-                        >
-                            <span className="transform group-hover:rotate-45 transition-transform duration-300 block">
-                                {darkMode ? (
-                                    <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                                    </svg>
-                                ) : (
-                                    <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                    </svg>
-                                )}
-                            </span>
-                        </button>
-
+                    {/* Mobile Hamburger Button */}
+                    <div className="flex md:hidden items-center gap-2">
+                        {toggleDarkMode && (
+                            <button
+                                onClick={toggleDarkMode}
+                                className="w-9 h-9 rounded-full bg-gray-100 dark:bg-[#0C1E14] border border-gray-200 dark:border-emerald-800/60 flex items-center justify-center text-gray-600 dark:text-emerald-400"
+                            >
+                                {darkMode ? <Sun size={16} className="text-amber-400" /> : <Moon size={16} />}
+                            </button>
+                        )}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="p-2 rounded-xl bg-gray-100 dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all duration-200 transform hover:scale-105"
-                            aria-label="Open Menu"
+                            className="p-2 rounded-xl bg-gray-100 dark:bg-[#0C1E14] text-gray-600 dark:text-emerald-400 hover:bg-gray-200 dark:hover:bg-emerald-950/60 transition"
                         >
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                {mobileMenuOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                                )}
-                            </svg>
+                            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
                         </button>
                     </div>
-
                 </div>
             </div>
 
-            {/* Mobile Navigation Drawer */}
+            {/* Mobile Dropdown Menu */}
             {mobileMenuOpen && (
-                <div className="md:hidden px-4 pt-3 pb-6 border-t border-gray-100 dark:border-zinc-900 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md transition-colors duration-300">
-                    <div className="flex flex-col space-y-3">
-                        <Link
-                            href="/"
-                            prefetch={["hover", "mount"]}
-                            className={`relative group overflow-hidden px-4 py-2.5 rounded-xl font-bold transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-between ${
-                                currentActive === 'home'
-                                    ? 'text-[#1F7A54] dark:text-emerald-400 bg-[#1F7A54]/10 dark:bg-emerald-500/15'
-                                    : 'text-gray-800 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900'
-                            }`}
-                        >
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                            <span className="relative z-10">Home</span>
-                        </Link>
+                <div className="md:hidden bg-white dark:bg-[#09170F] border-b border-gray-100 dark:border-emerald-950/80 px-4 pt-2 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="flex flex-col space-y-1">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.key}
+                                href={link.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`px-4 py-2.5 rounded-xl text-sm font-bold transition ${
+                                    activePage === link.key
+                                        ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'
+                                        : 'text-gray-600 dark:text-emerald-400/80 hover:bg-gray-50 dark:hover:bg-emerald-950/40'
+                                }`}
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                    </div>
 
-                        <Link
-                            href="/tentang-kami"
-                            prefetch={["hover", "mount"]}
-                            className={`relative group overflow-hidden px-4 py-2.5 rounded-xl font-bold transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-between ${
-                                currentActive === 'about'
-                                    ? 'text-[#1F7A54] dark:text-emerald-400 bg-[#1F7A54]/10 dark:bg-emerald-500/15'
-                                    : 'text-gray-800 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900'
-                            }`}
-                        >
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                            <span className="relative z-10">Tentang Kami</span>
-                        </Link>
-
-                        <hr className="border-gray-100 dark:border-zinc-900 my-1" />
-
+                    <div className="pt-3 border-t border-gray-100 dark:border-emerald-950/80 flex flex-col gap-2">
                         {auth?.user ? (
                             <Link
-                                href="/dashboard"
-                                prefetch={["hover", "mount"]}
-                                className="relative group overflow-hidden w-full text-center py-3 rounded-xl border-2 border-[#1F7A54] text-[#1F7A54] dark:border-emerald-400 dark:text-emerald-400 font-bold text-sm shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.02]"
+                                href={route('dashboard')}
+                                className="w-full py-3 text-center bg-emerald-600 text-white dark:bg-[#20D080] dark:text-slate-950 rounded-xl text-sm font-bold shadow-sm"
                             >
-                                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-[#1F7A54]/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                                <span className="relative z-10">Dashboard</span>
+                                Ke Dashboard
                             </Link>
                         ) : (
-                            <div className="flex flex-col space-y-2.5 pt-1">
+                            <>
                                 <Link
-                                    href="/login"
-                                    prefetch={["hover", "mount"]}
-                                    className={`relative group overflow-hidden w-full text-center py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.02] ${
-                                        isLoginActive 
-                                            ? 'bg-gradient-to-r from-[#1F7A54] to-[#165a3e] dark:from-emerald-600 dark:to-emerald-500 text-white' 
-                                            : 'border-2 border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-200'
-                                    }`}
+                                    href={route('login')}
+                                    className="w-full py-2.5 text-center bg-gray-100 dark:bg-[#0C1E14] text-gray-700 dark:text-emerald-300 rounded-xl text-sm font-bold"
                                 >
-                                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-[#1F7A54]/20 dark:via-emerald-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                                    <span className="relative z-10">Login</span>
+                                    Masuk
                                 </Link>
                                 <Link
-                                    href="/register"
-                                    prefetch={["hover", "mount"]}
-                                    className={`relative group overflow-hidden w-full text-center py-2.5 rounded-xl font-bold text-sm shadow-md transition-all duration-300 transform hover:scale-[1.02] ${
-                                        isRegisterActive || (!isLoginActive && !isRegisterActive)
-                                            ? 'bg-gradient-to-r from-[#1F7A54] to-[#165a3e] dark:from-emerald-600 dark:to-emerald-500 text-white'
-                                            : 'border-2 border-gray-300 dark:border-zinc-700 text-gray-800 dark:text-zinc-200'
-                                    }`}
+                                    href={route('register')}
+                                    className="w-full py-2.5 text-center bg-emerald-600 text-white dark:bg-[#20D080] dark:text-slate-950 rounded-xl text-sm font-bold shadow-sm"
                                 >
-                                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                                    <span className="relative z-10">Register</span>
+                                    Daftar Gratis
                                 </Link>
-                            </div>
+                            </>
                         )}
                     </div>
                 </div>

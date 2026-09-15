@@ -466,7 +466,7 @@ export default function Edit({ auth, flash }) {
 
     // Render Views
     const renderMainView = () => (
-        <div className="max-w-3xl mx-auto animate-in fade-in duration-300">
+        <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* --- HEADER TITLE --- */}
             <div className="mb-8">
                 <p className="text-xs font-bold tracking-wider text-gray-400 dark:text-emerald-500/80 uppercase mb-1">Profil</p>
@@ -474,19 +474,23 @@ export default function Edit({ auth, flash }) {
             </div>
 
             {/* --- Kartu Profil Utama --- */}
-            <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 mb-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left relative overflow-hidden transition-colors">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-950/30 rounded-bl-full -z-10 opacity-50"></div>
+            <div className="relative group overflow-hidden bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-[#1F7A54]/10 dark:hover:shadow-emerald-500/10 border border-gray-100 dark:border-emerald-950/80 hover:border-emerald-200 dark:hover:border-emerald-800/80 mb-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left transition-all duration-300 transform hover:-translate-y-1">
+                {/* Soft Shimmer Wave Overlay */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/12 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none z-10"></span>
+
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-950/30 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
 
                 {/* Avatar */}
-                <div className="w-24 h-24 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-4xl font-bold border-4 border-white dark:border-[#09170F] shadow-sm flex-shrink-0 relative overflow-hidden">
+                <div className="w-24 h-24 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-4xl font-bold border-4 border-white dark:border-[#09170F] shadow-sm flex-shrink-0 relative overflow-hidden group-hover:border-emerald-100 dark:group-hover:border-emerald-900/60 transition-colors duration-300">
                     {photoPreview ? (
-                        <img src={photoPreview} alt="Foto Profil" className="w-full h-full object-cover" />
+                        <img src={photoPreview} alt="Foto Profil" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
-                        profileData.name.charAt(0).toUpperCase()
+                        <span className="group-hover:scale-110 transition-transform duration-300">{profileData.name.charAt(0).toUpperCase()}</span>
                     )}
                     <button
                         onClick={openEditProfileModal}
-                        className="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#0C1E14] rounded-full flex items-center justify-center shadow border border-gray-100 dark:border-emerald-800/60 text-gray-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition z-10"
+                        className="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#0C1E14] rounded-full flex items-center justify-center shadow border border-gray-100 dark:border-emerald-800/60 text-gray-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 hover:scale-110 hover:rotate-12 transition-all duration-300 z-10"
+                        title="Ubah Foto Profil"
                     >
                         <Pencil size={14} />
                     </button>
@@ -494,9 +498,10 @@ export default function Edit({ auth, flash }) {
 
                 {/* Info Profil */}
                 <div className="flex-grow">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{profileData.name}</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-emerald-800 dark:group-hover:text-emerald-300 transition-colors duration-300">{profileData.name}</h2>
                     <p className="text-gray-500 dark:text-emerald-500/80 mb-3">{profileData.email}</p>
-                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-transparent dark:border-emerald-900/40">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-transparent dark:border-emerald-900/40 group-hover:bg-emerald-200/80 dark:group-hover:bg-emerald-900/60 transition-colors duration-300">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#20D080] animate-pulse"></span>
                         Pengguna Aktif
                     </div>
                 </div>
@@ -504,52 +509,56 @@ export default function Edit({ auth, flash }) {
                 {/* Tombol Edit Profil */}
                 <button
                     onClick={openEditProfileModal}
-                    className="flex items-center justify-center w-10 h-10 bg-gray-50 dark:bg-[#0C1E14] border border-gray-100 dark:border-emerald-800/50 text-gray-500 dark:text-emerald-400 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900/40 hover:border-emerald-100 dark:hover:border-emerald-700 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors shrink-0 shadow-sm"
+                    className="flex items-center justify-center w-10 h-10 bg-gray-50 dark:bg-[#0C1E14] border border-gray-100 dark:border-emerald-800/50 text-gray-500 dark:text-emerald-400 rounded-full hover:bg-emerald-100/70 dark:hover:bg-emerald-900/60 hover:border-emerald-300 dark:hover:border-emerald-700 hover:text-emerald-700 dark:hover:text-emerald-300 hover:scale-110 hover:rotate-6 active:scale-95 transition-all duration-300 shrink-0 shadow-sm z-20"
+                    title="Edit Profil"
                 >
                     <Pencil size={18} />
                 </button>
             </div>
 
             {/* --- Kartu Target Kesehatan --- */}
-            <div className="bg-[#EBF4F0] dark:bg-[#0E281A] p-6 md:p-8 rounded-3xl shadow-sm border border-emerald-100/60 dark:border-emerald-900/40 mb-8 transition-colors">
+            <div className="relative group overflow-hidden bg-[#EBF4F0] dark:bg-[#0E281A] p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-emerald-500/15 border border-emerald-100/60 dark:border-emerald-900/40 hover:border-emerald-300 dark:hover:border-emerald-700/60 mb-8 transition-all duration-300 transform hover:-translate-y-1">
+                {/* Soft Shimmer Wave Overlay */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/12 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none z-10"></span>
+
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-emerald-100/70 dark:bg-emerald-950/80 flex items-center justify-center text-emerald-700 dark:text-emerald-300">
+                        <div className="w-10 h-10 rounded-full bg-emerald-100/70 dark:bg-emerald-950/80 flex items-center justify-center text-emerald-700 dark:text-emerald-300 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300">
                             <Target size={20} />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Target Kesehatan</h3>
                     </div>
                     <button
                         onClick={() => setShowGoalSettingModal(true)}
-                        className="text-sm font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300"
+                        className="text-sm font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-200 hover:scale-105 transition-all duration-200 z-20"
                     >
                         Edit
                     </button>
                 </div>
 
                 {/* Grid Info Target */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 relative z-20">
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:bg-white dark:hover:bg-[#09170F]">
                         <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Tujuan</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">{user?.weight_goal || 'Belum Diatur'}</p>
                     </div>
-                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:bg-white dark:hover:bg-[#09170F]">
                         <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Durasi Program</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.duration_weeks || 12} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">minggu</span></p>
                     </div>
-                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:bg-white dark:hover:bg-[#09170F]">
                         <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Target Kalori</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{fmt(getCalorieTarget())} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kkal/hari</span></p>
                     </div>
-                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:bg-white dark:hover:bg-[#09170F]">
                         <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Berat Badan</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.weight || '-'} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kg</span></p>
                     </div>
-                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:bg-white dark:hover:bg-[#09170F]">
                         <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Tinggi Badan</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.height || '-'} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">cm</span></p>
                     </div>
-                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30">
+                    <div className="bg-white/80 dark:bg-[#09170F]/80 p-3.5 sm:p-4 rounded-2xl border border-emerald-100/40 dark:border-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:bg-white dark:hover:bg-[#09170F]">
                         <p className="text-[10px] sm:text-xs text-gray-500 dark:text-emerald-500/80 font-semibold uppercase tracking-wider mb-1">Berat Target</p>
                         <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">{user?.target_weight || '-'} <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-emerald-500/80">kg</span></p>
                     </div>
@@ -557,46 +566,52 @@ export default function Edit({ auth, flash }) {
             </div>
 
             {/* --- Daftar Menu Pengaturan --- */}
-            <div className="bg-white dark:bg-[#09170F] rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 overflow-hidden mb-8 transition-colors">
-                <button onClick={openEditProfileModal} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><Pencil size={18} /></div>
-                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Edit Profil</p></div>
-                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
+            <div className="bg-white dark:bg-[#09170F] rounded-3xl shadow-sm hover:shadow-md border border-gray-100 dark:border-emerald-950/80 overflow-hidden mb-8 transition-all duration-300">
+                <button onClick={openEditProfileModal} className="relative group overflow-hidden w-full p-5 flex items-center gap-4 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition-all duration-300 text-left">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none"></span>
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/60 transition-all duration-300"><Pencil size={18} /></div>
+                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">Edit Profil</p></div>
+                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
-                <button onClick={() => setShowGoalSettingModal(true)} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><Target size={18} /></div>
-                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Goal Setting</p></div>
-                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
+                <button onClick={() => setShowGoalSettingModal(true)} className="relative group overflow-hidden w-full p-5 flex items-center gap-4 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition-all duration-300 text-left">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none"></span>
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/60 transition-all duration-300"><Target size={18} /></div>
+                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">Goal Setting</p></div>
+                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
-                <button onClick={() => setActiveView('keamanan')} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><ShieldCheck size={18} /></div>
-                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Keamanan Akun</p></div>
-                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
+                <button onClick={() => setActiveView('keamanan')} className="relative group overflow-hidden w-full p-5 flex items-center gap-4 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition-all duration-300 text-left">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none"></span>
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/60 transition-all duration-300"><ShieldCheck size={18} /></div>
+                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">Keamanan Akun</p></div>
+                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
-                <button onClick={() => setShowReviewModal(true)} className="w-full p-5 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition text-left group">
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform"><Star size={18} /></div>
-                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white">Beri Ulasan & Rating</p></div>
-                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800" />
+                <button onClick={() => setShowReviewModal(true)} className="relative group overflow-hidden w-full p-5 flex items-center gap-4 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/40 border-b border-gray-50 dark:border-emerald-950/60 transition-all duration-300 text-left">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none"></span>
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/60 transition-all duration-300"><Star size={18} /></div>
+                    <div className="flex-grow"><p className="font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">Beri Ulasan & Rating</p></div>
+                    <ChevronRight size={20} className="text-gray-300 dark:text-emerald-800 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
 
-                {/* ── MENU HAPUS AKUN DENGAN BACKGROUND MERAH MENONJOL ── */}
-                <button onClick={() => setShowDeleteAccountModal(true)} className="w-full p-5 flex items-center gap-4 bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 transition text-left group shadow-sm">
-                    <div className="w-10 h-10 rounded-full bg-white/20 dark:bg-white/20 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                {/* ── MENU HAPUS AKUN DENGAN BACKGROUND MERAH MENONJOL & ANIMASI ── */}
+                <button onClick={() => setShowDeleteAccountModal(true)} className="relative group overflow-hidden w-full p-5 flex items-center gap-4 bg-gradient-to-r from-red-600 via-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 dark:from-red-600 dark:to-rose-600 dark:hover:from-red-700 dark:hover:to-rose-700 transition-all duration-300 text-left shadow-sm hover:shadow-lg hover:shadow-red-600/20 transform hover:-translate-y-0.5">
+                    {/* Soft Red Shimmer Wave Overlay */}
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none"></span>
+                    <div className="w-10 h-10 rounded-full bg-white/20 dark:bg-white/20 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                         <Trash2 size={18} />
                     </div>
                     <div className="flex-grow">
                         <p className="font-bold text-white tracking-wide">Hapus Akun</p>
                     </div>
-                    <ChevronRight size={20} className="text-white/70 group-hover:text-white transition" />
+                    <ChevronRight size={20} className="text-white/70 group-hover:text-white group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
             </div>
         </div>
     );
 
     const renderKeamananView = () => (
-        <div className="max-w-2xl mx-auto animate-in slide-in-from-right-4 duration-300">
-            <button onClick={() => setActiveView('main')} className="flex items-center gap-2 text-gray-500 dark:text-emerald-500/80 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium mb-6 transition">
-                <ChevronLeft size={20} /> Kembali ke Profil
+        <div className="max-w-2xl mx-auto animate-in slide-in-from-right-4 duration-500">
+            <button onClick={() => setActiveView('main')} className="group flex items-center gap-2 text-gray-500 dark:text-emerald-500/80 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium mb-6 transition-all duration-200">
+                <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform duration-200" /> Kembali ke Profil
             </button>
 
             <div className="flex items-center justify-between mb-8">
@@ -604,13 +619,13 @@ export default function Edit({ auth, flash }) {
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Keamanan Akun</h2>
                     <p className="text-sm text-gray-500 dark:text-emerald-500/70 mt-1">Kelola kata sandi akun dan lapisan perlindungan verifikasi dua langkah Anda.</p>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-100/80 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100/80 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm">
                     <ShieldCheck size={24} />
                 </div>
             </div>
 
             {flash?.success && (
-                <div className="p-4 mb-6 bg-emerald-50 border border-emerald-200/60 dark:bg-[#102A1C]/50 dark:border-[#1E4D34]/50 text-emerald-800 dark:text-emerald-300 rounded-2xl flex items-start gap-3 shadow-sm transition-all duration-300">
+                <div className="p-4 mb-6 bg-emerald-50 border border-emerald-200/60 dark:bg-[#102A1C]/50 dark:border-[#1E4D34]/50 text-emerald-800 dark:text-emerald-300 rounded-2xl flex items-start gap-3 shadow-sm transition-all duration-300 animate-in fade-in duration-300">
                     <svg className="w-5 h-5 text-[#1F7A54] dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -620,9 +635,12 @@ export default function Edit({ auth, flash }) {
 
             {/* --- FORM 1: UBAH KATA SANDI --- */}
             <form onSubmit={handleUpdatePassword} className="mb-8">
-                <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <div className="relative group overflow-hidden bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-[#1F7A54]/10 dark:hover:shadow-emerald-500/10 border border-gray-100 dark:border-emerald-950/80 hover:border-emerald-200 dark:hover:border-emerald-800/80 transition-all duration-300 transform hover:-translate-y-1">
+                    {/* Soft Shimmer Wave Overlay */}
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none z-10"></span>
+
+                    <div className="flex items-center gap-3 mb-6 relative z-20">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                             <KeyRound size={20} />
                         </div>
                         <div>
@@ -631,7 +649,7 @@ export default function Edit({ auth, flash }) {
                         </div>
                     </div>
 
-                    <div className="space-y-5">
+                    <div className="space-y-5 relative z-20">
                         {/* Kata Sandi Saat Ini */}
                         <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-emerald-600/80 uppercase tracking-wider mb-2">Kata Sandi Saat Ini</label>
@@ -647,7 +665,7 @@ export default function Edit({ auth, flash }) {
                                 <button
                                     type="button"
                                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
+                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 transition"
                                 >
                                     {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -672,7 +690,7 @@ export default function Edit({ auth, flash }) {
                                 <button
                                     type="button"
                                     onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
+                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 transition"
                                 >
                                     {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -716,7 +734,7 @@ export default function Edit({ auth, flash }) {
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400"
+                                    className="absolute right-4 top-3.5 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 transition"
                                 >
                                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -746,8 +764,8 @@ export default function Edit({ auth, flash }) {
                             <button
                                 type="submit"
                                 disabled={!isPasswordFormReady || passwordForm.processing}
-                                className={`w-full py-3.5 font-bold rounded-2xl transition shadow-sm flex items-center justify-center gap-2 ${isPasswordFormReady && !passwordForm.processing
-                                    ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 cursor-pointer shadow-emerald-500/20'
+                                className={`w-full py-3.5 font-bold rounded-2xl transition-all duration-300 shadow-sm flex items-center justify-center gap-2 ${isPasswordFormReady && !passwordForm.processing
+                                    ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-[#20D080] dark:hover:bg-emerald-400 text-white dark:text-slate-950 cursor-pointer shadow-emerald-500/20 hover:scale-[1.01] active:scale-[0.99]'
                                     : 'bg-gray-200 dark:bg-emerald-950/40 text-gray-400 dark:text-emerald-900/60 cursor-not-allowed'
                                     }`}
                             >
@@ -777,10 +795,13 @@ export default function Edit({ auth, flash }) {
             </form>
 
             {/* --- KARTU 2: AUTENTIKASI 2 LANGKAH (2FA) --- */}
-            <div className="bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-emerald-950/80 mb-8">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="relative group overflow-hidden bg-white dark:bg-[#09170F] p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 border border-gray-100 dark:border-emerald-950/80 hover:border-emerald-200 dark:hover:border-emerald-800/80 mb-8 transition-all duration-300 transform hover:-translate-y-1">
+                {/* Soft Shimmer Wave Overlay */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none z-10"></span>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-20">
                     <div className="flex items-start gap-4">
-                        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${twoFactor ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-emerald-950/40 dark:text-emerald-600/70'}`}>
+                        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 ${twoFactor ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-emerald-950/40 dark:text-emerald-600/70'}`}>
                             <ShieldCheck size={22} />
                         </div>
                         <div>
@@ -811,7 +832,7 @@ export default function Edit({ auth, flash }) {
                         <button
                             type="button"
                             onClick={handleToggleTwoFactor}
-                            className={`w-14 h-7 rounded-full transition-all duration-300 relative shrink-0 cursor-pointer p-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 ${twoFactor ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-[#0C1E14] border border-gray-300 dark:border-emerald-900/50'}`}
+                            className={`w-14 h-7 rounded-full transition-all duration-300 relative shrink-0 cursor-pointer p-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 hover:scale-105 ${twoFactor ? 'bg-emerald-600 dark:bg-[#20D080]' : 'bg-gray-200 dark:bg-[#0C1E14] border border-gray-300 dark:border-emerald-900/50'}`}
                             title={twoFactor ? "Klik untuk menonaktifkan 2FA" : "Klik untuk mengaktifkan 2FA"}
                         >
                             <div className={`w-6 h-6 rounded-full bg-white dark:bg-slate-950 shadow-md transition-transform duration-300 flex items-center justify-center ${twoFactor ? 'translate-x-7' : 'translate-x-0'}`}>
@@ -947,7 +968,7 @@ export default function Edit({ auth, flash }) {
             {/* --- MODAL EDIT PROFIL --- */}
             {showEditProfileModal && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
+                    <div className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-xl animate-in zoom-in-95 duration-200">
                         <button onClick={handleCloseEditModal} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition">
                             <X size={20} />
                         </button>
@@ -1041,7 +1062,7 @@ export default function Edit({ auth, flash }) {
             {/* --- MODAL GOAL SETTING (Comprehensive) --- */}
             {showGoalSettingModal && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <form onSubmit={handleSaveGoal} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-2xl relative shadow-xl max-h-[90vh] overflow-y-auto">
+                    <form onSubmit={handleSaveGoal} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-2xl relative shadow-xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
                         <button type="button" onClick={() => setShowGoalSettingModal(false)} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition z-10">
                             <X size={20} />
                         </button>
@@ -1261,7 +1282,7 @@ export default function Edit({ auth, flash }) {
             {/* --- MODAL ULASAN & RATING --- */}
             {showReviewModal && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <form onSubmit={handleSaveReview} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-2xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
+                    <form onSubmit={handleSaveReview} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-2xl p-6 md:p-8 w-full max-w-md relative shadow-xl animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-emerald-950">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Bagikan Pengalamanmu</h3>
                             <button type="button" onClick={handleCloseReviewModal} className="text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 transition">
@@ -1281,7 +1302,7 @@ export default function Edit({ auth, flash }) {
                                             setRating(star);
                                             testimonialForm.setData('rating', star);
                                         }}
-                                        className={`transition-transform hover:scale-110 ${testimonialForm.data.rating >= star ? 'text-yellow-400' : 'text-gray-200 dark:text-emerald-950'}`}
+                                        className={`transition-all duration-200 hover:scale-125 active:scale-95 ${testimonialForm.data.rating >= star ? 'text-yellow-400' : 'text-gray-200 dark:text-emerald-950'}`}
                                     >
                                         <Star size={32} fill={testimonialForm.data.rating >= star ? "currentColor" : "none"} strokeWidth={testimonialForm.data.rating >= star ? 0 : 2} />
                                     </button>
@@ -1344,7 +1365,7 @@ export default function Edit({ auth, flash }) {
             {/* --- MODAL CONFIRM DELETE ACCOUNT --- */}
             {showDeleteAccountModal && (
                 <div className="fixed inset-0 bg-black/45 dark:bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <form onSubmit={handleDeleteAccount} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-xl">
+                    <form onSubmit={handleDeleteAccount} className="bg-white dark:bg-[#09170F] border border-transparent dark:border-emerald-900/60 rounded-3xl p-6 md:p-8 w-full max-w-md relative shadow-xl animate-in zoom-in-95 duration-200">
                         <button type="button" onClick={() => setShowDeleteAccountModal(false)} className="absolute top-6 right-6 text-gray-400 dark:text-emerald-600 hover:text-gray-600 dark:hover:text-emerald-400 bg-gray-50 dark:bg-emerald-950/60 hover:bg-gray-100 dark:hover:bg-emerald-900/60 rounded-full p-2 transition">
                             <X size={20} />
                         </button>

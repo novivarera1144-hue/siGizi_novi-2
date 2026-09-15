@@ -37,7 +37,7 @@ export default function AuthenticatedLayout({ children }) {
         { name: 'Scan Makanan Baru', category: 'Menu', route: 'scan' },
         { name: 'Laporan Mingguan Nutrisi', category: 'Laporan', route: 'laporan.mingguan' },
         { name: 'Riwayat Konsumsi Kalori', category: 'Riwayat', route: 'riwayat' },
-        { name: 'AI Assistant Gizi', category: 'Bantuan', route: 'ai.assistant' },
+        { name: 'siGizi Assistant', category: 'Bantuan', route: 'ai.assistant' },
         { name: 'Pengaturan Profil', category: 'Akun', route: 'profile.edit' },
     ];
 
@@ -136,7 +136,7 @@ export default function AuthenticatedLayout({ children }) {
             route: 'riwayat',
         },
         {
-            name: 'AI Assistant',
+            name: 'siGizi Assistant',
             icon: Sparkles,
             route: 'ai.assistant',
         },

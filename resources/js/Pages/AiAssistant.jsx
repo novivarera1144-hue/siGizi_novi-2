@@ -1,19 +1,27 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, ChevronDown, Bot, Sparkles, Copy, Check } from 'lucide-react';
+import { Send, Sparkles, Copy, Check, Sprout, Leaf, RefreshCw } from 'lucide-react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-// ─── Bot Avatar Component ─────────────────────────────────────────────────────
+// ─── siGizi Assistant Avatar Component (Logo Asli siGizi) ─────────────────────
 function BotAvatar({ size = 'md' }) {
-    const sizeClasses = size === 'sm' ? 'w-8 h-8' : 'w-11 h-11';
-    const iconSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
+    const sizeClasses = size === 'sm' ? 'w-8 h-8' : 'w-10 h-10';
+    const paddingClass = size === 'sm' ? 'p-1' : 'p-1.5';
 
     return (
-        <div className={`${sizeClasses} rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/10 flex-shrink-0`}>
-            <Bot className={`${iconSize} text-white`} />
+        <div className="relative group shrink-0">
+            <div className={`${sizeClasses} rounded-xl bg-white dark:bg-[#0C1E14] flex items-center justify-center shadow-sm border border-emerald-200/80 dark:border-emerald-800/60 overflow-hidden transition-all duration-300 transform group-hover:scale-105 ${paddingClass}`}>
+                <img
+                    src="/images/logo-sigizi.png"
+                    alt="Logo siGizi"
+                    className="w-full h-full object-contain filter group-hover:brightness-105 transition-all duration-300"
+                />
+            </div>
+            {/* Pulsing Glowing Halo Ring */}
+            <span className="absolute -inset-0.5 rounded-xl bg-emerald-500/20 dark:bg-emerald-400/20 animate-pulse pointer-events-none -z-10" />
         </div>
     );
 }
@@ -21,23 +29,23 @@ function BotAvatar({ size = 'md' }) {
 // ─── Typing Indicator Component ────────────────────────────────────────────────
 function TypingIndicator() {
     return (
-        <div className="flex items-end gap-3 max-w-[85%]">
+        <div className="flex items-end gap-3 max-w-[85%] animate-fade-in">
             <BotAvatar size="sm" />
-            <div className="bg-emerald-50 dark:bg-[#0C1E14] border border-emerald-100/80 dark:border-emerald-900/40 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
-                <div className="flex items-center gap-1.5">
-                    <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="bg-emerald-50/90 dark:bg-[#0C1E14] border border-emerald-100/90 dark:border-emerald-900/50 rounded-2xl rounded-bl-sm px-5 py-3.5 shadow-sm">
+                <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                        <span className="w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-[#1F7A54] dark:bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
-                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium ml-2">AI sedang mengetik...</span>
+                    <span className="text-xs text-emerald-800 dark:text-emerald-300 font-semibold ml-1">siGizi Assistant sedang mengetik...</span>
                 </div>
             </div>
         </div>
     );
 }
 
-// ─── Chat Bubble Components ────────────────────────────────────────────────────
+// ─── Chat Bubble Components ────────────────────────────────────────────────    
 function AiBubble({ text }) {
     const [copied, setCopied] = useState(false);
 
@@ -57,6 +65,7 @@ function AiBubble({ text }) {
                         remarkPlugins={[remarkGfm]}
                         components={{
                             p: ({ node, ...props }) => <p className="mb-2.5 last:mb-0 leading-relaxed" {...props} />,
+                            img: ({ node, ...props }) => <img className="max-h-10 max-w-[150px] w-auto h-auto object-contain my-1.5 rounded-lg inline-block" {...props} />,
                             strong: ({ node, ...props }) => <strong className="font-bold text-emerald-950 dark:text-emerald-200" {...props} />,
                             em: ({ node, ...props }) => <em className="italic text-gray-700 dark:text-emerald-200" {...props} />,
                             h1: ({ node, ...props }) => <h1 className="text-base sm:text-lg font-bold text-emerald-950 dark:text-emerald-100 mt-3 mb-1.5 first:mt-0 pb-1 border-b border-emerald-200/50 dark:border-emerald-900/50" {...props} />,
@@ -107,7 +116,7 @@ function AiBubble({ text }) {
                 <div className="flex justify-end items-center gap-2 mt-2 pt-1.5 border-t border-emerald-100/60 dark:border-emerald-900/30">
                     <button
                         onClick={handleCopy}
-                        className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700/80 dark:text-emerald-400/80 hover:text-emerald-900 dark:hover:text-emerald-200 transition-colors"
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700/80 dark:text-emerald-400/80 hover:text-emerald-900 dark:hover:text-emerald-200 transition-colors cursor-pointer"
                         title="Salin Pesan"
                     >
                         {copied ? (
@@ -131,14 +140,14 @@ function AiBubble({ text }) {
 function UserBubble({ text }) {
     return (
         <div className="flex justify-end animate-fade-in">
-            <div className="max-w-[80%] bg-emerald-600 dark:bg-[#15803D] text-white rounded-2xl rounded-br-md px-5 py-4 shadow-md shadow-emerald-900/10">
+            <div className="max-w-[80%] bg-[#1F7A54] dark:bg-emerald-600 text-white rounded-2xl rounded-br-sm px-5 py-3.5 shadow-md shadow-emerald-900/10">
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
             </div>
         </div>
     );
 }
 
-// ─── Quick Prompt Chips ────────────────────────────────────────────────────────
+// ─── Quick Prompt Chips (Dengan Animasi Shimmer & Hover Interaktif) ─────────────
 function QuickPrompts({ onSelect, disabled }) {
     const prompts = [
         { label: 'Kebutuhan kalori?', icon: '🔥' },
@@ -148,28 +157,31 @@ function QuickPrompts({ onSelect, disabled }) {
 
     return (
         <div className="flex flex-wrap gap-2 px-1">
-            {prompts.map((prompt) => (
+            {prompts.map((prompt, index) => (
                 <button
                     key={prompt.label}
                     onClick={() => onSelect(prompt.label)}
                     disabled={disabled}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-[#0C1E14] border border-emerald-200/80 dark:border-emerald-900/40 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-950/80 hover:border-emerald-300 dark:hover:border-emerald-800 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                    className="relative group overflow-hidden inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50/90 dark:bg-[#0C1E14] border border-emerald-200/80 dark:border-emerald-900/60 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-950/90 hover:border-emerald-400 dark:hover:border-emerald-700 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none cursor-pointer animate-fade-in"
                 >
-                    <span>{prompt.icon}</span>
-                    <span>{prompt.label}</span>
+                    {/* Shimmer Effect */}
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-400/25 dark:via-emerald-400/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                    <span className="text-sm transform group-hover:scale-125 group-hover:rotate-6 transition-transform duration-300 relative z-10">{prompt.icon}</span>
+                    <span className="relative z-10">{prompt.label}</span>
                 </button>
             ))}
         </div>
     );
 }
 
-// ─── Main AiAssistant Page ─────────────────────────────────────────────────────
+// ─── Main siGizi Assistant Page ─────────────────────────────────────────────────
 export default function AiAssistant({ initialHistory = [] }) {
     const [messages, setMessages] = useState(() => {
         const welcomeMsg = {
             id: 'welcome',
             role: 'ai',
-            text: 'Halo! 👋 Saya siGizi AI. Tanya saya seputar nutrisi, kalori, atau pola makan sehat!',
+            text: 'Halo! 👋 Saya **siGizi Assistant**. Tanya saya seputar nutrisi, kalori, atau pola makan sehat!',
         };
 
         if (initialHistory && initialHistory.length > 0) {
@@ -289,34 +301,39 @@ export default function AiAssistant({ initialHistory = [] }) {
             {
                 id: 'welcome',
                 role: 'ai',
-                text: 'Halo! 👋 Saya siGizi AI. Tanya saya seputar nutrisi, kalori, atau pola makan sehat!',
+                text: 'Halo! 👋 Saya **siGizi Assistant**. Tanya saya seputar nutrisi, kalori, atau pola makan sehat!',
             },
         ]);
     };
 
     return (
         <AuthenticatedLayout>
-            <Head title="AI Assistant" />
+            <Head title="siGizi Assistant" />
 
-            {/* ── Chat Container Card ─────────────────────────────────── */}
-            <div className="h-[calc(100vh-14rem)] sm:h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-[#09170F] rounded-3xl border border-gray-100 dark:border-emerald-950/80 shadow-sm overflow-hidden transition-colors">
+            {/* ── Chat Container Card dengan Animasi Fade-In / Slide-Up lembut ────── */}
+            <div className="h-[calc(100vh-14rem)] sm:h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-[#09170F] rounded-3xl border border-gray-100 dark:border-emerald-950/80 shadow-sm overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                 {/* ── Chat Header ─────────────────────────────────────── */}
                 <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100 dark:border-emerald-950/80 bg-gray-50/50 dark:bg-[#0C1E14]">
                     <div className="flex items-center gap-3.5">
                         <BotAvatar />
                         <div>
-                            <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight">
-                                AI Assistant
+                            <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-1.5">
+                                <span>siGizi Assistant</span>
+                                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-[#1F7A54] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 uppercase tracking-wide">
+                                    AI
+                                </span>
                             </h2>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                                </span>
-                                <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                                    Online
-                                </span>
+                                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100/70 dark:bg-emerald-950/80 border border-emerald-200/60 dark:border-emerald-800/40">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                    </span>
+                                    <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 tracking-wide">
+                                        Online
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -325,10 +342,11 @@ export default function AiAssistant({ initialHistory = [] }) {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={clearChat}
-                            className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200/40 dark:border-emerald-800/20 active:scale-95 transition-all duration-200"
+                            className="relative group overflow-hidden flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800/40 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-105 hover:shadow-md hover:shadow-emerald-500/10 active:scale-95 cursor-pointer"
                         >
-                            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                            <span>Chat Baru</span>
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-400/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                            <Sparkles className="w-3.5 h-3.5 text-amber-500 transform group-hover:rotate-12 transition-transform duration-300 relative z-10" />
+                            <span className="relative z-10">Chat Baru</span>
                         </button>
                     </div>
                 </div>
@@ -346,23 +364,27 @@ export default function AiAssistant({ initialHistory = [] }) {
                     <div ref={chatEndRef} />
                 </div>
 
-                {/* ── Bottom Input Area ───────────────────────────────── */}
-                <div className="border-t border-gray-100 dark:border-emerald-950/80 bg-white dark:bg-[#09170F] px-4 sm:px-6 py-4 space-y-3">
-                    {/* Quick Prompts */}
+                {/* ── Bottom Input Area (Bagian yang Dilingkari) ──────────────── */}
+                <div className="border-t border-gray-100 dark:border-emerald-950/80 bg-white dark:bg-[#09170F] px-4 sm:px-6 py-4 space-y-3 transition-all duration-300">
+
+                    {/* Quick Prompts dengan Animasi */}
                     <QuickPrompts onSelect={handleQuickPrompt} disabled={isLoading} />
 
-                    {/* Input Bar */}
+                    {/* Input Bar dengan Efek Interaktif */}
                     <div className="flex items-end gap-3">
-                        <div className="flex-1 relative">
+                        <div className="flex-1 relative group/input">
+                            {/* Efek Soft Glow di sekeliling textarea saat aktif */}
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/30 to-emerald-600/30 rounded-2xl blur opacity-0 group-hover/input:opacity-50 focus-within:opacity-100 transition duration-500 pointer-events-none" />
+
                             <textarea
                                 ref={inputRef}
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Tanya tentang nutrisi..."
+                                placeholder="Tanya siGizi Assistant seputar nutrisi..."
                                 rows={1}
                                 disabled={isLoading}
-                                className="w-full resize-none rounded-2xl border border-gray-200 dark:border-emerald-900/50 bg-gray-50 dark:bg-[#0C1E14] px-5 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-emerald-700/80 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 focus:ring-0 transition-all duration-200 disabled:opacity-50"
+                                className="relative w-full resize-none rounded-2xl border border-gray-200 dark:border-emerald-950/60 bg-gray-50 dark:bg-[#0C1E14] px-5 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-emerald-700/80 focus:outline-none focus:border-[#1F7A54] dark:focus:border-emerald-500 focus:ring-4 focus:ring-[#1F7A54]/15 dark:focus:ring-emerald-500/20 transition-all duration-300 disabled:opacity-50"
                                 style={{ maxHeight: '120px', minHeight: '48px' }}
                                 onInput={(e) => {
                                     e.target.style.height = '48px';
@@ -370,12 +392,17 @@ export default function AiAssistant({ initialHistory = [] }) {
                                 }}
                             />
                         </div>
+
+                        {/* Tombol Kirim dengan Animasi Shimmer & Hover Dinamis */}
                         <button
                             onClick={() => sendMessage()}
                             disabled={!inputValue.trim() || isLoading}
-                            className="w-12 h-12 rounded-2xl bg-amber-600 hover:bg-amber-700 dark:bg-[#B45309] dark:hover:bg-amber-600 text-white flex items-center justify-center shadow-md transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                            className="relative group overflow-hidden w-12 h-12 rounded-2xl bg-gradient-to-r from-[#1F7A54] to-emerald-600 hover:from-[#186041] hover:to-emerald-500 dark:from-emerald-600 dark:to-emerald-500 dark:hover:from-emerald-500 dark:hover:to-emerald-400 text-white flex items-center justify-center shadow-md shadow-emerald-700/20 hover:shadow-xl hover:shadow-emerald-600/40 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none shrink-0 cursor-pointer"
+                            aria-label="Kirim Pesan"
                         >
-                            <Send className="w-5 h-5" />
+                            {/* Shimmer Effect */}
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                            <Send className="w-5 h-5 relative z-10 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                         </button>
                     </div>
                 </div>
